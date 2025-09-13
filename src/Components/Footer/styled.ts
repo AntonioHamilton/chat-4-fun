@@ -8,7 +8,6 @@ const Gold400 = "#daa520"; // Substitua pelo valor real de variables.$gold-400
 export const FooterContainer = styled.footer`
 	position: relative;
 	width: 100%;
-	padding: 12px 5%;
 	background-color: transparent;
 	display: flex;
 	justify-content: space-between;
