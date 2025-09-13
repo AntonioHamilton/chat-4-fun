@@ -1,4 +1,4 @@
-import { Container } from './index.styled';
+import { Container } from "./index.styled";
 
 const TestPage = () => <Container>HELLO</Container>;
 

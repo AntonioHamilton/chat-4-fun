@@ -1,5 +1,5 @@
 {
-	"name": "basic-next-template",
+	"name": "chat4fun",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -14,13 +14,12 @@
 		}
 	},
 	"dependencies": {
-		"next": "14.2.8",
+		"next": "^14.2.32",
 		"react": "^18",
 		"react-dom": "^18",
 		"styled-components": "^6.1.13"
 	},
 	"devDependencies": {
-		"tsconfig-paths": "^4.2.0",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
@@ -35,6 +34,7 @@
 		"husky": "^9.1.5",
 		"prettier": "^3.3.3",
 		"pretty-quick": "^4.0.0",
+		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5"
 	}
 }

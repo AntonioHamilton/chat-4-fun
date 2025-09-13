@@ -6,7 +6,7 @@
 		"jsx": "preserve",
 		"target": "ES2022",
 		"module": "ESNext",
-		"moduleResolution": "Node",
+		"moduleResolution": "bundler",
 		"allowJs": true,
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
@@ -17,6 +17,7 @@
 		"paths": {
 			"@api/*": ["./api/*"],
 			"@app/*": ["./app/*"],
+			"@styles/*": ["./src/styles/*"],
 			"@images/*": ["./app/assets/images/*"],
 			"@interfaces/*": ["./interfaces/*"],
 			"@services/*": ["./services/*"],
