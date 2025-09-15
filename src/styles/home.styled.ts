@@ -33,4 +33,8 @@ export const CardsWrapper = styled.section`
 	grid-template-columns: repeat(3, 1fr);
 	gap: 32px;
 	min-height: 72vh;
+
+	@media (max-width: 768px) {
+		grid-template-columns: repeat(1, 1fr);
+	}
 `;
