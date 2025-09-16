@@ -9,6 +9,7 @@ const GymClicker = () => {
 		liftersSpread,
 		gifs,
 		money,
+		spreadCounter,
 		setLifters,
 		setMoney,
 		setClicks
