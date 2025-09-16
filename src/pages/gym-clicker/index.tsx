@@ -1,16 +1,41 @@
 import Image from "next/image";
-import * as SC from "@styles/clicker.styled";
-import { useState } from "react";
+import * as SC from "@styles/gym-clicker.styled";
+import { useGymClicker } from "@/GymClicker/Hooks/useGymClicker";
 
 const GymClicker = () => {
-	const [clicks, setClicks] = useState(0);
-	const [money, setMoney] = useState(0);
-	const [moneySpent, setMoneySpent] = useState(0);
-	const [spread, setSpread] = useState(1);
+	const {
+		lifterPrice,
+		lifters,
+		liftersSpread,
+		gifs,
+		money,
+		setLifters,
+		setMoney,
+		setClicks
+	} = useGymClicker();
 
-	const handleClickControl = () => {
-		setMoney(clicks + 1 * spread - moneySpent);
+	const getMoneyOnClick = () => {
+		setMoney((money) => money + 1);
 		setClicks((value: number) => value + 1);
+	};
+
+	const handleUpgrade = (lifterPrice: number, index: number) => {
+		setMoney((money) => money - lifterPrice);
+		const newObjectLifters = lifters;
+		newObjectLifters[index].level += 1;
+		newObjectLifters[index].spread =
+			liftersSpread[newObjectLifters[index].level];
+		setLifters(newObjectLifters);
+	};
+
+	const reset = () => {
+		setMoney(0);
+		setClicks(0);
+		setLifters([
+			{ name: "first lifter", spread: 0, level: 0 },
+			{ name: "second lifter", spread: 0, level: 0 },
+			{ name: "third lifter", spread: 0, level: 0 }
+		]);
 	};
 
 	return (
@@ -34,8 +59,30 @@ const GymClicker = () => {
 				</SC.ImageContainer>
 			</SC.Logo>
 			<SC.GainsCounter>Pump Coins: {money}</SC.GainsCounter>
+			<SC.LiftersContainer>
+				{lifters.map((lifter, index) => (
+					<div className="lifters" key={lifter.name}>
+						{gifs[lifter.level]}
+						<SC.UpgradeButton
+							disabled={
+								lifterPrice[lifter.level] > money ||
+								lifterPrice.length <= lifter.level
+							}
+							onClick={() => handleUpgrade(lifterPrice[lifter.level], index)}
+						>
+							<p>{lifter.level === 0 ? "Get Lifter" : "Upgrade"}</p>
+							<p>
+								{lifterPrice.length > lifter.level
+									? `${lifterPrice[lifter.level]}🏋️`
+									: "Max Level"}
+							</p>
+						</SC.UpgradeButton>
+					</div>
+				))}
+			</SC.LiftersContainer>
 			<SC.ButtonContainer>
-				<SC.MuscleButton onClick={handleClickControl}>Click</SC.MuscleButton>
+				<SC.MuscleButton onClick={getMoneyOnClick}>Click</SC.MuscleButton>
+				{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
 			</SC.ButtonContainer>
 		</SC.Container>
 	);

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { breakpoints } from "./breakpoints";
 
 export const Logo = styled.div`
 	display: flex;
@@ -34,7 +35,7 @@ export const CardsWrapper = styled.section`
 	gap: 32px;
 	min-height: 72vh;
 
-	@media (max-width: 768px) {
+	@media (max-width: ${breakpoints.md}) {
 		grid-template-columns: repeat(1, 1fr);
 	}
 `;
