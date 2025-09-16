@@ -36,6 +36,9 @@ export const AnimationWrapper = styled.div`
 	left: 0;
 	width: 100vw;
 	height: 100vh;
+	@supports (height: 100dvh) {
+		height: 100dvh; /* browsers modernos */
+	}
 	background-color: #060e26;
 	overflow: hidden;
 

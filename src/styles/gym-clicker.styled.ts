@@ -3,6 +3,9 @@ import { breakpoints } from "./breakpoints";
 
 export const Container = styled.div`
 	min-height: 100vh;
+	@supports (height: 100dvh) {
+		min-height: 100dvh; /* browsers modernos */
+	}
 	background-color: #f5f4f8;
 	display: flex;
 	flex-direction: column;
@@ -45,6 +48,14 @@ export const LiftersContainer = styled.div`
 	.image-space {
 		height: 210px;
 		width: 1px;
+
+		@media (max-width: ${breakpoints.md}) {
+			height: 113px;
+		}
+
+		@media (max-width: ${breakpoints.sm}) {
+			height: 53px;
+		}
 	}
 
 	.lifters {

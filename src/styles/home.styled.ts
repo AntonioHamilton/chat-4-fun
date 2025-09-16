@@ -35,6 +35,10 @@ export const CardsWrapper = styled.section`
 	gap: 32px;
 	min-height: 72vh;
 
+	@supports (height: 72dvh) {
+		min-height: 72dvh; /* browsers modernos */
+	}
+
 	@media (max-width: ${breakpoints.md}) {
 		grid-template-columns: repeat(1, 1fr);
 	}
