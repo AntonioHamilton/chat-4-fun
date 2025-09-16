@@ -20,31 +20,26 @@ export const useGymClicker = () => {
 		}, 1000);
 	}, [lifters]);
 
+	const saveGameState = useCallback(() => {
+		localStorage.setItem(
+			"LastState",
+			JSON.stringify({
+				lifters,
+				money,
+				clicks,
+				spread: lifters[0].spread + lifters[1].spread + lifters[2].spread
+			})
+		);
+	}, [clicks, lifters, money]);
+
 	useEffect(() => {
 		const intervalId = spreadCounter();
 		return () => clearInterval(intervalId);
 	}, [spreadCounter]);
 
 	useEffect(() => {
-		const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-			event.preventDefault();
-			localStorage.setItem(
-				"LastState",
-				JSON.stringify({
-					lifters,
-					money,
-					clicks,
-					spread: lifters[0].spread + lifters[1].spread + lifters[2].spread
-				})
-			);
-		};
-
-		window.addEventListener("beforeunload", handleBeforeUnload);
-
-		return () => {
-			window.removeEventListener("beforeunload", handleBeforeUnload);
-		};
-	}, [clicks, lifters, money]);
+		saveGameState();
+	}, [saveGameState]);
 
 	const gifs = [
 		<div key="image space" className="image-space" />,

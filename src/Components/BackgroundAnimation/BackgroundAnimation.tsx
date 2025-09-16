@@ -14,9 +14,9 @@ const BackgroundAnimation = () => {
 
 	return (
 		<SC.AnimationWrapper>
-			<SC.StarsSmall shouldrender={String(shouldRender)} />
-			<SC.StarsMedium shouldrender={String(shouldRender)} />
-			<SC.StarsLarge shouldrender={String(shouldRender)} />
+			<SC.StarsSmall $shouldRender={String(shouldRender)} />
+			<SC.StarsMedium $shouldRender={String(shouldRender)} />
+			<SC.StarsLarge $shouldRender={String(shouldRender)} />
 		</SC.AnimationWrapper>
 	);
 };

@@ -48,7 +48,7 @@ export const AnimationWrapper = styled.div`
 	}
 `;
 
-export const StarsSmall = styled.div<{ shouldrender: string }>`
+export const StarsSmall = styled.div<{ $shouldRender: string }>`
 	position: absolute;
 	top: -50%;
 	left: -50%;
@@ -60,11 +60,11 @@ export const StarsSmall = styled.div<{ shouldrender: string }>`
 	height: 1px;
 	background: transparent;
 	${(props) =>
-		props.shouldrender === "true" &&
+		props.$shouldRender === "true" &&
 		`box-shadow: ${multipleBoxShadow(2000, "#d2d2d4", window.innerWidth * 2, window.innerHeight * 2)};`}
 `;
 
-export const StarsMedium = styled.div<{ shouldrender: string }>`
+export const StarsMedium = styled.div<{ $shouldRender: string }>`
 	position: absolute;
 	top: -50%;
 	left: -50%;
@@ -77,11 +77,11 @@ export const StarsMedium = styled.div<{ shouldrender: string }>`
 	height: 2px;
 	background: transparent;
 	${(props) =>
-		props.shouldrender === "true" &&
+		props.$shouldRender === "true" &&
 		`box-shadow: ${multipleBoxShadow(500, "#e8e8ec", window.innerWidth * 2, window.innerHeight * 2)};`}
 `;
 
-export const StarsLarge = styled.div<{ shouldrender: string }>`
+export const StarsLarge = styled.div<{ $shouldRender: string }>`
 	position: absolute;
 	top: -50%;
 	left: -50%;
@@ -94,6 +94,6 @@ export const StarsLarge = styled.div<{ shouldrender: string }>`
 	height: 3px;
 	background: transparent;
 	${(props) =>
-		props.shouldrender === "true" &&
+		props.$shouldRender === "true" &&
 		`box-shadow: ${multipleBoxShadow(300, "#e8e8ec", window.innerWidth * 2, window.innerHeight * 2)};`}
 `;
