@@ -1,6 +1,7 @@
 import Image from "next/image";
 import * as SC from "@styles/gym-clicker.styled";
 import { useGymClicker } from "@/GymClicker/Hooks/useGymClicker";
+import { Upgrades } from "@/GymClicker/Components/Upgrades/Upgrades";
 
 const GymClicker = () => {
 	const {
@@ -82,6 +83,7 @@ const GymClicker = () => {
 				))}
 			</SC.LiftersContainer>
 			<SC.ButtonContainer>
+				<Upgrades />
 				<SC.MuscleButton onClick={getMoneyOnClick}>Click</SC.MuscleButton>
 				{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
 			</SC.ButtonContainer>

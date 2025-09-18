@@ -1,64 +1,64 @@
 {
-  "workbench.iconTheme": "material-icon-theme",
-  "editor.fontFamily": "Fira Code",
-  "editor.fontLigatures": true,
-  "terminal.integrated.fontFamily": "monospace",
-  "editor.formatOnSave": true,
-  "explorer.confirmDelete": false,
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "explorer.confirmDragAndDrop": false,
-  "editor.wordWrap": "on",
-  "explorer.compactFolders": false,
-  "stories.username": "brown_Suriname",
-  "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
-  "auto-rename-tag.activationOnLanguage": ["*"],
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "prettier.requireConfig": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "eslint.options": {
-    "extensions": [".js", ".vue", ".ts", ".html"]
-  },
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "json.schemas": [],
-  "terminal.integrated.defaultProfile.osx": "zsh",
-  "security.workspace.trust.untrustedFiles": "open",
-  "workbench.settings.applyToAllProfiles": [
-    "editor.tabSize"
-  ],
-  "debug.onTaskErrors": "debugAnyway",
-  "[python]": {
-    "diffEditor.ignoreTrimWhitespace": false,
-    "gitlens.codeLens.symbolScopes": [
-      "!Module"
-    ],
-    "editor.formatOnType": true,
-    "editor.wordBasedSuggestions": "off"
-  },
-  "explorer.confirmPasteNative": false,
-  "terminal.integrated.defaultProfile.windows": "Git Bash",
-  "cmake.showOptionsMovedNotification": false,
-  "security.workspace.trust.startupPrompt": "never",
-  "security.workspace.trust.emptyWindow": false,
-  "security.workspace.trust.enabled": false,
-  "git.openRepositoryInParentFolders": "always",
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "geminicodeassist.inlineSuggestions.enableAuto": true,
-  "workbench.secondarySideBar.showLabels": false,
-  "diffEditor.codeLens": true,
-  "geminicodeassist.rules": "# 📐 Regras de IA do Projeto para BlogPessoal\n\n# 0. Regras gerais da IA\n\n- Não coloque comentários no código\n- Crie todas as variáveis, funções, classes, tipagens e outras coisas de código em inglês\n- Não altere trechos de código ou arquivos que eu não pedi para modificar.\n- Explique o que foi feito de forma direta, clara e concisa.\n- Só forneça explicações longas ou detalhadas se eu pedir explicitamente.\n- Sempre pergunte antes de assumir contexto ou tomar decisões ambíguas.\n- Responda com o mínimo necessário para que eu entenda e execute, sem repetições.\n- Quando possível, entregue respostas com exemplos prontos para uso.\n- Nunca inclua frases de encerramento como “espero que isso ajude”.\n- Nunca invente informações ou estruturas não existentes no projeto.\n\n## 1. Estrutura de Pastas\n\n- **src/**: Todo o código fonte deve ficar dentro desta pasta.\n  - **src/pages/**: Páginas do Next.js.\n  - **src/components/**: Componentes reutilizáveis.\n  - **src/styles/**: Estilos globais e arquivos SCSS.\n  - **src/services/**: Serviços de API e integrações externas.\n  - **src/utils/**: Funções utilitárias.\n  - **src/types/**: Tipos TypeScript globais.\n- **public/**: Arquivos estáticos (imagens, favicon, etc).\n\n## 2. Padrão de Código\n\n- Utilize **TypeScript** em todos os arquivos `.ts` e `.tsx`.\n- Componentes devem ser **function components**.\n- Use **arrow functions** para componentes e funções utilitárias.\n- Nomes de arquivos de componentes em **PascalCase**.\n- Nomes de arquivos utilitários em **camelCase**.\n- Sempre tipar props e funções.\n- Use **React Hooks** para lógica de estado e efeitos.\n\n## 3. Estilização\n\n- Utilize **SCSS** para estilização de componentes (`.module.scss`).\n- Siga o padrão **BEM** (Block Element Modifier) para nomear classes CSS.\n- Estilos globais devem estar em `src/styles/globals.scss`.\n- Não utilizar styled-components ou outras libs de CSS-in-JS.\n\n## 4. Lint e Formatação\n\n- Use **ESLint** com o padrão do repositório (Airbnb + Prettier).\n- Use **Prettier** para formatação automática.\n- Nunca faça commit com erros de lint.\n- Utilize o script `lint` antes de subir código.\n\n## 5. Commits e Versionamento\n\n- Siga o padrão de commits semânticos:\n  - `feat`: Nova funcionalidade\n  - `fix`: Correção de bug\n  - `docs`: Documentação\n  - `style`: Mudança de formatação (espaços, ponto e vírgula, etc)\n  - `refactor`: Refatoração de código\n  - `test`: Adição ou ajuste de testes\n  - `chore`: Outras mudanças (build, configs, etc)\n- Use **husky** para hooks de pré-commit (lint e prettier).\n\n## 6. Testes\n\n- Utilize **Jest** e **@testing-library/react** para testes.\n- Os testes devem ficar em arquivos `*.test.tsx` ou `*.spec.tsx` dentro da pasta do componente ou em `__tests__`.\n\n## 7. Configurações Gerais\n\n- O arquivo `.env.example` deve ser mantido atualizado com todas as variáveis de ambiente necessárias.\n- O projeto deve rodar com `yarn` ou `npm` sem erros após o clone.\n- O arquivo `README.md` deve ser atualizado com instruções de uso e desenvolvimento.\n\n## 8. Dependências\n\n- Todas as dependências devem ser verificadas contra vulnerabilidades conhecidas na base do NPM.\n- Caso alguma dependência possua vulnerabilidade, deve ser atualizada para uma versão segura ou substituída por outra alternativa.\n- Mantenha as dependências sempre atualizadas.\n- Não adicionar dependências desnecessárias.\n\n## 9. Organização de Imports\n\n- Imports de bibliotecas externas primeiro, depois imports internos.\n- Separar imports por uma linha em branco.\n\n## 10. Gerenciamento de Estado\n\n- Para estado global, utilize a **Context API** do React.\n- Crie contextos em `src/contexts` e provedores que encapsulem a lógica de estado.\n- Evite prop-drilling excessivo; prefira o uso de contextos para estados compartilhados por múltiplos componentes.\n\n## 11. Acessibilidade (a11y)\n\n- Utilize HTML semântico sempre que possível (`<nav>`, `<main>`, `<article>`, `<aside>`, etc.).\n- Garanta que todos os elementos interativos (botões, links) sejam acessíveis via teclado.\n- Imagens devem ter o atributo `alt` preenchido, a menos que sejam puramente decorativas (nesse caso, `alt=\"\"`).\n- Utilize atributos ARIA quando necessário para melhorar a experiência com leitores de tela.\n\n\n\n\n",
-  "terminal.integrated.enableMultiLinePasteWarning": "never",
+	"workbench.iconTheme": "material-icon-theme",
+	"editor.fontFamily": "Fira Code",
+	"editor.fontLigatures": true,
+	"terminal.integrated.fontFamily": "monospace",
+	"editor.formatOnSave": true,
+	"explorer.confirmDelete": false,
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"explorer.confirmDragAndDrop": false,
+	"editor.wordWrap": "on",
+	"explorer.compactFolders": false,
+	"stories.username": "brown_Suriname",
+	"terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
+	"auto-rename-tag.activationOnLanguage": ["*"],
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact"
+	],
+	"prettier.requireConfig": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+	"eslint.options": {
+		"extensions": [".js", ".vue", ".ts", ".html"]
+	},
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"json.schemas": [],
+	"terminal.integrated.defaultProfile.osx": "zsh",
+	"security.workspace.trust.untrustedFiles": "open",
+	"workbench.settings.applyToAllProfiles": ["editor.tabSize"],
+	"debug.onTaskErrors": "debugAnyway",
+	"[python]": {
+		"diffEditor.ignoreTrimWhitespace": false,
+		"gitlens.codeLens.symbolScopes": ["!Module"],
+		"editor.formatOnType": true,
+		"editor.wordBasedSuggestions": "off"
+	},
+	"explorer.confirmPasteNative": false,
+	"terminal.integrated.defaultProfile.windows": "Git Bash",
+	"cmake.showOptionsMovedNotification": false,
+	"security.workspace.trust.startupPrompt": "never",
+	"security.workspace.trust.emptyWindow": false,
+	"security.workspace.trust.enabled": false,
+	"git.openRepositoryInParentFolders": "always",
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"geminicodeassist.inlineSuggestions.enableAuto": true,
+	"workbench.secondarySideBar.showLabels": false,
+	"diffEditor.codeLens": true,
+	"terminal.integrated.enableMultiLinePasteWarning": "never"
 }
