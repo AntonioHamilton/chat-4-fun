@@ -44,16 +44,32 @@ export const ModalContent = styled.div`
 	font-family: "Roboto";
 `;
 
-export const UpgradeOption = styled.div`
+export const UpgradeOptionContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+`;
+
+export const UpgradeOption = styled.button`
 	background: #f1f1f1;
 	padding: 12px;
 	border-radius: 10px;
-	margin: 10px 0;
+	border: none;
+	margin: 4px 0;
 	cursor: pointer;
-	transition: background 0.2s ease;
+	color: #000;
+	transition: all 0.2s ease;
 
 	&:hover {
 		background: #ddd;
+	}
+
+	&.--active {
+		display: block;
+	}
+
+	&.--inactive {
+		display: none;
 	}
 `;
 

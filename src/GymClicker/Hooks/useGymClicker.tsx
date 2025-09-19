@@ -11,6 +11,7 @@ export const useGymClicker = () => {
 		{ name: "second lifter", spread: 0, level: 0 },
 		{ name: "third lifter", spread: 0, level: 0 }
 	]);
+	const [clickValue, setClickValue] = useState(1);
 
 	const spreadCounter = useCallback(() => {
 		return setInterval(() => {
@@ -94,7 +95,8 @@ export const useGymClicker = () => {
 		gifs,
 		clicks,
 		money,
-		spreadCounter,
+		clickValue,
+		setClickValue,
 		setClicks,
 		setMoney,
 		setLifters

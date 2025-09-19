@@ -10,14 +10,15 @@ const GymClicker = () => {
 		liftersSpread,
 		gifs,
 		money,
-		spreadCounter,
+		clickValue,
+		setClickValue,
 		setLifters,
 		setMoney,
 		setClicks
 	} = useGymClicker();
 
 	const getMoneyOnClick = () => {
-		setMoney((money) => money + 1);
+		setMoney((money) => money + clickValue);
 		setClicks((value: number) => value + 1);
 	};
 
@@ -83,7 +84,7 @@ const GymClicker = () => {
 				))}
 			</SC.LiftersContainer>
 			<SC.ButtonContainer>
-				<Upgrades />
+				<Upgrades setClickValue={setClickValue} money={money} />
 				<SC.MuscleButton onClick={getMoneyOnClick}>Click</SC.MuscleButton>
 				{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
 			</SC.ButtonContainer>
