@@ -84,7 +84,11 @@ const GymClicker = () => {
 				))}
 			</SC.LiftersContainer>
 			<SC.ButtonContainer>
-				<Upgrades setClickValue={setClickValue} money={money} />
+				<Upgrades
+					setMoney={setMoney}
+					setClickValue={setClickValue}
+					money={money}
+				/>
 				<SC.MuscleButton onClick={getMoneyOnClick}>Click</SC.MuscleButton>
 				{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
 			</SC.ButtonContainer>

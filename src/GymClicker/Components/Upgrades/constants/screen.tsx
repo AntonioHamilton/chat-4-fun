@@ -1,0 +1,5 @@
+const screenUpgrades = [
+	{
+		name: "crossover"
+	}
+];

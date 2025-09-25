@@ -65,11 +65,13 @@ export const LiftersContainer = styled.div`
 		width: 200px;
 
 		@media (max-width: ${breakpoints.md}) {
+			height: 200px;
 			width: 160px;
 		}
 
 		@media (max-width: ${breakpoints.sm}) {
 			width: 100px;
+			height: 160px;
 		}
 	}
 

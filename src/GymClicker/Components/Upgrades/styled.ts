@@ -42,34 +42,45 @@ export const ModalContent = styled.div`
 	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
 	color: #000;
 	font-family: "Roboto";
+
+	h2 {
+		margin-bottom: 16px;
+	}
 `;
 
 export const UpgradeOptionContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	margin-top: 4px;
 `;
 
 export const UpgradeOption = styled.button`
-	background: #f1f1f1;
 	padding: 12px;
 	border-radius: 10px;
-	border: none;
+	border: 2px solid transparent;
 	margin: 4px 0;
 	cursor: pointer;
-	color: #000;
+	color: #fff;
 	transition: all 0.2s ease;
+	font-weight: bold;
+	font-size: 14px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	background: linear-gradient(to right, #ff416c, #ff4b2b);
 
-	&:hover {
-		background: #ddd;
+	&:not(:disabled):hover {
+		background: linear-gradient(to right, #ff416c, #ff4b2b);
+		filter: brightness(1.1);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 	}
 
-	&.--active {
-		display: block;
-	}
-
-	&.--inactive {
-		display: none;
+	&:disabled {
+		cursor: not-allowed;
+		background: #333;
+		color: #999;
+		box-shadow: none;
+		border: 2px solid #555;
 	}
 `;
 
