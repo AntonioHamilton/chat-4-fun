@@ -2,6 +2,7 @@ import Image from "next/image";
 import * as SC from "@styles/gym-clicker.styled";
 import { useGymClicker } from "@/GymClicker/Hooks/useGymClicker";
 import { Upgrades } from "@/GymClicker/Components/Upgrades/Upgrades";
+import { Bosses } from "@/GymClicker/Components/Bosses/Bosses";
 
 const GymClicker = () => {
 	const {
@@ -61,6 +62,7 @@ const GymClicker = () => {
 					/>
 				</SC.ImageContainer>
 			</SC.Logo>
+			<Bosses hit={1} />
 			<SC.GainsCounter>Pump Coins: {money}</SC.GainsCounter>
 			<SC.LiftersContainer>
 				{lifters.map((lifter, index) => (

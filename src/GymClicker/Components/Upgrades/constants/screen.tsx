@@ -1,5 +1,6 @@
 const screenUpgrades = [
 	{
-		name: "crossover"
+		name: "crossover machine",
+		price: 2
 	}
 ];
