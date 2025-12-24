@@ -4,7 +4,16 @@ import BackgroundAnimation from "@/Components/BackgroundAnimation/BackgroundAnim
 import { Footer } from "@/Components/Footer/Footer";
 
 const games = [
-	{ name: "Gym Clicker", path: "/gym-clicker", image: "/images/gymclicker.png" }
+	{
+		name: "Gym Clicker",
+		path: "/gym-clicker",
+		image: "/images/gymclicker.png"
+	},
+	{
+		name: "Brasil Unmatched",
+		path: "/brasil-unmatched",
+		image: "/images/unmatched.jpg"
+	}
 ];
 
 export default function Home() {
