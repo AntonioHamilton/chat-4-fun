@@ -157,39 +157,7 @@ export const gonDeck: Card[] = [
 		undefined,
 		[{ type: "moveAndAttack", value: 3 }],
 		"Usa a vara para alcançar o oponente"
-	),
-	...Array(3)
-		.fill(null)
-		.map((_, i) =>
-			createCard(
-				`gon-investida-${i}`,
-				"Investida Selvagem",
-				"maneuver",
-				0,
-				undefined,
-				[
-					{ type: "move", value: 2 },
-					{ type: "drawCards", value: 2 }
-				],
-				"Avança rapidamente em direção ao oponente"
-			)
-		),
-	...Array(2)
-		.fill(null)
-		.map((_, i) =>
-			createCard(
-				`gon-posicionamento-${i}`,
-				"Posicionamento Estratégico",
-				"maneuver",
-				0,
-				undefined,
-				[
-					{ type: "move", value: 1 },
-					{ type: "nextAttackBonus", value: 1 }
-				],
-				"Se posiciona para um ataque mais eficaz"
-			)
-		)
+	)
 ];
 
 export const killuaDeck: Card[] = [
@@ -341,37 +309,5 @@ export const killuaDeck: Card[] = [
 			{ type: "drawCards", value: 1 }
 		],
 		"Recupera fôlego rapidamente"
-	),
-	...Array(3)
-		.fill(null)
-		.map((_, i) =>
-			createCard(
-				`killua-investida-eletrica-${i}`,
-				"Investida Elétrica",
-				"maneuver",
-				0,
-				undefined,
-				[
-					{ type: "move", value: 3 },
-					{ type: "nextAttackRangeBonus", value: 1 }
-				],
-				"Move-se com velocidade sobre-humana"
-			)
-		),
-	...Array(2)
-		.fill(null)
-		.map((_, i) =>
-			createCard(
-				`killua-posicionamento-furtivo-${i}`,
-				"Posicionamento Furtivo",
-				"maneuver",
-				0,
-				undefined,
-				[
-					{ type: "move", value: 2 },
-					{ type: "nextAttackIgnoreDefense", value: 1 }
-				],
-				"Se posiciona para um ataque pelas costas"
-			)
-		)
+	)
 ];

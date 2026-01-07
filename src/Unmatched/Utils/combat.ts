@@ -3,8 +3,8 @@ import { Card } from "../Types/card.types";
 
 export type CombatResult = {
 	damage: number;
-	attackerCard: Card;
-	defenderCard?: Card;
+	attackCard: Card;
+	defenseCard?: Card;
 	success: boolean;
 };
 
@@ -12,17 +12,21 @@ export const resolveCombat = (
 	attacker: Character,
 	defender: Character,
 	attackCard: Card,
-	defenseCard?: Card
+	defenseCard?: Card,
+	ignoreDefenseAmount: number = 0
 ): CombatResult => {
 	const attackValue = attackCard.value;
-	const defenseValue = defenseCard?.value || 0;
+	const defenseValue = Math.max(
+		0,
+		(defenseCard?.value || 0) - ignoreDefenseAmount
+	);
 
 	const damage = Math.max(0, attackValue - defenseValue);
 
 	return {
 		damage,
-		attackerCard: attackCard,
-		defenderCard: defenseCard,
+		attackCard,
+		defenseCard,
 		success: damage > 0
 	};
 };

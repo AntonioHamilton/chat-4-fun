@@ -1,7 +1,9 @@
 import * as SC from "./styled";
 import { Board as BoardType } from "../../Types/board.types";
 import { Character } from "../../Types/character.types";
+import { Card } from "../../Types/card.types";
 import { isValidMove } from "../../Utils/movement";
+import { canAttack } from "../../Utils/combat";
 
 type BoardProps = {
 	board: BoardType;
@@ -9,6 +11,7 @@ type BoardProps = {
 	selectedPosition?: { x: number; y: number } | null;
 	currentAction?: string | null;
 	currentPlayerIndex?: number;
+	selectedCard?: Card | null;
 	onZoneClick?: (x: number, y: number) => void;
 };
 
@@ -18,6 +21,7 @@ export const Board = ({
 	selectedPosition,
 	currentAction,
 	currentPlayerIndex,
+	selectedCard,
 	onZoneClick
 }: BoardProps) => {
 	const getCharacterAtPosition = (
@@ -45,6 +49,26 @@ export const Board = ({
 		);
 	};
 
+	const isAttackValid = (x: number, y: number): boolean => {
+		if (
+			currentAction !== "attack" ||
+			currentPlayerIndex === undefined ||
+			!selectedCard
+		) {
+			return false;
+		}
+		const currentCharacter = characters[currentPlayerIndex];
+		const targetCharacter = getCharacterAtPosition(x, y);
+		if (
+			!currentCharacter ||
+			!targetCharacter ||
+			currentCharacter.id === targetCharacter.id
+		) {
+			return false;
+		}
+		return canAttack(currentCharacter, targetCharacter, selectedCard);
+	};
+
 	return (
 		<SC.BoardContainer
 			style={{
@@ -58,13 +82,14 @@ export const Board = ({
 					const isSelected =
 						selectedPosition?.x === x && selectedPosition?.y === y;
 					const isValid = isMoveValid(x, y);
+					const isValidAttack = isAttackValid(x, y);
 
 					return (
 						<SC.Zone
 							key={`zone-${x}-${y}`}
 							$isOccupied={!!character}
 							$isSelected={isSelected}
-							$isValid={isValid}
+							$isValid={isValid || isValidAttack}
 							onClick={() => onZoneClick?.(x, y)}
 						>
 							{character && (

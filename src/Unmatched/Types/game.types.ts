@@ -1,7 +1,8 @@
 import { Character } from "./character.types";
 import { Board } from "./board.types";
+import { Card } from "./card.types";
 
-export type GamePhase = "setup" | "playing" | "finished";
+export type GamePhase = "setup" | "playing" | "waitingForDefense" | "finished";
 
 export type GameState = {
 	currentPlayer: number;
@@ -11,6 +12,19 @@ export type GameState = {
 	phase: GamePhase;
 	winner?: number;
 	actionsRemaining: number;
+	godspeedActive?: boolean;
+	godspeedTurnsRemaining?: number;
+	activeEffects?: {
+		attackBonus?: number;
+		rangeBonus?: number;
+		ignoreDefense?: number;
+	};
+	pendingAttack?: {
+		attackerId: string;
+		defenderId: string;
+		attackCard: Card;
+		targetPosition: Position;
+	};
 };
 
 export type Action = "maneuver" | "attack" | "scheme";
