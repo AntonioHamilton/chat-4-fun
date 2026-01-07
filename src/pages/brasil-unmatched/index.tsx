@@ -3,6 +3,8 @@ import { HealthBar } from "@/Unmatched/Components/UI/HealthBar";
 import { Hand } from "@/Unmatched/Components/Card/Hand";
 import { ActionButtons } from "@/Unmatched/Components/UI/ActionButtons";
 import { CardModal } from "@/Unmatched/Components/UI/CardModal";
+import { SelectedCardDisplay } from "@/Unmatched/Components/UI/SelectedCardDisplay";
+import { SchemeMessage } from "@/Unmatched/Components/UI/SchemeMessage";
 import { useUnmatched } from "@/Unmatched/Hooks/useUnmatched";
 import { useState } from "react";
 import { Action } from "@/Unmatched/Types/game.types";
@@ -111,6 +113,16 @@ const Unmatched = () => {
 					onZoneClick={handleZoneClick}
 				/>
 			</SC.BoardWrapper>
+			{gameState.lastUsedScheme && (
+				<SC.SchemeMessageSection>
+					<SchemeMessage card={gameState.lastUsedScheme} />
+				</SC.SchemeMessageSection>
+			)}
+			{selectedCard && selectedCard.type === "attack" && (
+				<SC.SelectedCardSection>
+					<SelectedCardDisplay card={selectedCard} />
+				</SC.SelectedCardSection>
+			)}
 			<SC.ActionsSection>
 				<ActionButtons
 					actionsRemaining={gameState.actionsRemaining}

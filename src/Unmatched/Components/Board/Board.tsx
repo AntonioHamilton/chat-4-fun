@@ -93,9 +93,9 @@ export const Board = ({
 							onClick={() => onZoneClick?.(x, y)}
 						>
 							{character && (
-								<SC.CharacterMarker
-									$color={character.id === "gon" ? "#f39c12" : "#3498db"}
-								/>
+								<SC.CharacterMarker $characterId={character.id}>
+									{character.id === "gon" ? "👊" : "⚡"}
+								</SC.CharacterMarker>
 							)}
 						</SC.Zone>
 					);

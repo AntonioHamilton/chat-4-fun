@@ -45,11 +45,73 @@ export const Zone = styled.div<{
 	}
 `;
 
-export const CharacterMarker = styled.div<{ $color: string }>`
+export const CharacterMarker = styled.div<{ $characterId: string }>`
 	width: 40px;
 	height: 40px;
-	background-color: ${(props) => props.$color};
 	border-radius: 50%;
 	border: 3px solid #fff;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	font-weight: bold;
+	background: ${(props) =>
+		props.$characterId === "gon"
+			? "linear-gradient(135deg, #f39c12 0%, #e67e22 100%)"
+			: "linear-gradient(135deg, #3498db 0%, #2980b9 100%)"};
+	color: #fff;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	transition:
+		transform 0.3s ease,
+		box-shadow 0.2s ease,
+		top 0.3s ease,
+		left 0.3s ease;
+	position: relative;
+	animation: fadeInMarker 0.3s ease;
+
+	&.attacking {
+		animation: attackPulse 0.5s ease;
+	}
+
+	&.takingDamage {
+		animation: damageShake 0.5s ease;
+	}
+
+	@keyframes attackPulse {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.3);
+			box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes damageShake {
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		25% {
+			transform: translateX(-5px);
+		}
+		75% {
+			transform: translateX(5px);
+		}
+	}
+
+	@keyframes fadeInMarker {
+		from {
+			opacity: 0;
+			transform: scale(0.8);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
 `;

@@ -350,3 +350,111 @@ export const CardModalContent = styled.div`
 	overflow-y: auto;
 	max-height: calc(85vh - 80px);
 `;
+
+export const StatusMessageContainer = styled.div<{ $type: string }>`
+	padding: 12px 20px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	text-align: center;
+	margin: 10px 0;
+	background: ${(props) => {
+		switch (props.$type) {
+			case "success":
+				return "linear-gradient(145deg, #27ae60, #229954)";
+			case "warning":
+				return "linear-gradient(145deg, #f39c12, #e67e22)";
+			case "error":
+				return "linear-gradient(145deg, #e74c3c, #c0392b)";
+			default:
+				return "linear-gradient(145deg, #3498db, #2980b9)";
+		}
+	}};
+	color: white;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	animation: fadeInStatus 0.3s ease-out;
+
+	@keyframes fadeInStatus {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+`;
+
+export const SelectedCardWrapper = styled.div`
+	background: rgba(0, 0, 0, 0.4);
+	border-radius: 10px;
+	padding: 12px 16px;
+	border: 2px solid rgba(255, 215, 0, 0.5);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+`;
+
+export const SelectedCardLabel = styled.div`
+	font-size: 12px;
+	font-weight: bold;
+	color: #f39c12;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+`;
+
+export const SelectedCardInfo = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+`;
+
+export const SelectedCardName = styled.div`
+	font-size: 14px;
+	font-weight: bold;
+	color: #ecf0f1;
+`;
+
+export const SelectedCardDescription = styled.div`
+	font-size: 11px;
+	color: #bdc3c7;
+	font-style: italic;
+`;
+
+export const SelectedCardValue = styled.div`
+	font-size: 12px;
+	color: #3498db;
+	font-weight: 500;
+`;
+
+export const SelectedCardRange = styled.div`
+	font-size: 12px;
+	color: #9b59b6;
+	font-weight: 500;
+`;
+
+export const SchemeMessageWrapper = styled.div`
+	background: linear-gradient(145deg, #9b59b6, #8e44ad);
+	border-radius: 10px;
+	padding: 16px 20px;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	margin: 10px 0;
+	animation: fadeInStatus 0.3s ease-out;
+`;
+
+export const SchemeMessageLabel = styled.div`
+	font-size: 12px;
+	font-weight: bold;
+	color: rgba(255, 255, 255, 0.9);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+`;
+
+export const SchemeMessageContent = styled.div`
+	font-size: 14px;
+	color: #ffffff;
+	font-weight: 500;
+	line-height: 1.4;
+`;

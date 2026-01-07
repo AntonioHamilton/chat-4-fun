@@ -292,3 +292,13 @@ export const ViewCardsButton = styled.button`
 		transform: scale(0.95);
 	}
 `;
+
+export const SchemeMessageSection = styled.div`
+	width: 100%;
+	max-width: 1200px;
+`;
+
+export const SelectedCardSection = styled.div`
+	width: 100%;
+	max-width: 1200px;
+`;

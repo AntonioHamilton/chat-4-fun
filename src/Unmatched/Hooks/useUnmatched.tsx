@@ -132,7 +132,8 @@ export const useUnmatched = () => {
 				...prev,
 				currentPlayer: nextPlayer,
 				turn: newTurn,
-				actionsRemaining: 2
+				actionsRemaining: 2,
+				lastUsedScheme: undefined
 			};
 		});
 		setSelectedCard(null);
@@ -414,7 +415,8 @@ export const useUnmatched = () => {
 						effectResult.extraAction || prev.godspeedActive || false,
 					godspeedTurnsRemaining: effectResult.extraAction
 						? 2
-						: prev.godspeedTurnsRemaining || 0
+						: prev.godspeedTurnsRemaining || 0,
+					lastUsedScheme: schemeCard
 				};
 			}
 
@@ -425,7 +427,8 @@ export const useUnmatched = () => {
 			return {
 				...prev,
 				players: updatedPlayers,
-				actionsRemaining: Math.max(0, prev.actionsRemaining - 1)
+				actionsRemaining: Math.max(0, prev.actionsRemaining - 1),
+				lastUsedScheme: schemeCard
 			};
 		});
 		setSelectedCard(null);

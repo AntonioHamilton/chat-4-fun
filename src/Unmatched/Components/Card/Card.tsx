@@ -1,5 +1,6 @@
 import * as SC from "./styled";
 import { Card as CardType } from "../../Types/card.types";
+import { getCardTooltip } from "../../Utils/cardTooltips";
 
 type CardProps = {
 	card: CardType;
@@ -8,6 +9,7 @@ type CardProps = {
 };
 
 export const Card = ({ card, onClick, isSelected }: CardProps) => {
+	const tooltip = getCardTooltip(card);
 	const getTypeLabel = (type: string) => {
 		switch (type) {
 			case "attack":
@@ -37,6 +39,7 @@ export const Card = ({ card, onClick, isSelected }: CardProps) => {
 			$type={card.type}
 			$isSelected={isSelected}
 			onClick={onClick}
+			title={tooltip}
 		>
 			<SC.CardHeader>
 				<SC.CardName>{card.name}</SC.CardName>

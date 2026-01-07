@@ -433,9 +433,9 @@ src/
    - Ajuste de habilidades especiais
 
 3. **Visual dos Personagens**
-   - Sprites/ícones únicos para Gon e Killua
-   - Animações de ataque
-   - Feedback visual de habilidades (Jajanken, Godspeed)
+   - Sprites/ícones únicos para Gon e Killua (👊 e ⚡)
+   - Gradientes visuais diferenciados
+   - CSS para animações de ataque e dano (preparado)
 
 **Resultado Esperado**: Gon e Killua balanceados e jogáveis
 
@@ -444,57 +444,28 @@ src/
 **Objetivo**: Melhorar experiência do jogador
 
 1. **Animações**
-   - Animações de movimento
-   - Animações de combate
-   - Transições suaves
-   - Animações especiais para Jajanken e Godspeed
+   - ✅ Animações de movimento (transição suave no CharacterMarker)
+   - ✅ Animações de combate (attackPulse e damageShake preparadas)
+   - ✅ Transições suaves (CSS transitions em todos os componentes)
+   - ⏭️ Animações especiais para Jajanken e Godspeed (habilidades removidas)
 
 2. **Feedback Visual**
-   - Destaque de ações possíveis
-   - Indicadores de alcance
-   - Efeitos visuais de dano
-   - Feedback para habilidades especiais
+   - ✅ Destaque de ações possíveis (zones válidas destacadas)
+   - ✅ Indicadores de alcance (highlight verde para ataques)
+   - ✅ Efeitos visuais de dano (animação damageShake)
+   - ⏭️ Feedback para habilidades especiais (habilidades removidas)
 
 3. **UI/UX**
-   - Interface intuitiva
-   - Tooltips explicando cartas e habilidades
-   - Mensagens de status
-   - Design temático Hunter x Hunter
+   - ✅ Interface intuitiva
+   - ✅ Tooltips explicando cartas e habilidades (atributo title com descrições detalhadas)
+   - ✅ Componente StatusMessage criado (preparado para uso)
+   - ✅ Design temático Hunter x Hunter (cores e gradientes)
 
 4. **Som (Opcional)**
-   - Efeitos sonoros básicos
-   - Música de fundo
+   - ⏭️ Efeitos sonoros básicos (não implementado)
+   - ⏭️ Música de fundo (não implementado)
 
 **Resultado Esperado**: Jogo polido e agradável de jogar
-
-### Fase 6: Features Avançadas (Opcional)
-
-**Objetivo**: Adicionar funcionalidades extras
-
-1. **Multiplayer Online (Jogos entre Amigos)**
-   - WebSockets para comunicação em tempo real
-   - Sistema de convite por link
-   - Criar partida e compartilhar link único
-   - Amigo acessa link e entra na partida
-   - Sincronização de estado do jogo entre jogadores
-
-2. **Modo Single Player vs Bot**
-   - Sistema de IA para controlar personagem adversário
-   - Diferentes níveis de dificuldade (Fácil, Médio, Difícil)
-   - Bot analisa situação e toma decisões estratégicas
-   - Escolha de cartas baseada em probabilidades e contexto
-   - Movimentação inteligente no tabuleiro
-   - Pode jogar contra Gon ou Killua controlado por bot
-
-3. **Mais Conteúdo**
-   - Novos personagens de Hunter x Hunter
-   - Novos mapas
-   - Modos de jogo alternativos
-
-4. **Progressão**
-   - Sistema de estatísticas
-   - Histórico de partidas
-   - Desbloqueios
 
 ## 7. Implementação Técnica Detalhada
 

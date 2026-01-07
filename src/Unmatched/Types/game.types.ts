@@ -25,6 +25,7 @@ export type GameState = {
 		attackCard: Card;
 		targetPosition: Position;
 	};
+	lastUsedScheme?: Card;
 };
 
 export type Action = "maneuver" | "attack" | "scheme";
