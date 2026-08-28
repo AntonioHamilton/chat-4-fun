@@ -2,6 +2,8 @@ import * as SC from "./styled";
 import { Hand } from "../Card/Hand";
 import { Card } from "../../Types/card.types";
 import { Action } from "../../Types/game.types";
+import { useTranslation } from "@/hooks/useTranslation";
+import { unmatchedTranslations } from "@/Translations/unmatched";
 
 type CardModalProps = {
 	isOpen: boolean;
@@ -20,6 +22,9 @@ export const CardModal = ({
 	selectedCardId,
 	filterByAction
 }: CardModalProps) => {
+	const { language } = useTranslation();
+	const t = unmatchedTranslations[language];
+
 	if (!isOpen) {
 		return null;
 	}
@@ -49,10 +54,10 @@ export const CardModal = ({
 				<SC.CardModalHeader>
 					<SC.CardModalTitle>
 						{filterByAction === "attack"
-							? "Escolha uma carta de Ataque"
+							? t.chooseAttackCard
 							: filterByAction === "scheme"
-								? "Escolha uma carta de Esquema"
-								: "Suas Cartas"}
+								? t.chooseSchemeCard
+								: t.yourCards}
 					</SC.CardModalTitle>
 					<SC.CardModalCloseButton onClick={onClose}>×</SC.CardModalCloseButton>
 				</SC.CardModalHeader>

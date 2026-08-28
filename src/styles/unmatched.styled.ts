@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { breakpoints } from "./breakpoints";
 
 export const Container = styled.div`
 	min-height: 100vh;
@@ -10,6 +11,11 @@ export const Container = styled.div`
 	gap: 20px;
 	position: relative;
 	overflow-x: hidden;
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 12px;
+		gap: 12px;
+	}
 
 	&::before {
 		content: "";
@@ -46,7 +52,12 @@ export const Title = styled.h1`
 	color: #ecf0f1;
 	font-size: 48px;
 	font-weight: bold;
+	text-align: center;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 28px;
+	}
 `;
 
 export const StartButton = styled.button`
@@ -69,6 +80,11 @@ export const StartButton = styled.button`
 	&:active {
 		transform: scale(0.98);
 	}
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 18px;
+		padding: 14px 28px;
+	}
 `;
 
 export const GameHeader = styled.div`
@@ -78,10 +94,20 @@ export const GameHeader = styled.div`
 	width: 100%;
 	max-width: 1200px;
 	gap: 20px;
+
+	@media (max-width: ${breakpoints.md}) {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
 `;
 
 export const PlayerSection = styled.div`
 	flex: 1;
+
+	@media (max-width: ${breakpoints.md}) {
+		flex: 1 1 calc(50% - 4px);
+		min-width: 0;
+	}
 `;
 
 export const TurnIndicator = styled.div`
@@ -92,12 +118,21 @@ export const TurnIndicator = styled.div`
 	padding: 10px 20px;
 	background-color: rgba(0, 0, 0, 0.3);
 	border-radius: 8px;
+
+	@media (max-width: ${breakpoints.md}) {
+		order: 1;
+		width: 100%;
+		font-size: 13px;
+		padding: 8px 12px;
+	}
 `;
 
 export const BoardWrapper = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	width: 100%;
+	max-width: 1200px;
 `;
 
 export const HandSection = styled.div`
@@ -154,6 +189,7 @@ export const GameOverModal = styled.div`
 	background: linear-gradient(145deg, #2c3e50, #34495e);
 	padding: 60px 80px;
 	border-radius: 20px;
+	max-width: 90%;
 	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 	text-align: center;
 	animation: scaleIn 0.4s ease-out;
@@ -168,6 +204,11 @@ export const GameOverModal = styled.div`
 			opacity: 1;
 		}
 	}
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 28px 24px;
+		border-radius: 14px;
+	}
 `;
 
 export const VictoryMessage = styled.h2`
@@ -176,6 +217,11 @@ export const VictoryMessage = styled.h2`
 	font-weight: bold;
 	margin-bottom: 30px;
 	text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 26px;
+		margin-bottom: 20px;
+	}
 `;
 
 export const RestartButton = styled.button`
@@ -197,6 +243,11 @@ export const RestartButton = styled.button`
 
 	&:active {
 		transform: scale(0.98);
+	}
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 18px;
+		padding: 12px 24px;
 	}
 `;
 
@@ -223,6 +274,12 @@ export const DefenseModal = styled.div`
 	max-height: 90vh;
 	overflow-y: auto;
 	animation: scaleIn 0.4s ease-out;
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 16px;
+		max-width: 95%;
+		border-radius: 14px;
+	}
 `;
 
 export const DefenseTitle = styled.h2`
@@ -232,6 +289,11 @@ export const DefenseTitle = styled.h2`
 	margin-bottom: 20px;
 	text-align: center;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 17px;
+		margin-bottom: 14px;
+	}
 `;
 
 export const DefenseOptions = styled.div`
@@ -290,6 +352,19 @@ export const ViewCardsButton = styled.button`
 
 	&:active {
 		transform: scale(0.95);
+	}
+
+	@media (max-width: ${breakpoints.md}) {
+		position: static;
+		width: 100%;
+		max-width: 420px;
+		padding: 14px 20px;
+		font-size: 16px;
+		border-radius: 12px;
+
+		&:hover {
+			transform: none;
+		}
 	}
 `;
 

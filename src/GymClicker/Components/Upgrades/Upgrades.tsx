@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import * as SC from "./styled";
 import { clickUpgrades } from "./constants/clicks";
+import { useTranslation } from "@/hooks/useTranslation";
+import { gymClickerTranslations } from "@/Translations/gymClicker";
 
 type UpgradesProps = {
 	money: number;
@@ -9,6 +11,8 @@ type UpgradesProps = {
 };
 
 export const Upgrades = ({ money, setMoney, setClickValue }: UpgradesProps) => {
+	const { language } = useTranslation();
+	const t = gymClickerTranslations[language];
 	const [open, setOpen] = useState(false);
 	const [clickIndex, setClickIndex] = useState(0);
 
@@ -21,13 +25,13 @@ export const Upgrades = ({ money, setMoney, setClickValue }: UpgradesProps) => {
 	return (
 		<>
 			<SC.UpgradesButton onClick={() => setOpen(true)}>
-				🔥 Upgrades 🔥
+				{t.upgradesButton}
 			</SC.UpgradesButton>
 
 			{open && (
 				<SC.ModalOverlay onClick={() => setOpen(false)}>
 					<SC.ModalContent onClick={(e) => e.stopPropagation()}>
-						<h2>Choose your Upgrades</h2>
+						<h2>{t.chooseUpgrades}</h2>
 						{clickUpgrades[clickIndex] && (
 							<SC.UpgradeOptionContainer>
 								<SC.UpgradeOption
@@ -40,12 +44,13 @@ export const Upgrades = ({ money, setMoney, setClickValue }: UpgradesProps) => {
 									disabled={money < clickUpgrades[clickIndex].price}
 								>
 									{clickUpgrades[clickIndex].price} 🏋️ -{" "}
-									{clickUpgrades[clickIndex].name}
+									{t.clickUpgrades[clickIndex] ??
+										clickUpgrades[clickIndex].name}
 								</SC.UpgradeOption>
 							</SC.UpgradeOptionContainer>
 						)}
 						<SC.CloseButton onClick={() => setOpen(false)}>
-							Fechar
+							{t.close}
 						</SC.CloseButton>
 					</SC.ModalContent>
 				</SC.ModalOverlay>

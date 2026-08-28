@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { breakpoints } from "@styles/breakpoints";
 
 const fadeIn = keyframes`
 	from {
@@ -29,6 +30,11 @@ export const HandContainer = styled.div`
 	flex-wrap: wrap;
 	justify-content: center;
 	animation: ${fadeIn} 0.5s ease-out;
+
+	@media (max-width: ${breakpoints.md}) {
+		gap: 8px;
+		padding: 10px;
+	}
 `;
 
 export const CardContainer = styled.div<{
@@ -115,6 +121,18 @@ export const CardContainer = styled.div<{
 		transform: translateY(-5px) scale(1.02);
 		transition: all 0.1s ease;
 	}
+
+	@media (max-width: ${breakpoints.md}) {
+		width: 104px;
+		height: auto;
+		min-height: 156px;
+		padding: 8px;
+		border-radius: 8px;
+
+		&:hover {
+			transform: none;
+		}
+	}
 `;
 
 export const CardHeader = styled.div`
@@ -155,6 +173,10 @@ export const CardValue = styled.div`
 	text-align: center;
 	text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
 	line-height: 1;
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 26px;
+	}
 `;
 
 export const CardRange = styled.div`

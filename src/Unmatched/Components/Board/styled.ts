@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { breakpoints } from "@styles/breakpoints";
 
 export const BoardContainer = styled.div`
 	display: grid;
@@ -6,6 +7,13 @@ export const BoardContainer = styled.div`
 	background-color: #2c3e50;
 	padding: 10px;
 	border-radius: 8px;
+	width: 100%;
+	max-width: 638px;
+
+	@media (max-width: ${breakpoints.md}) {
+		gap: 1px;
+		padding: 6px;
+	}
 `;
 
 export const Zone = styled.div<{
@@ -13,8 +21,8 @@ export const Zone = styled.div<{
 	$isSelected: boolean;
 	$isValid: boolean;
 }>`
-	width: 60px;
-	height: 60px;
+	width: 100%;
+	aspect-ratio: 1 / 1;
 	background-color: ${(props) => {
 		if (props.$isSelected) return "#3498db";
 		if (props.$isOccupied) return "#e74c3c";
@@ -35,6 +43,11 @@ export const Zone = styled.div<{
 	justify-content: center;
 	position: relative;
 
+	@media (max-width: ${breakpoints.md}) {
+		border-width: 1px;
+		border-radius: 2px;
+	}
+
 	&:hover {
 		background-color: ${(props) => {
 			if (props.$isOccupied) return "#c0392b";
@@ -46,16 +59,20 @@ export const Zone = styled.div<{
 `;
 
 export const CharacterMarker = styled.div<{ $characterId: string }>`
-	width: 40px;
-	height: 40px;
+	width: 68%;
+	aspect-ratio: 1 / 1;
 	border-radius: 50%;
 	border: 3px solid #fff;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 24px;
+	font-size: clamp(11px, 3.2vw, 24px);
 	font-weight: bold;
+
+	@media (max-width: ${breakpoints.md}) {
+		border-width: 2px;
+	}
 	background: ${(props) =>
 		props.$characterId === "gon"
 			? "linear-gradient(135deg, #f39c12 0%, #e67e22 100%)"

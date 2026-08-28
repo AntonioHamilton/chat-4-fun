@@ -8,7 +8,9 @@ import { SchemeMessage } from "@/Unmatched/Components/UI/SchemeMessage";
 import { useUnmatched } from "@/Unmatched/Hooks/useUnmatched";
 import { useState } from "react";
 import { Action } from "@/Unmatched/Types/game.types";
-import * as SC from "../../styles/brasil-unmatched.styled";
+import { useTranslation } from "@/hooks/useTranslation";
+import { unmatchedTranslations } from "@/Translations/unmatched";
+import * as SC from "../../styles/unmatched.styled";
 
 const Unmatched = () => {
 	const {
@@ -25,6 +27,8 @@ const Unmatched = () => {
 	} = useUnmatched();
 
 	const [isCardModalOpen, setIsCardModalOpen] = useState(false);
+	const { language } = useTranslation();
+	const t = unmatchedTranslations[language];
 
 	const handleActionClick = (action: Action) => {
 		handleActionClickFromHook(action);
@@ -39,8 +43,8 @@ const Unmatched = () => {
 		return (
 			<SC.Container>
 				<SC.SetupScreen>
-					<SC.Title>Unmatched: Hunter x Hunter</SC.Title>
-					<SC.StartButton onClick={startGame}>Iniciar Jogo</SC.StartButton>
+					<SC.Title>{t.title}</SC.Title>
+					<SC.StartButton onClick={startGame}>{t.startGame}</SC.StartButton>
 				</SC.SetupScreen>
 			</SC.Container>
 		);
@@ -53,7 +57,7 @@ const Unmatched = () => {
 					<HealthBar character={gameState.players[0]} />
 				</SC.PlayerSection>
 				<SC.TurnIndicator>
-					Turno: {gameState.turn} - Jogador:{" "}
+					{t.turn}: {gameState.turn} - {t.player}:{" "}
 					{gameState.players[gameState.currentPlayer].name}
 				</SC.TurnIndicator>
 				<SC.PlayerSection>
@@ -64,10 +68,10 @@ const Unmatched = () => {
 				<SC.GameOverOverlay>
 					<SC.GameOverModal>
 						<SC.VictoryMessage>
-							🏆 {gameState.players[gameState.winner].name} venceu! 🏆
+							🏆 {gameState.players[gameState.winner].name} {t.victory} 🏆
 						</SC.VictoryMessage>
 						<SC.RestartButton onClick={() => window.location.reload()}>
-							Jogar Novamente
+							{t.playAgain}
 						</SC.RestartButton>
 					</SC.GameOverModal>
 				</SC.GameOverOverlay>
@@ -81,11 +85,11 @@ const Unmatched = () => {
 									(p) => p.id === gameState.pendingAttack?.defenderId
 								)?.name
 							}{" "}
-							- Escolha uma carta de defesa ou passe
+							- {t.chooseDefense}
 						</SC.DefenseTitle>
 						<SC.DefenseOptions>
 							<SC.PassButton onClick={() => performDefense()}>
-								Passar (Não Defender)
+								{t.passDefense}
 							</SC.PassButton>
 						</SC.DefenseOptions>
 						<SC.DefenseHandSection>
@@ -136,7 +140,7 @@ const Unmatched = () => {
 				/>
 			</SC.ActionsSection>
 			<SC.ViewCardsButton onClick={() => setIsCardModalOpen(true)}>
-				Ver Cartas ({gameState.players[gameState.currentPlayer].hand.length})
+				{t.viewCards} ({gameState.players[gameState.currentPlayer].hand.length})
 			</SC.ViewCardsButton>
 			<CardModal
 				isOpen={isCardModalOpen}

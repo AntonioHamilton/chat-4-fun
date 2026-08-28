@@ -14,7 +14,7 @@ export default function Document() {
 					crossOrigin="anonymous"
 				/>
 				<link
-					href="https://fonts.googleapis.com/css2?family=Londrina+Sketch&family=Roboto&family=Patrick+Hand&family=Anton&family=Press+Start+2P&family=Caveat+Brush&family=Tangerine:wght@300;400;500;600;700&family=Wendy+One&display=swap"
+					href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
 					rel="stylesheet"
 				/>
 			</Head>

@@ -3,6 +3,8 @@ import * as SC from "@styles/gym-clicker.styled";
 import { useGymClicker } from "@/GymClicker/Hooks/useGymClicker";
 import { Upgrades } from "@/GymClicker/Components/Upgrades/Upgrades";
 import { Bosses } from "@/GymClicker/Components/Bosses/Bosses";
+import { useTranslation } from "@/hooks/useTranslation";
+import { gymClickerTranslations } from "@/Translations/gymClicker";
 
 const GymClicker = () => {
 	const {
@@ -17,6 +19,9 @@ const GymClicker = () => {
 		setMoney,
 		setClicks
 	} = useGymClicker();
+
+	const { language } = useTranslation();
+	const t = gymClickerTranslations[language];
 
 	const getMoneyOnClick = () => {
 		setMoney((money) => money + clickValue);
@@ -45,7 +50,7 @@ const GymClicker = () => {
 	return (
 		<SC.Container>
 			<SC.Logo>
-				<h1>GYM CLICKER</h1>
+				<h1>{t.title}</h1>
 				<SC.ImageContainer>
 					<Image
 						src="/GymClicker/muscledfinger.jpg"
@@ -63,7 +68,9 @@ const GymClicker = () => {
 				</SC.ImageContainer>
 			</SC.Logo>
 			<Bosses hit={1} />
-			<SC.GainsCounter>Pump Coins: {money}</SC.GainsCounter>
+			<SC.GainsCounter>
+				{t.pumpCoins}: {money}
+			</SC.GainsCounter>
 			<SC.LiftersContainer>
 				{lifters.map((lifter, index) => (
 					<div className="lifters" key={lifter.name}>
@@ -75,11 +82,11 @@ const GymClicker = () => {
 							}
 							onClick={() => handleUpgrade(lifterPrice[lifter.level], index)}
 						>
-							<p>{lifter.level === 0 ? "Get Lifter" : "Upgrade"}</p>
+							<p>{lifter.level === 0 ? t.getLifter : t.upgrade}</p>
 							<p>
 								{lifterPrice.length > lifter.level
 									? `${lifterPrice[lifter.level]}🏋️`
-									: "Max Level"}
+									: t.maxLevel}
 							</p>
 						</SC.UpgradeButton>
 					</div>
@@ -91,7 +98,7 @@ const GymClicker = () => {
 					setClickValue={setClickValue}
 					money={money}
 				/>
-				<SC.MuscleButton onClick={getMoneyOnClick}>Click</SC.MuscleButton>
+				<SC.MuscleButton onClick={getMoneyOnClick}>{t.click}</SC.MuscleButton>
 				{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
 			</SC.ButtonContainer>
 		</SC.Container>

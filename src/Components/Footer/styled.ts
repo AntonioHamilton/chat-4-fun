@@ -1,22 +1,31 @@
 import styled from "styled-components";
+import { theme } from "@styles/theme";
 
-// Define as variáveis de cores que seriam usadas no SCSS
-const TextSecondary = "#a0a0a0"; // Substitua pelo valor real de variables.$text-secondary
-const Gold400 = "#daa520"; // Substitua pelo valor real de variables.$gold-400
-
-// Componentes estilizados
 export const FooterContainer = styled.footer`
 	position: relative;
 	width: 100%;
 	background-color: transparent;
+	border-top: 1px solid ${theme.borderSubtle};
+	padding: 20px 0;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	color: ${TextSecondary};
+	color: ${theme.textSecondary};
 `;
 
 export const Copyright = styled.div`
-	font-size: 0.9rem;
+	font-size: 0.85rem;
+`;
+
+export const PortfolioLink = styled.a`
+	font-size: 0.85rem;
+	color: ${theme.textSecondary};
+	text-decoration: none;
+	transition: color 0.2s ease-in-out;
+
+	&:hover {
+		color: ${theme.gold400};
+	}
 `;
 
 export const Socials = styled.div`
@@ -25,11 +34,11 @@ export const Socials = styled.div`
 	gap: 1.5rem;
 
 	a {
-		color: ${TextSecondary};
+		color: ${theme.textSecondary};
 		transition: color 0.2s ease-in-out;
 
 		&:hover {
-			color: ${Gold400};
+			color: ${theme.gold400};
 		}
 	}
 `;

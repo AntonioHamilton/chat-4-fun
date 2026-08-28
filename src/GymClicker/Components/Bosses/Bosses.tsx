@@ -3,12 +3,16 @@ import { bosses } from "./constants/bosses";
 import Image from "next/image";
 import * as SC from "./styled"; // Importe o styled.ts
 import { MuscleButton } from "@styles/gym-clicker.styled";
+import { useTranslation } from "@/hooks/useTranslation";
+import { gymClickerTranslations } from "@/Translations/gymClicker";
 
 type BossesProps = {
 	hit: number;
 };
 
 export const Bosses = ({ hit }: BossesProps) => {
+	const { language } = useTranslation();
+	const t = gymClickerTranslations[language];
 	const [activeBossIndex, setActiveBossIndex] = useState(0);
 	const [shouldAppear, setShouldAppear] = useState(true);
 
@@ -89,7 +93,7 @@ export const Bosses = ({ hit }: BossesProps) => {
 							{bossLife} / {currentBoss.life}
 						</span>
 					</SC.LifeContainer>
-					<MuscleButton onClick={handlePlayerHit}>👊 Hit 👊</MuscleButton>
+					<MuscleButton onClick={handlePlayerHit}>{t.hit}</MuscleButton>
 				</SC.BossesContainer>
 			)}
 		</>

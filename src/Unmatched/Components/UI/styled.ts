@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { breakpoints } from "@styles/breakpoints";
 
 export const HealthBarContainer = styled.div`
 	display: flex;
@@ -9,6 +10,13 @@ export const HealthBarContainer = styled.div`
 	background-color: rgba(0, 0, 0, 0.4);
 	border-radius: 10px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+	@media (max-width: ${breakpoints.md}) {
+		min-width: 0;
+		gap: 4px;
+		padding: 8px;
+		border-radius: 8px;
+	}
 `;
 
 export const CharacterName = styled.div`
@@ -18,6 +26,14 @@ export const CharacterName = styled.div`
 	text-align: center;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	letter-spacing: 1px;
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 12px;
+		letter-spacing: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 `;
 
 export const HealthBarWrapper = styled.div`
@@ -28,6 +44,12 @@ export const HealthBarWrapper = styled.div`
 	overflow: hidden;
 	border: 3px solid rgba(236, 240, 241, 0.3);
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+
+	@media (max-width: ${breakpoints.md}) {
+		height: 20px;
+		border-width: 2px;
+		border-radius: 10px;
+	}
 `;
 
 export const HealthBarFill = styled.div<{
@@ -74,6 +96,10 @@ export const HealthText = styled.span`
 	font-size: 13px;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 	z-index: 1;
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 11px;
+	}
 `;
 
 export const ActionsContainer = styled.div`
@@ -85,6 +111,11 @@ export const ActionsContainer = styled.div`
 	border-radius: 8px;
 	width: 100%;
 	max-width: 1200px;
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 12px;
+		gap: 8px;
+	}
 `;
 
 export const ActionsInfo = styled.div`
@@ -92,6 +123,10 @@ export const ActionsInfo = styled.div`
 	font-size: 16px;
 	font-weight: bold;
 	text-align: center;
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 13px;
+	}
 `;
 
 export const ButtonsWrapper = styled.div`
@@ -99,6 +134,10 @@ export const ButtonsWrapper = styled.div`
 	gap: 10px;
 	justify-content: center;
 	flex-wrap: wrap;
+
+	@media (max-width: ${breakpoints.md}) {
+		gap: 6px;
+	}
 `;
 
 export const ActionButton = styled.button<{ $active: boolean }>`
@@ -125,6 +164,12 @@ export const ActionButton = styled.button<{ $active: boolean }>`
 		opacity: 0.5;
 		cursor: not-allowed;
 	}
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 13px;
+		padding: 10px 12px;
+		flex: 1 1 auto;
+	}
 `;
 
 export const EndTurnButton = styled.button`
@@ -147,6 +192,12 @@ export const EndTurnButton = styled.button`
 	&:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 13px;
+		padding: 10px 12px;
+		flex: 1 1 auto;
 	}
 `;
 
@@ -296,6 +347,12 @@ export const CardModalContainer = styled.div`
 	flex-direction: column;
 	animation: scaleIn 0.3s ease-out;
 
+	@media (max-width: ${breakpoints.md}) {
+		width: 100%;
+		max-height: 88vh;
+		border-radius: 14px;
+	}
+
 	@keyframes scaleIn {
 		from {
 			transform: scale(0.9);
@@ -314,6 +371,10 @@ export const CardModalHeader = styled.div`
 	align-items: center;
 	padding: 20px 30px;
 	border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 12px 14px;
+	}
 `;
 
 export const CardModalTitle = styled.h2`
@@ -321,6 +382,10 @@ export const CardModalTitle = styled.h2`
 	font-size: 24px;
 	font-weight: bold;
 	margin: 0;
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 15px;
+	}
 `;
 
 export const CardModalCloseButton = styled.button`
@@ -349,6 +414,11 @@ export const CardModalContent = styled.div`
 	padding: 30px;
 	overflow-y: auto;
 	max-height: calc(85vh - 80px);
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 12px;
+		max-height: calc(88vh - 56px);
+	}
 `;
 
 export const StatusMessageContainer = styled.div<{ $type: string }>`
