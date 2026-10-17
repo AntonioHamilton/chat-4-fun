@@ -3,6 +3,16 @@ import { Game } from "@/types/Game";
 
 const PT_BR: Game[] = [
 	{
+		id: "guess-the-country",
+		title: "Adivinhe o País",
+		path: "/guess-the-country",
+		image: "/GuessCountry/logo.png",
+		description:
+			"Escolha 5 países, revele letra por letra e descubra os do adversário primeiro. Contra o computador ou online com um amigo, em melhor de 3.",
+		badges: ["Palavras", "Multiplayer", "MD3"],
+		ribbon: "Novo"
+	},
+	{
 		id: "unmatched",
 		title: "Unmatched",
 		path: "/unmatched",
@@ -24,6 +34,16 @@ const PT_BR: Game[] = [
 ];
 
 const EN_US: Game[] = [
+	{
+		id: "guess-the-country",
+		title: "Guess the Country",
+		path: "/guess-the-country",
+		image: "/GuessCountry/logo.png",
+		description:
+			"Pick 5 countries, reveal them letter by letter and find your opponent's first. Versus the computer or online with a friend, best of 3.",
+		badges: ["Words", "Multiplayer", "Bo3"],
+		ribbon: "New"
+	},
 	{
 		id: "unmatched",
 		title: "Unmatched",
