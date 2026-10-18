@@ -8,7 +8,7 @@ export const Page = styled.div<{ $background: string; $light: boolean }>`
 	@supports (height: 100dvh) {
 		min-height: 100dvh;
 	}
-	padding: 24px 20px 24px;
+	padding: 24px 20px 0;
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
