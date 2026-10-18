@@ -15,7 +15,7 @@ export const HeaderContainer = styled.header`
 
 	@media (max-width: ${breakpoints.md}) {
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
 		gap: 12px;
 		padding: 16px 0;
 	}
