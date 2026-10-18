@@ -9,7 +9,7 @@ export const HomeContainer = styled.main`
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	padding: 0;
+	padding: 0 20px;
 `;
 
 export const Tagline = styled.p`
