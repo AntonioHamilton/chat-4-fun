@@ -13,8 +13,8 @@ export const Header = () => {
 				<Image
 					src="/images/logo.png"
 					alt="Chat 4 Fun"
-					width={260}
-					height={146}
+					width={178}
+					height={100}
 					priority
 				/>
 			</SC.LogoLink>
