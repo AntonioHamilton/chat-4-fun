@@ -23,7 +23,8 @@ const PT_BR = {
 	copied: "Copiado",
 	waitingOpponent: "Aguardando outra pessoa entrar na sala...",
 	shareCode: "Passe este código para o seu adversário",
-	connecting: "Conectando... se o servidor estiver dormindo, pode levar até 1 minuto.",
+	connecting:
+		"Conectando... se o servidor estiver dormindo, pode levar até 1 minuto.",
 	roomNotFound: "Sala não encontrada.",
 	roomFull: "A sala já está cheia.",
 	connectionError: "Não foi possível conectar ao servidor.",
@@ -100,7 +101,8 @@ const EN_US: typeof PT_BR = {
 	copied: "Copied",
 	waitingOpponent: "Waiting for someone to join the room...",
 	shareCode: "Share this code with your opponent",
-	connecting: "Connecting... if the server is asleep, it can take up to 1 minute.",
+	connecting:
+		"Connecting... if the server is asleep, it can take up to 1 minute.",
 	roomNotFound: "Room not found.",
 	roomFull: "The room is already full.",
 	connectionError: "Could not connect to the server.",
