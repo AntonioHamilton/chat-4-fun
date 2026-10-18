@@ -1,6 +1,6 @@
 import { guessCountryTranslations } from "@/Translations/guessCountry";
 import { useCountdown } from "../../Hooks/useCountdown";
-import { GameAction, GameView } from "../../Types/game.types";
+import { GameAction, GameView, NameLanguage } from "../../Types/game.types";
 import { Board } from "../Board/Board";
 import * as BoardSC from "../Board/styled";
 import { CountryPicker } from "../CountryPicker/CountryPicker";
@@ -8,6 +8,7 @@ import { CountryPicker } from "../CountryPicker/CountryPicker";
 type GameProps = {
 	view: GameView;
 	t: (typeof guessCountryTranslations)["PT_BR"];
+	language: NameLanguage;
 	opponentLabel: string;
 	send: (action: GameAction) => void;
 	onExit: () => void;
@@ -16,7 +17,14 @@ type GameProps = {
 const formatTime = (seconds: number) =>
 	`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
-export const Game = ({ view, t, opponentLabel, send, onExit }: GameProps) => {
+export const Game = ({
+	view,
+	t,
+	language,
+	opponentLabel,
+	send,
+	onExit
+}: GameProps) => {
 	const seconds = useCountdown(view.timeLeftMs, view.phase + view.round);
 
 	if (view.phase !== "picking") {
@@ -24,6 +32,7 @@ export const Game = ({ view, t, opponentLabel, send, onExit }: GameProps) => {
 			<Board
 				view={view}
 				t={t}
+				language={language}
 				opponentLabel={opponentLabel}
 				send={send}
 				onExit={onExit}
@@ -49,6 +58,7 @@ export const Game = ({ view, t, opponentLabel, send, onExit }: GameProps) => {
 			<CountryPicker
 				key={view.round}
 				t={t}
+				language={language}
 				waiting={view.myReady}
 				onSubmit={(countries) => send({ type: "setCountries", countries })}
 			/>

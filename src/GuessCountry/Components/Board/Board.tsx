@@ -3,14 +3,15 @@ import { guessCountryTranslations } from "@/Translations/guessCountry";
 import * as Shared from "@/styles/guess-country.styled";
 import { COUNTRIES_PER_PLAYER } from "../../Constants/countries";
 import { useCountdown } from "../../Hooks/useCountdown";
-import { GameAction, GameView } from "../../Types/game.types";
-import { findCountry } from "../../Utils/countries";
+import { GameAction, GameView, NameLanguage } from "../../Types/game.types";
+import { countryName, findCountry } from "../../Utils/countries";
 import { revealPrefix } from "../../Utils/text";
 import * as SC from "./styled";
 
 type BoardProps = {
 	view: GameView;
 	t: (typeof guessCountryTranslations)["PT_BR"];
+	language: NameLanguage;
 	opponentLabel: string;
 	send: (action: GameAction) => void;
 	onExit: () => void;
@@ -19,7 +20,15 @@ type BoardProps = {
 const formatTime = (seconds: number) =>
 	`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
-export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
+export const Board = ({
+	view,
+	t,
+	language,
+	opponentLabel,
+	send,
+	onExit
+}: BoardProps) => {
+	const show = (country: string) => countryName(country, language);
 	const [guessText, setGuessText] = useState("");
 	const [invalidGuess, setInvalidGuess] = useState(false);
 	const seconds = useCountdown(view.timeLeftMs, view);
@@ -42,7 +51,7 @@ export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
 	const lastGuessText = lastGuess
 		? lastGuess.timeout
 			? t.timeoutText
-			: `${lastGuess.by === "me" ? t.youGuessed : t.opponentGuessed} ${lastGuess.country}: ${
+			: `${lastGuess.by === "me" ? t.youGuessed : t.opponentGuessed} ${show(lastGuess.country)}: ${
 					lastGuess.correct ? t.correct : t.wrong
 				}`
 		: null;
@@ -72,7 +81,8 @@ export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
 				<Shared.Panel>
 					<Shared.PanelTitle>{t.yourCountries}</Shared.PanelTitle>
 					<SC.Words>
-						{myCountries.map((country, index) => {
+						{myCountries.map((canonical, index) => {
+							const country = show(canonical);
 							const found = index < view.mySolved;
 							const active =
 								index === view.mySolved && view.phase === "playing";
@@ -81,7 +91,7 @@ export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
 								: "";
 							return (
 								<SC.Word
-									key={country}
+									key={canonical}
 									$state={found ? "found" : active ? "active" : "idle"}
 								>
 									<SC.WordIndex>{index + 1}</SC.WordIndex>
@@ -112,15 +122,16 @@ export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
 									$state={solved ? "found" : current ? "active" : "hidden"}
 								>
 									<SC.WordIndex>{index + 1}</SC.WordIndex>
-									{solved ??
-										(current ? (
-											<span>
-												<SC.Revealed>{view.oppRevealed}</SC.Revealed>
-												<SC.Caret>_</SC.Caret>
-											</span>
-										) : (
-											"···"
-										))}
+									{solved !== undefined ? (
+										show(solved)
+									) : current ? (
+										<span>
+											<SC.Revealed>{view.oppRevealed}</SC.Revealed>
+											<SC.Caret>_</SC.Caret>
+										</span>
+									) : (
+										"···"
+									)}
 								</SC.Word>
 							);
 						})}
@@ -194,7 +205,7 @@ export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
 							<SC.WrongList>
 								{t.wrongGuesses}:
 								{view.currentWrong.map((country) => (
-									<SC.WrongChip key={country}>{country}</SC.WrongChip>
+									<SC.WrongChip key={country}>{show(country)}</SC.WrongChip>
 								))}
 							</SC.WrongList>
 						)}
@@ -222,7 +233,7 @@ export const Board = ({ view, t, opponentLabel, send, onExit }: BoardProps) => {
 								<Shared.PanelTitle>{t.opponentWere}</Shared.PanelTitle>
 								<SC.ModalList>
 									{view.oppCountries.map((country) => (
-										<li key={country}>{country}</li>
+										<li key={country}>{show(country)}</li>
 									))}
 								</SC.ModalList>
 							</>

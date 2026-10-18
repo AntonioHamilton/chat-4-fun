@@ -1,21 +1,16 @@
 import styled from "styled-components";
 import { breakpoints } from "./breakpoints";
 
+export const pageBackground = "#f5f4f8";
+
 export const Container = styled.div`
-	min-height: 100vh;
-	@supports (height: 100dvh) {
-		min-height: 100dvh; /* browsers modernos */
-	}
-	background-color: #f5f4f8;
+	flex: 1;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px 20px 40px;
-
-	@media (max-width: 768px) {
-		padding: 20px 8px 40px;
-	}
+	gap: 20px;
 `;
 
 export const ImageContainer = styled.div`

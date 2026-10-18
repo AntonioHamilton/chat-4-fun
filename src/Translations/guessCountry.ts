@@ -4,7 +4,6 @@ const PT_BR = {
 	title: "Adivinhe o País",
 	subtitle:
 		"Escolha 5 países, revele letra por letra e descubra os do adversário primeiro",
-	homeLink: "Voltar ao início",
 	back: "Voltar",
 	vsComputer: "Jogar contra o Computador",
 	multiplayer: "Jogar Multiplayer",
@@ -23,8 +22,8 @@ const PT_BR = {
 	copied: "Copiado",
 	waitingOpponent: "Aguardando outra pessoa entrar na sala...",
 	shareCode: "Passe este código para o seu adversário",
-	connecting:
-		"Conectando... se o servidor estiver dormindo, pode levar até 1 minuto.",
+	connecting: "Conectando ao servidor...",
+	connectingHint: "Se o servidor estiver dormindo, pode levar até 1 minuto.",
 	roomNotFound: "Sala não encontrada.",
 	roomFull: "A sala já está cheia.",
 	connectionError: "Não foi possível conectar ao servidor.",
@@ -75,14 +74,13 @@ const PT_BR = {
 	opponentWere: "Países do adversário",
 	continue: "Continuar",
 	waitingContinue: "Aguardando o adversário continuar...",
-	backToMenu: "Voltar ao menu"
+	backToMenu: "Voltar ao menu do jogo"
 };
 
 const EN_US: typeof PT_BR = {
 	title: "Guess the Country",
 	subtitle:
 		"Pick 5 countries, reveal them letter by letter and find your opponent's first",
-	homeLink: "Back to home",
 	back: "Back",
 	vsComputer: "Play vs Computer",
 	multiplayer: "Play Multiplayer",
@@ -101,8 +99,8 @@ const EN_US: typeof PT_BR = {
 	copied: "Copied",
 	waitingOpponent: "Waiting for someone to join the room...",
 	shareCode: "Share this code with your opponent",
-	connecting:
-		"Connecting... if the server is asleep, it can take up to 1 minute.",
+	connecting: "Connecting to the server...",
+	connectingHint: "If the server is asleep, it can take up to 1 minute.",
 	roomNotFound: "Room not found.",
 	roomFull: "The room is already full.",
 	connectionError: "Could not connect to the server.",
@@ -154,7 +152,7 @@ const EN_US: typeof PT_BR = {
 	opponentWere: "Opponent's countries",
 	continue: "Continue",
 	waitingContinue: "Waiting for the opponent to continue...",
-	backToMenu: "Back to menu"
+	backToMenu: "Back to game menu"
 };
 
 export const guessCountryTranslations: Record<Language, typeof PT_BR> = {

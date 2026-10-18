@@ -1,3 +1,4 @@
+export type NameLanguage = "PT_BR" | "EN_US";
 export type Seat = 0 | 1;
 export type Mode = "timed" | "untimed";
 export type Phase = "picking" | "playing" | "roundOver" | "matchOver";
@@ -71,8 +72,8 @@ export type GameAction =
 	| { type: "continue" };
 
 export type ClientMessage =
-	| { type: "create"; mode: Mode }
-	| { type: "join"; code: string }
+	| { type: "create"; mode: Mode; language?: NameLanguage }
+	| { type: "join"; code: string; language?: NameLanguage }
 	| { type: "action"; action: GameAction };
 
 export type ServerMessage =

@@ -2,12 +2,14 @@ import { useState } from "react";
 import { guessCountryTranslations } from "@/Translations/guessCountry";
 import * as Shared from "@/styles/guess-country.styled";
 import { COUNTRIES_PER_PLAYER } from "../../Constants/countries";
-import { randomCountries } from "../../Utils/countries";
+import { NameLanguage } from "../../Types/game.types";
+import { countryName, randomCountries } from "../../Utils/countries";
 import { CountrySearch } from "../CountrySearch/CountrySearch";
 import * as SC from "./styled";
 
 type CountryPickerProps = {
 	t: (typeof guessCountryTranslations)["PT_BR"];
+	language: NameLanguage;
 	waiting: boolean;
 	onSubmit: (countries: string[]) => void;
 };
@@ -17,7 +19,12 @@ type Slot = { name: string; confirmed: boolean } | null;
 const emptySlots = (): Slot[] =>
 	Array.from({ length: COUNTRIES_PER_PLAYER }, () => null);
 
-export const CountryPicker = ({ t, waiting, onSubmit }: CountryPickerProps) => {
+export const CountryPicker = ({
+	t,
+	language,
+	waiting,
+	onSubmit
+}: CountryPickerProps) => {
 	const [slots, setSlots] = useState<Slot[]>(emptySlots);
 	const [dragIndex, setDragIndex] = useState<number | null>(null);
 	const [overIndex, setOverIndex] = useState<number | null>(null);
@@ -98,6 +105,7 @@ export const CountryPicker = ({ t, waiting, onSubmit }: CountryPickerProps) => {
 								label={`${t.slot} ${index + 1}`}
 								placeholder={`${t.slot} ${index + 1} · ${t.searchPlaceholder}`}
 								noResultsLabel={t.noResults}
+								language={language}
 								exclude={chosen}
 								clearOnPick
 								onPick={(name) => updateSlot(index, { name, confirmed: false })}
@@ -109,7 +117,7 @@ export const CountryPicker = ({ t, waiting, onSubmit }: CountryPickerProps) => {
 								<SC.Grip aria-hidden="true" title={t.drag}>
 									⠿
 								</SC.Grip>
-								<SC.SlotName>{slot.name}</SC.SlotName>
+								<SC.SlotName>{countryName(slot.name, language)}</SC.SlotName>
 								<SC.SlotActions>
 									<SC.SmallButton
 										type="button"

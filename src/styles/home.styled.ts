@@ -9,11 +9,7 @@ export const HomeContainer = styled.main`
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	padding: 0px 64px;
-
-	@media (max-width: ${breakpoints.md}) {
-		padding: 0px 24px;
-	}
+	padding: 24px 20px 48px;
 `;
 
 export const Tagline = styled.p`

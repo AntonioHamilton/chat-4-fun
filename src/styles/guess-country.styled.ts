@@ -1,56 +1,16 @@
-import Link from "next/link";
 import styled, { css } from "styled-components";
 import { breakpoints } from "./breakpoints";
 import { theme } from "./theme";
 
-export const Container = styled.main`
-	min-height: 100vh;
-	padding: 24px 20px 48px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 20px;
-	color: ${theme.textPrimary};
-	background:
-		radial-gradient(
-			circle at 20% 0%,
-			rgba(242, 201, 76, 0.12),
-			transparent 45%
-		),
-		radial-gradient(
-			circle at 85% 40%,
-			rgba(58, 55, 166, 0.35),
-			transparent 50%
-		),
-		linear-gradient(
-			180deg,
-			${theme.backgroundPrimary},
-			${theme.backgroundSecondary} 50%,
-			${theme.backgroundPrimary}
-		);
-
-	@media (max-width: ${breakpoints.md}) {
-		padding: 16px 12px 32px;
-	}
-`;
-
-export const Content = styled.div`
-	width: 100%;
-	max-width: 960px;
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-`;
-
-export const HomeLink = styled(Link)`
-	align-self: flex-start;
-	color: ${theme.textTertiary};
-	text-decoration: none;
-	font-size: 14px;
-
-	&:hover {
-		color: ${theme.gold400};
-	}
+export const pageBackground = `
+	radial-gradient(circle at 20% 0%, rgba(242, 201, 76, 0.12), transparent 45%),
+	radial-gradient(circle at 85% 40%, rgba(58, 55, 166, 0.35), transparent 50%),
+	linear-gradient(
+		180deg,
+		${theme.backgroundPrimary},
+		${theme.backgroundSecondary} 50%,
+		${theme.backgroundPrimary}
+	)
 `;
 
 export const Panel = styled.section`

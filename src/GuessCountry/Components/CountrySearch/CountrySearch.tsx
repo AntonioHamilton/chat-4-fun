@@ -1,11 +1,17 @@
 import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { findCountry, searchCountries } from "../../Utils/countries";
+import { NameLanguage } from "../../Types/game.types";
+import {
+	countryName,
+	findCountry,
+	searchCountries
+} from "../../Utils/countries";
 import * as SC from "./styled";
 
 type CountrySearchProps = {
 	label: string;
 	placeholder: string;
 	noResultsLabel: string;
+	language?: NameLanguage;
 	exclude?: string[];
 	disabled?: boolean;
 	clearOnPick?: boolean;
@@ -19,6 +25,7 @@ export const CountrySearch = ({
 	label,
 	placeholder,
 	noResultsLabel,
+	language = "PT_BR",
 	exclude = [],
 	disabled = false,
 	clearOnPick = false,
@@ -30,14 +37,27 @@ export const CountrySearch = ({
 	const [query, setQuery] = useState("");
 	const [open, setOpen] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
+	const [placement, setPlacement] = useState({ up: false, maxHeight: 240 });
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const excludeKey = exclude.join("|");
 
 	const results = useMemo(
-		() => searchCountries(query, exclude),
+		() => searchCountries(query, exclude, language),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[query, excludeKey]
+		[query, excludeKey, language]
 	);
+
+	useEffect(() => {
+		if (!open || !wrapperRef.current) return;
+		const rect = wrapperRef.current.getBoundingClientRect();
+		const below = window.innerHeight - rect.bottom - 16;
+		const above = rect.top - 16;
+		const up = below < 180 && above > below;
+		setPlacement({
+			up,
+			maxHeight: Math.max(120, Math.min(240, up ? above : below))
+		});
+	}, [open, results.length]);
 
 	useEffect(() => {
 		setQuery("");
@@ -53,7 +73,7 @@ export const CountrySearch = ({
 	}, []);
 
 	const pick = (country: string) => {
-		setQuery(clearOnPick ? "" : country);
+		setQuery(clearOnPick ? "" : countryName(country, language));
 		setOpen(false);
 		setActiveIndex(0);
 		onValueChange?.(clearOnPick ? null : country);
@@ -80,7 +100,7 @@ export const CountrySearch = ({
 		} else if (event.key === "Enter") {
 			event.preventDefault();
 			const active = results[activeIndex];
-			if (open && active && active !== query) {
+			if (open && active && countryName(active, language) !== query) {
 				pick(active);
 			} else {
 				onSubmit?.();
@@ -105,7 +125,11 @@ export const CountrySearch = ({
 				onKeyDown={handleKeyDown}
 			/>
 			{open && !disabled && (
-				<SC.List role="listbox">
+				<SC.List
+					role="listbox"
+					$up={placement.up}
+					$maxHeight={placement.maxHeight}
+				>
 					{results.length === 0 && <SC.Empty>{noResultsLabel}</SC.Empty>}
 					{results.map((country, index) => (
 						<SC.Option
@@ -117,7 +141,7 @@ export const CountrySearch = ({
 							onClick={() => pick(country)}
 							onMouseEnter={() => setActiveIndex(index)}
 						>
-							{country}
+							{countryName(country, language)}
 						</SC.Option>
 					))}
 				</SC.List>

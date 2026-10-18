@@ -67,4 +67,4 @@ const EN_US: Game[] = [
 
 export const games: Record<Language, Game[]> = { PT_BR, EN_US };
 
-export const featuredGameId = "unmatched";
+export const featuredGameId = "guess-the-country";

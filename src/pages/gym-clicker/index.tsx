@@ -3,6 +3,7 @@ import * as SC from "@styles/gym-clicker.styled";
 import { useGymClicker } from "@/GymClicker/Hooks/useGymClicker";
 import { Upgrades } from "@/GymClicker/Components/Upgrades/Upgrades";
 import { Bosses } from "@/GymClicker/Components/Bosses/Bosses";
+import { GameLayout } from "@/Components/GameLayout/GameLayout";
 import { useTranslation } from "@/hooks/useTranslation";
 import { gymClickerTranslations } from "@/Translations/gymClicker";
 
@@ -48,60 +49,62 @@ const GymClicker = () => {
 	};
 
 	return (
-		<SC.Container>
-			<SC.Logo>
-				<h1>{t.title}</h1>
-				<SC.ImageContainer>
-					<Image
-						src="/GymClicker/muscledfinger.jpg"
-						width={80}
-						height={80}
-						alt="muscled finger left"
+		<GameLayout background={SC.pageBackground} tone="light">
+			<SC.Container>
+				<SC.Logo>
+					<h1>{t.title}</h1>
+					<SC.ImageContainer>
+						<Image
+							src="/GymClicker/muscledfinger.jpg"
+							width={80}
+							height={80}
+							alt="muscled finger left"
+						/>
+						<Image
+							className="muscled-finger__right"
+							src="/GymClicker/muscledfinger.jpg"
+							width={80}
+							height={80}
+							alt="muscled finger right"
+						/>
+					</SC.ImageContainer>
+				</SC.Logo>
+				<Bosses hit={1} />
+				<SC.GainsCounter>
+					{t.pumpCoins}: {money}
+				</SC.GainsCounter>
+				<SC.LiftersContainer>
+					{lifters.map((lifter, index) => (
+						<div className="lifters" key={lifter.name}>
+							{gifs[lifter.level]}
+							<SC.UpgradeButton
+								disabled={
+									lifterPrice[lifter.level] > money ||
+									lifterPrice.length <= lifter.level
+								}
+								onClick={() => handleUpgrade(lifterPrice[lifter.level], index)}
+							>
+								<p>{lifter.level === 0 ? t.getLifter : t.upgrade}</p>
+								<p>
+									{lifterPrice.length > lifter.level
+										? `${lifterPrice[lifter.level]}🏋️`
+										: t.maxLevel}
+								</p>
+							</SC.UpgradeButton>
+						</div>
+					))}
+				</SC.LiftersContainer>
+				<SC.ButtonContainer>
+					<Upgrades
+						setMoney={setMoney}
+						setClickValue={setClickValue}
+						money={money}
 					/>
-					<Image
-						className="muscled-finger__right"
-						src="/GymClicker/muscledfinger.jpg"
-						width={80}
-						height={80}
-						alt="muscled finger right"
-					/>
-				</SC.ImageContainer>
-			</SC.Logo>
-			<Bosses hit={1} />
-			<SC.GainsCounter>
-				{t.pumpCoins}: {money}
-			</SC.GainsCounter>
-			<SC.LiftersContainer>
-				{lifters.map((lifter, index) => (
-					<div className="lifters" key={lifter.name}>
-						{gifs[lifter.level]}
-						<SC.UpgradeButton
-							disabled={
-								lifterPrice[lifter.level] > money ||
-								lifterPrice.length <= lifter.level
-							}
-							onClick={() => handleUpgrade(lifterPrice[lifter.level], index)}
-						>
-							<p>{lifter.level === 0 ? t.getLifter : t.upgrade}</p>
-							<p>
-								{lifterPrice.length > lifter.level
-									? `${lifterPrice[lifter.level]}🏋️`
-									: t.maxLevel}
-							</p>
-						</SC.UpgradeButton>
-					</div>
-				))}
-			</SC.LiftersContainer>
-			<SC.ButtonContainer>
-				<Upgrades
-					setMoney={setMoney}
-					setClickValue={setClickValue}
-					money={money}
-				/>
-				<SC.MuscleButton onClick={getMoneyOnClick}>{t.click}</SC.MuscleButton>
-				{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
-			</SC.ButtonContainer>
-		</SC.Container>
+					<SC.MuscleButton onClick={getMoneyOnClick}>{t.click}</SC.MuscleButton>
+					{/* <SC.MuscleButton onClick={reset}>reset</SC.MuscleButton> */}
+				</SC.ButtonContainer>
+			</SC.Container>
+		</GameLayout>
 	);
 };
 

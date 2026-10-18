@@ -6,18 +6,23 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "@/Translations";
 import * as SC from "./styled";
 
-export const Footer = () => {
+type FooterProps = { tone?: "dark" | "light" };
+
+export const Footer = ({ tone = "dark" }: FooterProps) => {
 	const currentYear = new Date().getFullYear();
 	const { language } = useTranslation();
 	const t = translations[language];
 
 	return (
-		<SC.FooterContainer>
+		<SC.FooterContainer $light={tone === "light"}>
 			<SC.Copyright>Chat 🤖 {currentYear}</SC.Copyright>
-			<SC.PortfolioLink href="https://chat-hamilton.vercel.app/">
+			<SC.PortfolioLink
+				href="https://chat-hamilton.vercel.app/"
+				$light={tone === "light"}
+			>
 				← {t.portfolio_link}
 			</SC.PortfolioLink>
-			<SC.Socials>
+			<SC.Socials $light={tone === "light"}>
 				<a
 					href="https://www.linkedin.com/in/antonio-hamilton/"
 					target="_blank"

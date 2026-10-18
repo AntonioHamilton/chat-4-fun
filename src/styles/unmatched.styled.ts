@@ -1,41 +1,21 @@
 import styled from "styled-components";
 import { breakpoints } from "./breakpoints";
 
+export const pageBackground = `
+	radial-gradient(circle at 20% 50%, rgba(243, 156, 18, 0.1) 0%, transparent 50%),
+	radial-gradient(circle at 80% 50%, rgba(52, 152, 219, 0.1) 0%, transparent 50%),
+	linear-gradient(135deg, #1a252f 0%, #34495e 50%, #2c3e50 100%)
+`;
+
 export const Container = styled.div`
-	min-height: 100vh;
-	background: linear-gradient(135deg, #1a252f 0%, #34495e 50%, #2c3e50 100%);
-	padding: 20px;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 20px;
-	position: relative;
-	overflow-x: hidden;
 
 	@media (max-width: ${breakpoints.md}) {
-		padding: 12px;
 		gap: 12px;
-	}
-
-	&::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-image:
-			radial-gradient(
-				circle at 20% 50%,
-				rgba(243, 156, 18, 0.1) 0%,
-				transparent 50%
-			),
-			radial-gradient(
-				circle at 80% 50%,
-				rgba(52, 152, 219, 0.1) 0%,
-				transparent 50%
-			);
-		pointer-events: none;
 	}
 `;
 
@@ -45,7 +25,6 @@ export const SetupScreen = styled.div`
 	align-items: center;
 	justify-content: center;
 	gap: 30px;
-	min-height: 80vh;
 `;
 
 export const Title = styled.h1`

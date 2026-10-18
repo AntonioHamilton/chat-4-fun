@@ -1,6 +1,13 @@
 import { COUNTRIES_PER_PLAYER } from "../Constants/countries";
-import { GameState, GameView, Mode, Seat, Side } from "../Types/game.types";
-import { findCountry, randomCountries } from "./countries";
+import {
+	GameState,
+	GameView,
+	Mode,
+	NameLanguage,
+	Seat,
+	Side
+} from "../Types/game.types";
+import { countryName, findCountry, randomCountries } from "./countries";
 import { countLetters, normalize, revealPrefix } from "./text";
 
 export const PICK_MS = 120_000;
@@ -85,7 +92,10 @@ export const nextLetter = (
 	if (!word) return state;
 
 	const revealed: [number, number] = [...state.revealed];
-	revealed[seat] = Math.min(revealed[seat] + 1, countLetters(word));
+	revealed[seat] = Math.min(
+		revealed[seat] + 1,
+		Math.max(countLetters(word), countLetters(countryName(word, "EN_US")))
+	);
 	return {
 		...state,
 		revealed,
@@ -219,7 +229,8 @@ const side = (seat: Seat | null, viewer: Seat): Side | null =>
 export const viewFor = (
 	state: GameState,
 	viewer: Seat,
-	now: number
+	now: number,
+	language: NameLanguage = "PT_BR"
 ): GameView => {
 	const opp = other(viewer);
 	const playing = state.phase === "playing";
@@ -241,7 +252,9 @@ export const viewFor = (
 		mySolved: state.solved[viewer],
 		myRevealedCount: state.revealed[viewer],
 		oppSolved: (oppCountries ?? []).slice(0, state.solved[opp]),
-		oppRevealed: oppWord ? revealPrefix(oppWord, state.revealed[opp]) : "",
+		oppRevealed: oppWord
+			? revealPrefix(countryName(oppWord, language), state.revealed[opp])
+			: "",
 		role: isGiver ? "giver" : "guesser",
 		canNextLetter: playing && isGiver && !state.awaitingGuess,
 		canGuess: playing && !isGiver && state.awaitingGuess,

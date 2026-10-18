@@ -33,6 +33,11 @@ export const Subtitle = styled.p`
 	color: ${theme.textTertiary};
 `;
 
+export const BackRow = styled.div`
+	display: flex;
+	justify-content: center;
+`;
+
 export const Options = styled.div`
 	display: flex;
 	flex-direction: column;

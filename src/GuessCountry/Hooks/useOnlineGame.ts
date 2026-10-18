@@ -4,6 +4,7 @@ import {
 	GameAction,
 	GameView,
 	Mode,
+	NameLanguage,
 	ServerMessage
 } from "../Types/game.types";
 
@@ -28,7 +29,7 @@ const getSocketUrl = () => {
 	return `${protocol}://${window.location.host}/ws`;
 };
 
-export const useOnlineGame = (start: OnlineStart) => {
+export const useOnlineGame = (start: OnlineStart, language: NameLanguage) => {
 	const [status, setStatus] = useState<OnlineStatus>("connecting");
 	const [code, setCode] = useState<string | null>(
 		start.type === "join" ? start.code.toUpperCase() : null
@@ -36,6 +37,8 @@ export const useOnlineGame = (start: OnlineStart) => {
 	const [view, setView] = useState<GameView | null>(null);
 	const [error, setError] = useState<OnlineError>(null);
 	const socketRef = useRef<WebSocket | null>(null);
+	const languageRef = useRef(language);
+	languageRef.current = language;
 
 	useEffect(() => {
 		const socket = new WebSocket(getSocketUrl());
@@ -60,8 +63,12 @@ export const useOnlineGame = (start: OnlineStart) => {
 			clearTimeout(connectTimer);
 			const message: ClientMessage =
 				start.type === "create"
-					? { type: "create", mode: start.mode }
-					: { type: "join", code: start.code.toUpperCase() };
+					? { type: "create", mode: start.mode, language: languageRef.current }
+					: {
+							type: "join",
+							code: start.code.toUpperCase(),
+							language: languageRef.current
+						};
 			socket.send(JSON.stringify(message));
 		};
 

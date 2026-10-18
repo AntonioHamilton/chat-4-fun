@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BackButton } from "@/Components/BackButton/BackButton";
 import { guessCountryTranslations } from "@/Translations/guessCountry";
 import * as Shared from "@/styles/guess-country.styled";
 import { Mode } from "../../Types/game.types";
@@ -70,7 +71,7 @@ export const Menu = ({ t, error, onComputer, onCreate, onJoin }: MenuProps) => {
 	return (
 		<>
 			<SC.Hero>
-				<SC.Mascot src="/GuessCountry/logo.png" alt="" />
+				<SC.Mascot src="/GuessCountry/logo-without-background.png" alt="" />
 				<SC.Title>{t.title}</SC.Title>
 				<SC.Subtitle>{t.subtitle}</SC.Subtitle>
 			</SC.Hero>
@@ -152,16 +153,17 @@ export const Menu = ({ t, error, onComputer, onCreate, onJoin }: MenuProps) => {
 				)}
 
 				{step !== "main" && (
-					<Shared.GhostButton
-						type="button"
-						onClick={() =>
-							setStep(
-								step === "create" || step === "join" ? "multiplayer" : "main"
-							)
-						}
-					>
-						{t.back}
-					</Shared.GhostButton>
+					<SC.BackRow>
+						<BackButton
+							onClick={() =>
+								setStep(
+									step === "create" || step === "join" ? "multiplayer" : "main"
+								)
+							}
+						>
+							{t.back}
+						</BackButton>
+					</SC.BackRow>
 				)}
 			</SC.Options>
 		</>

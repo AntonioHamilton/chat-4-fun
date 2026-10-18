@@ -30,13 +30,14 @@ export const Input = styled.input`
 	}
 `;
 
-export const List = styled.ul`
+export const List = styled.ul<{ $up: boolean; $maxHeight: number }>`
 	position: absolute;
-	top: calc(100% + 6px);
+	${({ $up }) => ($up ? "bottom: calc(100% + 6px);" : "top: calc(100% + 6px);")}
 	left: 0;
 	right: 0;
 	z-index: 20;
-	max-height: 200px;
+	max-height: ${({ $maxHeight }) => $maxHeight}px;
+	overscroll-behavior: contain;
 	overflow-y: auto;
 	margin: 0;
 	padding: 6px;

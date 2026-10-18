@@ -5,6 +5,7 @@ const PT_BR = {
 	featured_heading: "Em Destaque",
 	library_heading: "Biblioteca",
 	play_now: "Jogar agora",
+	back_to_games: "Voltar aos jogos",
 	portfolio_link: "Portfolio",
 	language_pt: "Mudar para Português",
 	language_en: "Switch to English"
@@ -15,6 +16,7 @@ const EN_US: typeof PT_BR = {
 	featured_heading: "Featured",
 	library_heading: "Library",
 	play_now: "Play now",
+	back_to_games: "Back to games",
 	portfolio_link: "Portfolio",
 	language_pt: "Mudar para Português",
 	language_en: "Switch to English"

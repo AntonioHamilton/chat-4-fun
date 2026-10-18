@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COUNTRIES_PER_PLAYER } from "../Constants/countries";
-import { GameAction, GameState, Mode } from "../Types/game.types";
+import { GameAction, GameState, Mode, NameLanguage } from "../Types/game.types";
 import { computerGuess } from "../Utils/computer";
 import { randomCountries } from "../Utils/countries";
 import {
@@ -17,7 +17,7 @@ import { revealPrefix } from "../Utils/text";
 const COMPUTER = 1;
 const PLAYER = 0;
 
-export const useLocalGame = (mode: Mode) => {
+export const useLocalGame = (mode: Mode, language: NameLanguage) => {
 	const [state, setState] = useState<GameState>(() =>
 		createState(mode, Date.now())
 	);
@@ -80,7 +80,10 @@ export const useLocalGame = (mode: Mode) => {
 		});
 	}, []);
 
-	const view = useMemo(() => viewFor(state, PLAYER, Date.now()), [state]);
+	const view = useMemo(
+		() => viewFor(state, PLAYER, Date.now(), language),
+		[state, language]
+	);
 
 	return { view, send };
 };
