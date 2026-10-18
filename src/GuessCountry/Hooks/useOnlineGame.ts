@@ -19,6 +19,15 @@ export type OnlineError =
 	| "opponentLeft"
 	| null;
 
+const CONNECT_TIMEOUT_MS = 60000;
+
+const getSocketUrl = () => {
+	const configured = process.env.NEXT_PUBLIC_WS_URL;
+	if (configured) return configured;
+	const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+	return `${protocol}://${window.location.host}/ws`;
+};
+
 export const useOnlineGame = (start: OnlineStart) => {
 	const [status, setStatus] = useState<OnlineStatus>("connecting");
 	const [code, setCode] = useState<string | null>(
@@ -29,18 +38,26 @@ export const useOnlineGame = (start: OnlineStart) => {
 	const socketRef = useRef<WebSocket | null>(null);
 
 	useEffect(() => {
-		const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-		const socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+		const socket = new WebSocket(getSocketUrl());
 		socketRef.current = socket;
 		let finished = false;
 
 		const fail = (reason: Exclude<OnlineError, null>) => {
 			finished = true;
+			clearTimeout(connectTimer);
 			setError(reason);
 			setStatus("error");
 		};
 
+		const connectTimer = setTimeout(() => {
+			if (socket.readyState !== WebSocket.OPEN) {
+				fail("connectionError");
+				socket.close();
+			}
+		}, CONNECT_TIMEOUT_MS);
+
 		socket.onopen = () => {
+			clearTimeout(connectTimer);
 			const message: ClientMessage =
 				start.type === "create"
 					? { type: "create", mode: start.mode }
@@ -74,6 +91,7 @@ export const useOnlineGame = (start: OnlineStart) => {
 
 		return () => {
 			finished = true;
+			clearTimeout(connectTimer);
 			socket.close();
 		};
 	}, [start]);
