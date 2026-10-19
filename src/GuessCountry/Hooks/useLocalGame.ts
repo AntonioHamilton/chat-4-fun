@@ -8,7 +8,7 @@ import {
 	createState,
 	guess,
 	handleTimeout,
-	nextLetter,
+	pass,
 	setCountries,
 	viewFor
 } from "../Utils/engine";
@@ -35,14 +35,6 @@ export const useLocalGame = (mode: Mode, language: NameLanguage) => {
 
 	useEffect(() => {
 		if (state.phase !== "playing") return;
-
-		if (state.giver === COMPUTER && !state.awaitingGuess) {
-			const timer = setTimeout(
-				() => setState((s) => nextLetter(s, COMPUTER, Date.now())),
-				900
-			);
-			return () => clearTimeout(timer);
-		}
 
 		if (state.giver === PLAYER && state.awaitingGuess) {
 			const timer = setTimeout(
@@ -72,9 +64,9 @@ export const useLocalGame = (mode: Mode, language: NameLanguage) => {
 		const now = Date.now();
 		setState((s) => {
 			if (action.type === "setCountries") {
-				return setCountries(s, PLAYER, action.countries);
+				return setCountries(s, PLAYER, action.countries, now);
 			}
-			if (action.type === "nextLetter") return nextLetter(s, PLAYER, now);
+			if (action.type === "pass") return pass(s, PLAYER, now);
 			if (action.type === "guess") return guess(s, PLAYER, action.country, now);
 			return continueRound(s, PLAYER, now);
 		});

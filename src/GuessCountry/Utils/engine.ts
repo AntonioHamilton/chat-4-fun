@@ -54,10 +54,29 @@ export const createState = (
 const currentWord = (state: GameState, seat: Seat): string | null =>
 	state.countries[seat]?.[state.solved[seat]] ?? null;
 
+const maxLetters = (word: string): number =>
+	Math.max(countLetters(word), countLetters(countryName(word, "EN_US")));
+
+const startTurn = (state: GameState, now: number): GameState => {
+	if (state.phase !== "playing" || state.awaitingGuess) return state;
+	const word = currentWord(state, state.giver);
+	if (!word) return state;
+
+	const revealed: [number, number] = [...state.revealed];
+	revealed[state.giver] = Math.min(revealed[state.giver] + 1, maxLetters(word));
+	return {
+		...state,
+		revealed,
+		awaitingGuess: true,
+		deadline: guessDeadline(state.mode, now)
+	};
+};
+
 export const setCountries = (
 	state: GameState,
 	seat: Seat,
-	countries: string[]
+	countries: string[],
+	now: number = Date.now()
 ): GameState => {
 	if (state.phase !== "picking" || state.countries[seat]) return state;
 	if (countries.length !== COUNTRIES_PER_PLAYER) return state;
@@ -76,32 +95,9 @@ export const setCountries = (
 		next.phase = "playing";
 		next.giver = next.starter;
 		next.deadline = null;
+		return startTurn(next, now);
 	}
 	return next;
-};
-
-export const nextLetter = (
-	state: GameState,
-	seat: Seat,
-	now: number
-): GameState => {
-	if (state.phase !== "playing" || state.awaitingGuess) return state;
-	if (seat !== state.giver) return state;
-
-	const word = currentWord(state, seat);
-	if (!word) return state;
-
-	const revealed: [number, number] = [...state.revealed];
-	revealed[seat] = Math.min(
-		revealed[seat] + 1,
-		Math.max(countLetters(word), countLetters(countryName(word, "EN_US")))
-	);
-	return {
-		...state,
-		revealed,
-		awaitingGuess: true,
-		deadline: guessDeadline(state.mode, now)
-	};
 };
 
 export const guess = (
@@ -109,23 +105,27 @@ export const guess = (
 	seat: Seat,
 	country: string,
 	now: number,
-	timedOut = false
+	timedOut = false,
+	passed = false
 ): GameState => {
 	if (state.phase !== "playing" || !state.awaitingGuess) return state;
 	if (seat !== other(state.giver)) return state;
 
-	const text = findCountry(country.trim().slice(0, MAX_GUESS_LENGTH)) ?? "";
-	if (!timedOut && !text) return state;
+	const skipped = timedOut || passed;
+	const typed = country.trim().slice(0, MAX_GUESS_LENGTH);
+	const text = skipped ? "" : (findCountry(typed) ?? typed);
+	if (!skipped && !text) return state;
 
 	const giver = state.giver;
 	const word = currentWord(state, giver) as string;
-	const correct = !timedOut && normalize(word) === normalize(text);
+	const correct = !skipped && normalize(word) === normalize(text);
 	const event = {
 		id: state.eventId + 1,
 		seat,
-		country: timedOut ? "" : text,
+		country: text,
 		correct,
-		timeout: timedOut
+		timeout: timedOut,
+		passed
 	};
 
 	const solved: [number, number] = [...state.solved];
@@ -156,8 +156,11 @@ export const guess = (
 	};
 	return correct && solved[giver] >= COUNTRIES_PER_PLAYER
 		? finishRound(next, seat)
-		: next;
+		: startTurn(next, now);
 };
+
+export const pass = (state: GameState, seat: Seat, now: number): GameState =>
+	guess(state, seat, "", now, false, true);
 
 const finishRound = (state: GameState, winner: Seat): GameState => {
 	const wins: [number, number] = [...state.wins];
@@ -211,7 +214,12 @@ export const handleTimeout = (state: GameState, now: number): GameState => {
 		let next = state;
 		for (const seat of [0, 1] as Seat[]) {
 			if (!next.countries[seat]) {
-				next = setCountries(next, seat, randomCountries(COUNTRIES_PER_PLAYER));
+				next = setCountries(
+					next,
+					seat,
+					randomCountries(COUNTRIES_PER_PLAYER),
+					now
+				);
 			}
 		}
 		return next;
@@ -256,7 +264,6 @@ export const viewFor = (
 			? revealPrefix(countryName(oppWord, language), state.revealed[opp])
 			: "",
 		role: isGiver ? "giver" : "guesser",
-		canNextLetter: playing && isGiver && !state.awaitingGuess,
 		canGuess: playing && !isGiver && state.awaitingGuess,
 		currentWrong: playing ? state.wrong[opp] : [],
 		lastGuess: guessEvent
@@ -265,7 +272,8 @@ export const viewFor = (
 					by: side(guessEvent.seat, viewer) as Side,
 					country: guessEvent.country,
 					correct: guessEvent.correct,
-					timeout: guessEvent.timeout
+					timeout: guessEvent.timeout,
+					passed: guessEvent.passed
 				}
 			: null,
 		roundWinner: side(state.roundWinner, viewer),

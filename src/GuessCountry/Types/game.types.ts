@@ -10,6 +10,7 @@ export type GuessEvent = {
 	country: string;
 	correct: boolean;
 	timeout: boolean;
+	passed: boolean;
 };
 
 export type GameState = {
@@ -46,7 +47,6 @@ export type GameView = {
 	oppSolved: string[];
 	oppRevealed: string;
 	role: "giver" | "guesser";
-	canNextLetter: boolean;
 	canGuess: boolean;
 	currentWrong: string[];
 	lastGuess: {
@@ -55,6 +55,7 @@ export type GameView = {
 		country: string;
 		correct: boolean;
 		timeout: boolean;
+		passed: boolean;
 	} | null;
 	roundWinner: Side | null;
 	matchWinner: Side | null;
@@ -67,8 +68,8 @@ export type GameView = {
 
 export type GameAction =
 	| { type: "setCountries"; countries: string[] }
-	| { type: "nextLetter" }
 	| { type: "guess"; country: string }
+	| { type: "pass" }
 	| { type: "continue" };
 
 export type ClientMessage =

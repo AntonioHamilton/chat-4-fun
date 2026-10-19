@@ -4,7 +4,7 @@ import * as Shared from "@/styles/guess-country.styled";
 import { COUNTRIES_PER_PLAYER } from "../../Constants/countries";
 import { useCountdown } from "../../Hooks/useCountdown";
 import { GameAction, GameView, NameLanguage } from "../../Types/game.types";
-import { countryName, findCountry } from "../../Utils/countries";
+import { countryName } from "../../Utils/countries";
 import { revealPrefix } from "../../Utils/text";
 import * as SC from "./styled";
 
@@ -30,7 +30,6 @@ export const Board = ({
 }: BoardProps) => {
 	const show = (country: string) => countryName(country, language);
 	const [guessText, setGuessText] = useState("");
-	const [invalidGuess, setInvalidGuess] = useState(false);
 	const seconds = useCountdown(view.timeLeftMs, view);
 	const myCountries = view.myCountries ?? [];
 	const ended = view.phase === "roundOver" || view.phase === "matchOver";
@@ -38,12 +37,7 @@ export const Board = ({
 	const submitGuess = () => {
 		const text = guessText.trim();
 		if (!text || !view.canGuess) return;
-		const country = findCountry(text);
-		if (!country) {
-			setInvalidGuess(true);
-			return;
-		}
-		send({ type: "guess", country });
+		send({ type: "guess", country: text });
 		setGuessText("");
 	};
 
@@ -51,9 +45,13 @@ export const Board = ({
 	const lastGuessText = lastGuess
 		? lastGuess.timeout
 			? t.timeoutText
-			: `${lastGuess.by === "me" ? t.youGuessed : t.opponentGuessed} ${show(lastGuess.country)}: ${
-					lastGuess.correct ? t.correct : t.wrong
-				}`
+			: lastGuess.passed
+				? lastGuess.by === "me"
+					? t.youPassed
+					: t.opponentPassed
+				: `${lastGuess.by === "me" ? t.youGuessed : t.opponentGuessed} ${show(lastGuess.country)}: ${
+						lastGuess.correct ? t.correct : t.wrong
+					}`
 		: null;
 
 	return (
@@ -149,25 +147,12 @@ export const Board = ({
 						)}
 
 						{view.role === "giver" && (
-							<>
-								<SC.ActionText>
-									{view.canNextLetter ? t.youGive : t.waitingGuess}
-								</SC.ActionText>
-								<Shared.PrimaryButton
-									type="button"
-									disabled={!view.canNextLetter}
-									onClick={() => send({ type: "nextLetter" })}
-								>
-									{t.nextLetter}
-								</Shared.PrimaryButton>
-							</>
+							<SC.ActionText>{t.waitingGuess}</SC.ActionText>
 						)}
 
 						{view.role === "guesser" && (
 							<>
-								<SC.ActionText>
-									{view.canGuess ? t.youGuess : t.waitingLetter}
-								</SC.ActionText>
+								<SC.ActionText>{t.youGuess}</SC.ActionText>
 								<SC.GuessRow>
 									<SC.GuessInput
 										type="text"
@@ -179,10 +164,7 @@ export const Board = ({
 										maxLength={60}
 										value={guessText}
 										disabled={!view.canGuess}
-										onChange={(event) => {
-											setGuessText(event.target.value);
-											setInvalidGuess(false);
-										}}
+										onChange={(event) => setGuessText(event.target.value)}
 										onKeyDown={(event) => {
 											if (event.key === "Enter") submitGuess();
 										}}
@@ -194,10 +176,14 @@ export const Board = ({
 									>
 										{t.guess}
 									</Shared.PrimaryButton>
+									<Shared.GhostButton
+										type="button"
+										disabled={!view.canGuess}
+										onClick={() => send({ type: "pass" })}
+									>
+										{t.pass}
+									</Shared.GhostButton>
 								</SC.GuessRow>
-								{invalidGuess && (
-									<SC.ActionText role="alert">{t.unknownCountry}</SC.ActionText>
-								)}
 							</>
 						)}
 
