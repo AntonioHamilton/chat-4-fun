@@ -3,16 +3,20 @@ import { guessCountryTranslations } from "@/Translations/guessCountry";
 import * as Shared from "@/styles/guess-country.styled";
 import { COUNTRIES_PER_PLAYER } from "../../Constants/countries";
 import { useCountdown } from "../../Hooks/useCountdown";
+import { useIsMobile } from "../../Hooks/useIsMobile";
 import { GameAction, GameView, NameLanguage } from "../../Types/game.types";
 import { countryName } from "../../Utils/countries";
 import { revealPrefix } from "../../Utils/text";
+import { CountryFlag } from "../CountryFlag/CountryFlag";
+import * as IconSC from "../Icons/styled";
+import { JumpIcon } from "../Icons/Icons";
+import { Celebration } from "../Celebration/Celebration";
 import * as SC from "./styled";
 
 type BoardProps = {
 	view: GameView;
 	t: (typeof guessCountryTranslations)["PT_BR"];
 	language: NameLanguage;
-	opponentLabel: string;
 	send: (action: GameAction) => void;
 	onExit: () => void;
 };
@@ -20,16 +24,11 @@ type BoardProps = {
 const formatTime = (seconds: number) =>
 	`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
-export const Board = ({
-	view,
-	t,
-	language,
-	opponentLabel,
-	send,
-	onExit
-}: BoardProps) => {
+export const Board = ({ view, t, language, send, onExit }: BoardProps) => {
 	const show = (country: string) => countryName(country, language);
 	const [guessText, setGuessText] = useState("");
+	const [myOpen, setMyOpen] = useState(false);
+	const isMobile = useIsMobile();
 	const seconds = useCountdown(view.timeLeftMs, view);
 	const myCountries = view.myCountries ?? [];
 	const ended = view.phase === "roundOver" || view.phase === "matchOver";
@@ -61,12 +60,9 @@ export const Board = ({
 					<strong>
 						{t.round} {view.round} · {t.bestOfThree}
 					</strong>
-					<span>{view.starter === "me" ? t.youStart : t.opponentStarts}</span>
 				</SC.TopInfo>
 				<SC.Score aria-label={`${view.wins.me} x ${view.wins.opp}`}>
-					<SC.ScoreLabel>{t.you}</SC.ScoreLabel>
 					{view.wins.me} x {view.wins.opp}
-					<SC.ScoreLabel>{opponentLabel}</SC.ScoreLabel>
 				</SC.Score>
 				{seconds !== null && view.timerKind === "guess" && (
 					<SC.Timer $urgent={seconds <= 5} aria-label={t.timeLeft}>
@@ -76,38 +72,59 @@ export const Board = ({
 			</SC.TopBar>
 
 			<SC.Lists>
-				<Shared.Panel>
-					<Shared.PanelTitle>{t.yourCountries}</Shared.PanelTitle>
-					<SC.Words>
-						{myCountries.map((canonical, index) => {
-							const country = show(canonical);
-							const found = index < view.mySolved;
-							const active =
-								index === view.mySolved && view.phase === "playing";
-							const shown = active
-								? revealPrefix(country, view.myRevealedCount)
-								: "";
-							return (
-								<SC.Word
-									key={canonical}
-									$state={found ? "found" : active ? "active" : "idle"}
-								>
-									<SC.WordIndex>{index + 1}</SC.WordIndex>
-									{active ? (
-										<span>
-											<SC.Revealed>{shown}</SC.Revealed>
-											<SC.Hidden>{country.slice(shown.length)}</SC.Hidden>
-										</span>
-									) : (
-										country
-									)}
-								</SC.Word>
-							);
-						})}
-					</SC.Words>
-				</Shared.Panel>
+				<SC.MyPanel>
+					{isMobile ? (
+						<SC.AccordionToggle
+							type="button"
+							$open={myOpen}
+							aria-expanded={myOpen}
+							onClick={() => setMyOpen((open) => !open)}
+						>
+							{t.yourCountries}
+							<SC.AccordionChevron
+								$open={myOpen}
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path d="M6 9l6 6 6-6" />
+							</SC.AccordionChevron>
+						</SC.AccordionToggle>
+					) : (
+						<Shared.PanelTitle>{t.yourCountries}</Shared.PanelTitle>
+					)}
+					{(!isMobile || myOpen) && (
+						<SC.Words>
+							{myCountries.map((canonical, index) => {
+								const country = show(canonical);
+								const found = index < view.mySolved;
+								const active =
+									index === view.mySolved && view.phase === "playing";
+								const shown = active
+									? revealPrefix(country, view.myRevealedCount)
+									: "";
+								return (
+									<SC.Word
+										key={canonical}
+										$state={found ? "found" : active ? "active" : "idle"}
+									>
+										<SC.WordIndex>{index + 1}</SC.WordIndex>
+										<CountryFlag country={canonical} />
+										{active ? (
+											<span>
+												<SC.Revealed>{shown}</SC.Revealed>
+												<SC.Hidden>{country.slice(shown.length)}</SC.Hidden>
+											</span>
+										) : (
+											country
+										)}
+									</SC.Word>
+								);
+							})}
+						</SC.Words>
+					)}
+				</SC.MyPanel>
 
-				<Shared.Panel>
+				<SC.OpponentPanel>
 					<Shared.PanelTitle>{t.opponentCountries}</Shared.PanelTitle>
 					<SC.Words>
 						{Array.from({ length: COUNTRIES_PER_PLAYER }, (_, index) => {
@@ -120,6 +137,7 @@ export const Board = ({
 									$state={solved ? "found" : current ? "active" : "hidden"}
 								>
 									<SC.WordIndex>{index + 1}</SC.WordIndex>
+									{solved !== undefined && <CountryFlag country={solved} />}
 									{solved !== undefined ? (
 										show(solved)
 									) : current ? (
@@ -134,69 +152,75 @@ export const Board = ({
 							);
 						})}
 					</SC.Words>
-				</Shared.Panel>
+				</SC.OpponentPanel>
+				{view.phase === "playing" && (
+					<SC.ActionPanel>
+						<SC.Actions>
+							{lastGuess && lastGuessText && (
+								<SC.Banner role="status" $correct={lastGuess.correct}>
+									{lastGuessText}
+								</SC.Banner>
+							)}
+
+							{view.role === "giver" && (
+								<SC.ActionText>{t.waitingGuess}</SC.ActionText>
+							)}
+
+							{view.role === "guesser" && (
+								<>
+									<SC.ActionText>{t.youGuess}</SC.ActionText>
+									<SC.GuessRow>
+										<SC.GuessInput
+											type="text"
+											aria-label={t.guessPlaceholder}
+											placeholder={t.guessPlaceholder}
+											autoComplete="off"
+											autoCorrect="off"
+											spellCheck={false}
+											maxLength={60}
+											value={guessText}
+											disabled={!view.canGuess}
+											onChange={(event) => setGuessText(event.target.value)}
+											onKeyDown={(event) => {
+												if (event.key === "Enter") submitGuess();
+											}}
+										/>
+										<Shared.PrimaryButton
+											type="button"
+											disabled={!view.canGuess || !guessText.trim()}
+											onClick={submitGuess}
+										>
+											{t.guess}
+										</Shared.PrimaryButton>
+										<Shared.GhostButton
+											type="button"
+											disabled={!view.canGuess}
+											onClick={() => send({ type: "pass" })}
+										>
+											<IconSC.WithIcon>
+												<JumpIcon />
+												{t.pass}
+											</IconSC.WithIcon>
+										</Shared.GhostButton>
+									</SC.GuessRow>
+								</>
+							)}
+
+							{view.currentWrong.length > 0 && (
+								<SC.WrongList>
+									{t.wrongGuesses}:
+									{view.currentWrong.map((country) => (
+										<SC.WrongChip key={country}>{show(country)}</SC.WrongChip>
+									))}
+								</SC.WrongList>
+							)}
+						</SC.Actions>
+					</SC.ActionPanel>
+				)}
 			</SC.Lists>
 
-			{view.phase === "playing" && (
-				<Shared.Panel>
-					<SC.Actions>
-						{lastGuess && lastGuessText && (
-							<SC.Banner role="status" $correct={lastGuess.correct}>
-								{lastGuessText}
-							</SC.Banner>
-						)}
-
-						{view.role === "giver" && (
-							<SC.ActionText>{t.waitingGuess}</SC.ActionText>
-						)}
-
-						{view.role === "guesser" && (
-							<>
-								<SC.ActionText>{t.youGuess}</SC.ActionText>
-								<SC.GuessRow>
-									<SC.GuessInput
-										type="text"
-										aria-label={t.guessPlaceholder}
-										placeholder={t.guessPlaceholder}
-										autoComplete="off"
-										autoCorrect="off"
-										spellCheck={false}
-										maxLength={60}
-										value={guessText}
-										disabled={!view.canGuess}
-										onChange={(event) => setGuessText(event.target.value)}
-										onKeyDown={(event) => {
-											if (event.key === "Enter") submitGuess();
-										}}
-									/>
-									<Shared.PrimaryButton
-										type="button"
-										disabled={!view.canGuess || !guessText.trim()}
-										onClick={submitGuess}
-									>
-										{t.guess}
-									</Shared.PrimaryButton>
-									<Shared.GhostButton
-										type="button"
-										disabled={!view.canGuess}
-										onClick={() => send({ type: "pass" })}
-									>
-										{t.pass}
-									</Shared.GhostButton>
-								</SC.GuessRow>
-							</>
-						)}
-
-						{view.currentWrong.length > 0 && (
-							<SC.WrongList>
-								{t.wrongGuesses}:
-								{view.currentWrong.map((country) => (
-									<SC.WrongChip key={country}>{show(country)}</SC.WrongChip>
-								))}
-							</SC.WrongList>
-						)}
-					</SC.Actions>
-				</Shared.Panel>
+			{view.phase === "matchOver" && view.matchWinner === "me" && (
+				<Celebration />
 			)}
 
 			{ended && (
@@ -219,7 +243,10 @@ export const Board = ({
 								<Shared.PanelTitle>{t.opponentWere}</Shared.PanelTitle>
 								<SC.ModalList>
 									{view.oppCountries.map((country) => (
-										<li key={country}>{show(country)}</li>
+										<SC.ModalItem key={country}>
+											<CountryFlag country={country} />
+											{show(country)}
+										</SC.ModalItem>
 									))}
 								</SC.ModalList>
 							</>

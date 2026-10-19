@@ -1,14 +1,15 @@
 import styled, { css, keyframes } from "styled-components";
 import { breakpoints } from "@/styles/breakpoints";
+import * as Shared from "@/styles/guess-country.styled";
 import { theme } from "@/styles/theme";
 
 export const TopBar = styled.div`
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
-	padding: 14px 20px;
+	gap: 8px;
+	padding: 12px 20px;
+	text-align: center;
 	background: ${theme.panelBg};
 	border: 1px solid ${theme.borderSubtle};
 	border-radius: 16px;
@@ -17,37 +18,30 @@ export const TopBar = styled.div`
 export const TopInfo = styled.div`
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 2px;
-	font-size: 14px;
+	font-size: 13px;
 	color: ${theme.textTertiary};
 
 	strong {
 		color: ${theme.textPrimary};
-		font-size: 16px;
+		font-size: 15px;
 	}
 `;
 
 export const Score = styled.div`
 	display: flex;
 	align-items: center;
-	gap: 14px;
-	font-size: 28px;
+	justify-content: center;
+	gap: 12px;
+	font-size: 24px;
 	font-weight: 800;
 	color: ${theme.gold400};
 `;
 
-export const ScoreLabel = styled.span`
-	font-size: 12px;
-	font-weight: 600;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	color: ${theme.textTertiary};
-`;
-
 export const Timer = styled.div<{ $urgent: boolean }>`
-	min-width: 90px;
-	text-align: right;
-	font-size: 22px;
+	text-align: center;
+	font-size: 20px;
 	font-weight: 800;
 	font-variant-numeric: tabular-nums;
 	color: ${({ $urgent }) => ($urgent ? "#ff6b6b" : theme.textPrimary)};
@@ -56,11 +50,66 @@ export const Timer = styled.div<{ $urgent: boolean }>`
 export const Lists = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		"mine opponent"
+		"actions actions";
 	gap: 20px;
 
 	@media (max-width: ${breakpoints.md}) {
+		gap: 12px;
 		grid-template-columns: 1fr;
+		grid-template-areas:
+			"mine"
+			"actions"
+			"opponent";
 	}
+`;
+
+export const MyPanel = styled(Shared.Panel)`
+	grid-area: mine;
+`;
+
+export const OpponentPanel = styled(Shared.Panel)`
+	grid-area: opponent;
+`;
+
+export const ActionPanel = styled(Shared.Panel)`
+	grid-area: actions;
+`;
+
+export const AccordionToggle = styled.button<{ $open: boolean }>`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	margin: 0 0 ${({ $open }) => ($open ? "14px" : "0")};
+	padding: 0;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: ${theme.gold400};
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: 3px solid rgba(242, 201, 76, 0.5);
+		outline-offset: 4px;
+	}
+`;
+
+export const AccordionChevron = styled.svg<{ $open: boolean }>`
+	width: 22px;
+	height: 22px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	transition: transform 0.2s ease;
+	transform: rotate(${({ $open }) => ($open ? "180deg" : "0deg")});
 `;
 
 export const Words = styled.ol`
@@ -115,7 +164,10 @@ export const Word = styled.li<{
 			letter-spacing: 0.3em;
 		`}
 
-	@media (max-width: ${breakpoints.sm}) {
+	@media (max-width: ${breakpoints.md}) {
+		min-height: 44px;
+		padding: 8px 12px;
+		gap: 10px;
 		font-size: 16px;
 	}
 `;
@@ -125,6 +177,11 @@ export const WordIndex = styled.span`
 	width: 22px;
 	font-size: 14px;
 	color: ${theme.gold400};
+
+	@media (max-width: ${breakpoints.md}) {
+		width: 18px;
+		font-size: 13px;
+	}
 `;
 
 export const Revealed = styled.span`
@@ -145,16 +202,28 @@ export const Actions = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
+
+	@media (max-width: ${breakpoints.md}) {
+		gap: 10px;
+	}
 `;
 
 export const ActionText = styled.p`
 	margin: 0;
 	color: ${theme.textSecondary};
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 14px;
+	}
 `;
 
 export const GuessRow = styled.div`
 	display: flex;
 	gap: 12px;
+
+	@media (max-width: ${breakpoints.md}) {
+		gap: 8px;
+	}
 
 	> :first-child {
 		flex: 1;
@@ -187,6 +256,12 @@ export const Banner = styled.div<{ $correct: boolean }>`
 	border-radius: 10px;
 	font-weight: 700;
 	text-align: center;
+
+	@media (max-width: ${breakpoints.md}) {
+		padding: 8px 12px;
+		font-size: 14px;
+	}
+
 	color: ${({ $correct }) => ($correct ? "#7ee2a8" : "#ff9b9b")};
 	background: ${({ $correct }) =>
 		$correct ? "rgba(46, 204, 113, 0.12)" : "rgba(255, 107, 107, 0.12)"};
@@ -266,4 +341,11 @@ export const GuessInput = styled.input`
 	&:disabled {
 		opacity: 0.5;
 	}
+`;
+
+export const ModalItem = styled.li`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
 `;

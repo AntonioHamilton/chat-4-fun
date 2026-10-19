@@ -9,7 +9,6 @@ type GameProps = {
 	view: GameView;
 	t: (typeof guessCountryTranslations)["PT_BR"];
 	language: NameLanguage;
-	opponentLabel: string;
 	send: (action: GameAction) => void;
 	onExit: () => void;
 };
@@ -17,14 +16,7 @@ type GameProps = {
 const formatTime = (seconds: number) =>
 	`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
-export const Game = ({
-	view,
-	t,
-	language,
-	opponentLabel,
-	send,
-	onExit
-}: GameProps) => {
+export const Game = ({ view, t, language, send, onExit }: GameProps) => {
 	const seconds = useCountdown(view.timeLeftMs, view.phase + view.round);
 
 	if (view.phase !== "picking") {
@@ -33,7 +25,6 @@ export const Game = ({
 				view={view}
 				t={t}
 				language={language}
-				opponentLabel={opponentLabel}
 				send={send}
 				onExit={onExit}
 			/>
@@ -47,7 +38,6 @@ export const Game = ({
 					<strong>
 						{t.round} {view.round} · {t.bestOfThree}
 					</strong>
-					<span>{view.starter === "me" ? t.youStart : t.opponentStarts}</span>
 				</BoardSC.TopInfo>
 				{seconds !== null && (
 					<BoardSC.Timer $urgent={seconds <= 10} aria-label={t.timeLeft}>

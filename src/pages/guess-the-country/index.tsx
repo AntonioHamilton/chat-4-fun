@@ -37,14 +37,7 @@ const ComputerGame = ({
 }) => {
 	const { view, send } = useLocalGame(mode, language);
 	return (
-		<Game
-			view={view}
-			t={t}
-			language={language}
-			opponentLabel={t.computer}
-			send={send}
-			onExit={onExit}
-		/>
+		<Game view={view} t={t} language={language} send={send} onExit={onExit} />
 	);
 };
 
@@ -87,7 +80,6 @@ const OnlineGame = ({
 				view={view}
 				t={t}
 				language={language}
-				opponentLabel={t.opponent}
 				send={send}
 				onExit={() => onExit(null)}
 			/>

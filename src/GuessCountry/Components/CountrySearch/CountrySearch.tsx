@@ -5,6 +5,7 @@ import {
 	findCountry,
 	searchCountries
 } from "../../Utils/countries";
+import { CountryFlag } from "../CountryFlag/CountryFlag";
 import * as SC from "./styled";
 
 type CountrySearchProps = {
@@ -141,6 +142,7 @@ export const CountrySearch = ({
 							onClick={() => pick(country)}
 							onMouseEnter={() => setActiveIndex(index)}
 						>
+							<CountryFlag country={country} />
 							{countryName(country, language)}
 						</SC.Option>
 					))}

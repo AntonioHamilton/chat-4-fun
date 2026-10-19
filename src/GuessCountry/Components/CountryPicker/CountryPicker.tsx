@@ -5,6 +5,7 @@ import { COUNTRIES_PER_PLAYER } from "../../Constants/countries";
 import { NameLanguage } from "../../Types/game.types";
 import { countryName, randomCountries } from "../../Utils/countries";
 import { CountrySearch } from "../CountrySearch/CountrySearch";
+import { CountryFlag } from "../CountryFlag/CountryFlag";
 import * as SC from "./styled";
 
 type CountryPickerProps = {
@@ -117,6 +118,7 @@ export const CountryPicker = ({
 								<SC.Grip aria-hidden="true" title={t.drag}>
 									⠿
 								</SC.Grip>
+								<CountryFlag country={slot.name} />
 								<SC.SlotName>{countryName(slot.name, language)}</SC.SlotName>
 								<SC.SlotActions>
 									<SC.SmallButton
@@ -135,7 +137,18 @@ export const CountryPicker = ({
 									>
 										↓
 									</SC.SmallButton>
-									{!slot.confirmed && (
+									{slot.confirmed ? (
+										<SC.SmallButton
+											type="button"
+											onClick={() => updateSlot(index, null)}
+										>
+											<SC.PencilIcon viewBox="0 0 24 24" aria-hidden="true">
+												<path d="M4 20l1-4L16.5 4.5a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8 19l-4 1z" />
+												<path d="M14 7l3 3" />
+											</SC.PencilIcon>
+											{t.edit}
+										</SC.SmallButton>
+									) : (
 										<>
 											<SC.SmallButton
 												type="button"

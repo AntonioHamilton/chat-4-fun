@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { BackButton } from "@/Components/BackButton/BackButton";
 import { guessCountryTranslations } from "@/Translations/guessCountry";
 import * as Shared from "@/styles/guess-country.styled";
 import { Mode } from "../../Types/game.types";
+import * as IconSC from "../Icons/styled";
+import {
+	ClockIcon,
+	ClockOffIcon,
+	ComputerIcon,
+	CreateRoomIcon,
+	JoinRoomIcon,
+	VersusIcon
+} from "../Icons/Icons";
 import * as SC from "./styled";
 
 type MenuProps = {
@@ -23,14 +32,25 @@ const ModeButtons = ({
 	onSelect: (mode: Mode) => void;
 }) => {
 	const [openInfo, setOpenInfo] = useState<Mode | null>(null);
-	const modes: { mode: Mode; label: string; info: string }[] = [
-		{ mode: "untimed", label: t.untimed, info: t.untimedInfo },
-		{ mode: "timed", label: t.timed, info: t.timedInfo }
-	];
+	const modes: { mode: Mode; label: string; info: string; icon: ReactNode }[] =
+		[
+			{
+				mode: "untimed",
+				label: t.untimed,
+				info: t.untimedInfo,
+				icon: <ClockOffIcon />
+			},
+			{
+				mode: "timed",
+				label: t.timed,
+				info: t.timedInfo,
+				icon: <ClockIcon />
+			}
+		];
 
 	return (
 		<>
-			{modes.map(({ mode, label, info }) => (
+			{modes.map(({ mode, label, info, icon }) => (
 				<SC.ModeButton
 					key={mode}
 					type="button"
@@ -39,7 +59,10 @@ const ModeButtons = ({
 					onFocus={() => setOpenInfo(mode)}
 					onBlur={() => setOpenInfo(null)}
 				>
-					{label}
+					<IconSC.WithIcon>
+						{icon}
+						{label}
+					</IconSC.WithIcon>
 					<SC.InfoIcon
 						aria-hidden="true"
 						onMouseEnter={() => setOpenInfo(mode)}
@@ -89,13 +112,19 @@ export const Menu = ({ t, error, onComputer, onCreate, onJoin }: MenuProps) => {
 							type="button"
 							onClick={() => setStep("computer")}
 						>
-							{t.vsComputer}
+							<IconSC.WithIcon>
+								<ComputerIcon />
+								{t.vsComputer}
+							</IconSC.WithIcon>
 						</Shared.PrimaryButton>
 						<Shared.PrimaryButton
 							type="button"
 							onClick={() => setStep("multiplayer")}
 						>
-							{t.multiplayer}
+							<IconSC.WithIcon>
+								<VersusIcon />
+								{t.multiplayer}
+							</IconSC.WithIcon>
 						</Shared.PrimaryButton>
 					</>
 				)}
@@ -114,10 +143,16 @@ export const Menu = ({ t, error, onComputer, onCreate, onJoin }: MenuProps) => {
 							type="button"
 							onClick={() => setStep("create")}
 						>
-							{t.createRoom}
+							<IconSC.WithIcon>
+								<CreateRoomIcon />
+								{t.createRoom}
+							</IconSC.WithIcon>
 						</Shared.PrimaryButton>
 						<Shared.PrimaryButton type="button" onClick={() => setStep("join")}>
-							{t.joinRoom}
+							<IconSC.WithIcon>
+								<JoinRoomIcon />
+								{t.joinRoom}
+							</IconSC.WithIcon>
 						</Shared.PrimaryButton>
 					</>
 				)}

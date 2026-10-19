@@ -67,7 +67,20 @@ export const SlotActions = styled.div`
 	gap: 8px;
 `;
 
+export const PencilIcon = styled.svg`
+	width: 14px;
+	height: 14px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+`;
+
 export const SmallButton = styled.button<{ $variant?: "confirm" | "remove" }>`
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
 	padding: 6px 12px;
 	font-size: 13px;
 	font-weight: 700;

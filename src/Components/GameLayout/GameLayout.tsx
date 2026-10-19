@@ -1,5 +1,5 @@
+import Image from "next/image";
 import { ReactNode } from "react";
-import { BackButton } from "@/Components/BackButton/BackButton";
 import { Footer } from "@/Components/Footer/Footer";
 import { useTranslation } from "@/hooks/useTranslation";
 import { translations } from "@/Translations";
@@ -24,9 +24,9 @@ export const GameLayout = ({
 	return (
 		<SC.Page $background={background} $light={tone === "light"}>
 			<SC.TopBar>
-				<BackButton href="/" tone={tone}>
-					{t.back_to_games}
-				</BackButton>
+				<SC.LogoLink href="/" aria-label={t.back_to_games}>
+					<Image src="/images/logo.png" alt="" width={107} height={60} />
+				</SC.LogoLink>
 				{topActions}
 			</SC.TopBar>
 			<SC.Main>{children}</SC.Main>

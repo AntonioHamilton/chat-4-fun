@@ -1,3 +1,4 @@
+import "flag-icons/css/flag-icons.min.css";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
