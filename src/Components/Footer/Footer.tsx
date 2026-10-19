@@ -17,7 +17,7 @@ export const Footer = ({ tone = "dark" }: FooterProps) => {
 		<SC.FooterContainer $light={tone === "light"}>
 			<SC.Copyright>Chat 🤖 {currentYear}</SC.Copyright>
 			<SC.PortfolioLink
-				href="https://chat-hamilton.vercel.app/"
+				href={`https://chat-hamilton.vercel.app/?language=${language === "PT_BR" ? "pt" : "en"}`}
 				$light={tone === "light"}
 			>
 				← {t.portfolio_link}
