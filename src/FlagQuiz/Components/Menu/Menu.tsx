@@ -24,6 +24,7 @@ export const Menu = ({ t, onPlay, onRanking }: MenuProps) => {
 	return (
 		<>
 			<SC.Hero>
+				<SC.Mascot src="/FlagQuiz/logo-without-background.webp" alt="" />
 				<FlagSC.Title>{t.title}</FlagSC.Title>
 				<FlagSC.Subtitle>{t.subtitle}</FlagSC.Subtitle>
 			</SC.Hero>

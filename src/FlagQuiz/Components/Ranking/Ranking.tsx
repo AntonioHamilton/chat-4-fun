@@ -12,6 +12,8 @@ type Translations = (typeof flagQuizTranslations)["PT_BR"];
 type RankingProps = {
 	t: Translations;
 	language: NameLanguage;
+	initialMode?: Mode;
+	onPlay: (mode: Mode) => void;
 };
 
 type RankingData = Record<Mode, RankingEntry[]>;
@@ -22,53 +24,91 @@ type LoadState =
 	| ({ status: "ready" } & RankingData);
 
 const MODES: Mode[] = ["timed", "untimed"];
+const MEDAL_COLORS = ["#f2c94c", "#c9ced8", "#d9925c"];
 
-const RankingTable = ({
+const initialsOf = (name: string) =>
+	name
+		.trim()
+		.split(/\s+/)
+		.slice(0, 2)
+		.map((part) => part[0]?.toUpperCase() ?? "")
+		.join("");
+
+const colorOf = (name: string) => {
+	let hash = 0;
+	for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) % 360;
+	return `hsl(${hash} 60% 45%)`;
+};
+
+const Podium = ({
 	entries,
-	t,
 	language
 }: {
 	entries: RankingEntry[];
-	t: Translations;
+	language: NameLanguage;
+}) => {
+	const order = [1, 0, 2].filter((index) => index < entries.length);
+
+	return (
+		<SC.Podium aria-label="Top 3">
+			{order.map((index) => {
+				const entry = entries[index];
+				return (
+					<SC.PodiumSlot key={`${entry.date}-${index}`} $place={index + 1}>
+						<SC.Avatar
+							$color={colorOf(entry.name)}
+							$size={index === 0 ? 72 : 58}
+						>
+							{initialsOf(entry.name)}
+							<SC.Medal $color={MEDAL_COLORS[index]}>{index + 1}</SC.Medal>
+						</SC.Avatar>
+						<SC.PodiumName>{entry.name}</SC.PodiumName>
+						<SC.PodiumScore>{entry.score}</SC.PodiumScore>
+					</SC.PodiumSlot>
+				);
+			})}
+		</SC.Podium>
+	);
+};
+
+const RankingRows = ({
+	entries,
+	startAt,
+	language
+}: {
+	entries: RankingEntry[];
+	startAt: number;
 	language: NameLanguage;
 }) => (
-	<Shared.Panel>
-		{entries.length === 0 ? (
-			<FlagSC.Message>{t.rankingEmpty}</FlagSC.Message>
-		) : (
-			<SC.TableWrapper>
-				<SC.Table>
-					<thead>
-						<tr>
-							<th scope="col">{t.position}</th>
-							<th scope="col">{t.name}</th>
-							<th scope="col">{t.points}</th>
-							<th scope="col">{t.date}</th>
-						</tr>
-					</thead>
-					<tbody>
-						{entries.map((entry, index) => (
-							<tr key={`${entry.date}-${index}`}>
-								<td>{index + 1}</td>
-								<td>{entry.name}</td>
-								<td>{entry.score}</td>
-								<td>
-									{new Date(entry.date).toLocaleDateString(
-										language === "EN_US" ? "en-US" : "pt-BR"
-									)}
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</SC.Table>
-			</SC.TableWrapper>
-		)}
-	</Shared.Panel>
+	<SC.RowList>
+		{entries.map((entry, index) => (
+			<SC.Row key={`${entry.date}-${index}`}>
+				<SC.RowPosition>{startAt + index + 1}</SC.RowPosition>
+				<SC.Avatar $color={colorOf(entry.name)} $size={40}>
+					{initialsOf(entry.name)}
+				</SC.Avatar>
+				<SC.RowInfo>
+					<SC.RowName>{entry.name}</SC.RowName>
+					<SC.RowDate>
+						{new Date(entry.date).toLocaleDateString(
+							language === "EN_US" ? "en-US" : "pt-BR"
+						)}
+					</SC.RowDate>
+				</SC.RowInfo>
+				<SC.RowScore>{entry.score}</SC.RowScore>
+			</SC.Row>
+		))}
+	</SC.RowList>
 );
 
-export const Ranking = ({ t, language }: RankingProps) => {
+export const Ranking = ({
+	t,
+	language,
+	initialMode = "timed",
+	onPlay
+}: RankingProps) => {
 	const [state, setState] = useState<LoadState>({ status: "loading" });
-	const [selected, setSelected] = useState<Mode>("timed");
+	const [selected, setSelected] = useState<Mode>(initialMode);
 	const tabRefs = useRef<Record<Mode, HTMLButtonElement | null>>({
 		timed: null,
 		untimed: null
@@ -142,10 +182,29 @@ export const Ranking = ({ t, language }: RankingProps) => {
 						aria-labelledby={`ranking-tab-${selected}`}
 						style={{ width: "100%" }}
 					>
-						<RankingTable entries={state[selected]} t={t} language={language} />
+						{state[selected].length === 0 ? (
+							<FlagSC.Message>{t.rankingEmpty}</FlagSC.Message>
+						) : (
+							<>
+								<Podium
+									entries={state[selected].slice(0, 3)}
+									language={language}
+								/>
+								{state[selected].length > 3 && (
+									<RankingRows
+										entries={state[selected].slice(3)}
+										startAt={3}
+										language={language}
+									/>
+								)}
+							</>
+						)}
 					</div>
 				</>
 			)}
+			<Shared.PrimaryButton type="button" onClick={() => onPlay(selected)}>
+				{t.play}
+			</Shared.PrimaryButton>
 		</FlagSC.Column>
 	);
 };

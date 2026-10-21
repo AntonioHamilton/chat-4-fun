@@ -1,12 +1,13 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { breakpoints } from "@/styles/breakpoints";
 import { theme } from "@/styles/theme";
+import { Panel } from "@/styles/guess-country.styled";
 
 export const TopBar = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
+	gap: 6px;
 	width: 100%;
 	max-width: 520px;
 	margin: 0 auto;
@@ -16,58 +17,63 @@ export const TopBar = styled.div`
 	border-radius: 16px;
 `;
 
+export const ScoreBlock = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	text-align: center;
+`;
+
+export const ScoreLabel = styled.span`
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: ${theme.textTertiary};
+`;
+
+export const ScoreValue = styled.span`
+	font-family: "Archivo Black", sans-serif;
+	font-size: 44px;
+	line-height: 1;
+	color: ${theme.gold400};
+	font-variant-numeric: tabular-nums;
+
+	@media (max-width: ${breakpoints.md}) {
+		font-size: 36px;
+	}
+`;
+
 export const Timer = styled.span<{ $urgent: boolean }>`
-	font-size: 20px;
-	font-weight: 800;
+	font-family: "Archivo Black", sans-serif;
+	font-size: 28px;
 	font-variant-numeric: tabular-nums;
 	color: ${({ $urgent }) => ($urgent ? "#ff6b6b" : theme.textPrimary)};
 `;
 
-const feedbackPop = keyframes`
-	0% {
-		opacity: 0;
-		transform: translateY(8px) scale(0.9);
-	}
-	15% {
-		opacity: 1;
-		transform: translateY(0) scale(1);
-	}
-	75% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-`;
-
-export const Feedback = styled.p`
-	position: absolute;
-	top: 12px;
-	left: 50%;
-	margin: 0;
-	padding: 6px 14px;
-	font-size: 16px;
-	font-weight: 800;
-	color: #0b1f12;
-	background: #6fdc8c;
-	border-radius: 999px;
-	pointer-events: none;
-	transform: translateX(-50%);
-	animation: ${feedbackPop} 1.4s ease-out forwards;
-`;
-
 export const Stage = styled.div`
 	position: relative;
-`;
-
-export const Flag = styled.span`
-	display: block;
+	overflow: hidden;
+	max-width: 420px;
 	margin: 0 auto 20px;
-	font-size: min(200px, 55vw);
 	border-radius: 8px;
-	box-shadow: 0 12px 30px ${theme.shadowColor};
 
 	@media (max-width: ${breakpoints.md}) {
 		margin-bottom: 14px;
 	}
+`;
+
+export const Flag = styled.span`
+	display: block;
+	margin: 0 auto;
+	font-size: min(200px, 55vw);
+	border-radius: 8px;
+	box-shadow: 0 12px 30px ${theme.shadowColor};
+`;
+
+export const Card = styled(Panel)`
+	width: 100%;
+	max-width: 520px;
+	margin: 0 auto;
 `;

@@ -3,10 +3,10 @@ import { useCountdown } from "@/GuessCountry/Hooks/useCountdown";
 import { COUNTRY_CODES } from "@/GuessCountry/Constants/countryCodes";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
 import { playSound } from "@/hooks/useSound";
-import * as Shared from "@/styles/guess-country.styled";
 import * as FlagSC from "@/styles/flag-quiz.styled";
 import { FLAG_MS, useFlagQuiz } from "../../Hooks/useFlagQuiz";
 import { EndReason, Mode } from "../../Types/game.types";
+import { Capybara } from "../Capybara/Capybara";
 import * as SC from "./styled";
 
 type Translations = (typeof flagQuizTranslations)["PT_BR"];
@@ -19,18 +19,20 @@ type GameProps = {
 
 type AnswerProps = {
 	t: Translations;
+	disabled: boolean;
 	onSubmit: (value: string) => void;
 };
 
 const CORRECT_SOUND = "/sounds/correct.mp3";
+const WRONG_SOUND = "/sounds/wrong.mp3";
 
-const Answer = ({ t, onSubmit }: AnswerProps) => {
+const Answer = ({ t, disabled, onSubmit }: AnswerProps) => {
 	const [value, setValue] = useState("");
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const input = value.trim();
-		if (!input) return;
+		if (!input || disabled) return;
 		onSubmit(input);
 		setValue("");
 	};
@@ -42,10 +44,11 @@ const Answer = ({ t, onSubmit }: AnswerProps) => {
 				placeholder={t.inputPlaceholder}
 				autoComplete="off"
 				autoFocus
+				disabled={disabled}
 				value={value}
 				onChange={(event) => setValue(event.target.value)}
 			/>
-			<FlagSC.SubmitButton type="submit" disabled={!value.trim()}>
+			<FlagSC.SubmitButton type="submit" disabled={disabled || !value.trim()}>
 				{t.submit}
 			</FlagSC.SubmitButton>
 		</FlagSC.Form>
@@ -53,10 +56,21 @@ const Answer = ({ t, onSubmit }: AnswerProps) => {
 };
 
 export const Game = ({ mode, t, onFinish }: GameProps) => {
-	const { current, index, score, status, missed, endedBy, answer } =
-		useFlagQuiz(mode);
+	const {
+		current,
+		index,
+		score,
+		status,
+		missed,
+		endedBy,
+		answer,
+		feedback,
+		feedbackId
+	} = useFlagQuiz(mode);
 	const seconds = useCountdown(
-		mode === "timed" && status === "playing" ? FLAG_MS : null,
+		mode === "timed" && status === "playing" && feedback === null
+			? FLAG_MS
+			: null,
 		index
 	);
 
@@ -64,41 +78,52 @@ export const Game = ({ mode, t, onFinish }: GameProps) => {
 		if (status === "over" && endedBy) onFinish(score, missed, endedBy);
 	}, [status, score, missed, endedBy, onFinish]);
 
+	const [frozenSeconds, setFrozenSeconds] = useState<number | null>(null);
+	const timer = feedback !== null ? (frozenSeconds ?? seconds) : seconds;
+
+	useEffect(() => {
+		if (feedback !== null) setFrozenSeconds((value) => value ?? seconds);
+		else setFrozenSeconds(null);
+	}, [feedback, seconds]);
+
+	useEffect(() => {
+		if (feedback === "correct") playSound(CORRECT_SOUND);
+		if (feedback === "wrong") playSound(WRONG_SOUND);
+	}, [feedback, feedbackId]);
+
 	if (status === "over") return null;
 
 	return (
 		<>
 			<SC.TopBar>
-				<FlagSC.Score>
-					{t.score}: {score}
-				</FlagSC.Score>
-				{seconds !== null && (
-					<SC.Timer $urgent={seconds <= 3} aria-label={t.timeLeft}>
-						{seconds}s
+				<SC.ScoreBlock>
+					<SC.ScoreLabel>{t.score}</SC.ScoreLabel>
+					<SC.ScoreValue aria-live="polite">{score}</SC.ScoreValue>
+				</SC.ScoreBlock>
+				{timer !== null && (
+					<SC.Timer $urgent={timer <= 3} aria-label={t.timeLeft}>
+						{timer}s
 					</SC.Timer>
 				)}
 			</SC.TopBar>
-			<Shared.Panel>
+			<SC.Card>
 				<SC.Stage>
-					{score > 0 && (
-						<SC.Feedback key={score} role="status">
-							{t.correct} +1
-						</SC.Feedback>
-					)}
 					<SC.Flag
 						className={`fi fi-${COUNTRY_CODES[current]}`}
 						role="img"
 						aria-label={t.flagLabel}
 					/>
+					{feedback !== null && <Capybara key={feedbackId} kind={feedback} />}
 				</SC.Stage>
 				<Answer
 					key={index}
 					t={t}
+					disabled={feedback !== null}
 					onSubmit={(value) => {
-						if (answer(value)) playSound(CORRECT_SOUND);
+						answer(value);
 					}}
 				/>
-			</Shared.Panel>
+			</SC.Card>
 		</>
 	);
 };

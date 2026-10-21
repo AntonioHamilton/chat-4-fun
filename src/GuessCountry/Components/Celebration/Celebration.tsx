@@ -24,7 +24,7 @@ const PIECES = 160;
 const DURATION_MS = 4500;
 const GRAVITY = 0.0016;
 const playFanfare = () => {
-	new Audio("/GuessCountry/victory.mp3").play().catch(() => undefined);
+	new Audio("/sounds/victory.mp3").play().catch(() => undefined);
 };
 
 const createPiece = (width: number, height: number, left: boolean): Piece => ({

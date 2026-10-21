@@ -21,7 +21,7 @@ type Session =
 			missed: string | null;
 			endedBy: EndReason;
 	  }
-	| { kind: "ranking" };
+	| { kind: "ranking"; mode?: Mode };
 
 const FlagQuiz = () => {
 	const { language } = useTranslation();
@@ -78,7 +78,7 @@ const FlagQuiz = () => {
 							score: session.score,
 							mode: session.mode
 						});
-						setSession({ kind: "ranking" });
+						setSession({ kind: "ranking", mode: session.mode });
 					}}
 					onPlayAgain={() =>
 						setSession({ kind: "playing", mode: session.mode })
@@ -86,7 +86,14 @@ const FlagQuiz = () => {
 				/>
 			)}
 
-			{session.kind === "ranking" && <Ranking t={t} language={language} />}
+			{session.kind === "ranking" && (
+				<Ranking
+					t={t}
+					language={language}
+					initialMode={session.mode}
+					onPlay={(mode) => setSession({ kind: "playing", mode })}
+				/>
+			)}
 		</GameLayout>
 	);
 };

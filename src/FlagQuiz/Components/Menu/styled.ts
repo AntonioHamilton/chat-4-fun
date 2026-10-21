@@ -8,6 +8,11 @@ export const Hero = styled.div`
 	text-align: center;
 `;
 
+export const Mascot = styled.img`
+	width: min(340px, 80vw);
+	height: auto;
+`;
+
 export const BackRow = styled.div`
 	display: flex;
 	justify-content: center;

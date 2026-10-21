@@ -5,6 +5,11 @@ import { findCountry, shuffle } from "@/GuessCountry/Utils/countries";
 import { EndReason, Mode } from "../Types/game.types";
 
 export const FLAG_MS = 10_000;
+export const FEEDBACK_MS = 1000;
+export const WRONG_FEEDBACK_MS = 2400;
+
+export type Feedback = "correct" | "wrong";
+
 const FLAGS = COUNTRIES.filter(
 	(country, index, all) =>
 		COUNTRY_CODES[country] &&
@@ -23,38 +28,70 @@ export const useFlagQuiz = (mode: Mode) => {
 	const [status, setStatus] = useState<"playing" | "over">("playing");
 	const [missed, setMissed] = useState<string | null>(null);
 	const [endedBy, setEndedBy] = useState<EndReason | null>(null);
+	const [feedback, setFeedback] = useState<Feedback | null>(null);
+	const [feedbackId, setFeedbackId] = useState(0);
 	const current = deck[index];
+	const busy = feedback !== null;
+
+	const showFeedback = useCallback((kind: Feedback) => {
+		setFeedback(kind);
+		setFeedbackId((value) => value + 1);
+	}, []);
 
 	useEffect(() => {
-		if (mode !== "timed" || status !== "playing") return undefined;
+		if (mode !== "timed" || status !== "playing" || busy) return undefined;
 		const timer = setTimeout(() => {
 			setMissed(current);
 			setEndedBy("timeout");
-			setStatus("over");
+			showFeedback("wrong");
 		}, FLAG_MS);
 		return () => clearTimeout(timer);
-	}, [mode, status, current]);
+	}, [mode, status, busy, current, showFeedback]);
+
+	useEffect(() => {
+		if (feedback === null) return undefined;
+		const timer = setTimeout(
+			() => {
+				if (feedback === "wrong") {
+					setStatus("over");
+				} else if (index + 1 < deck.length) {
+					setIndex(index + 1);
+				} else {
+					setEndedBy("finished");
+					setStatus("over");
+				}
+				setFeedback(null);
+			},
+			feedback === "wrong" ? WRONG_FEEDBACK_MS : FEEDBACK_MS
+		);
+		return () => clearTimeout(timer);
+	}, [feedback, feedbackId, index, deck.length]);
 
 	const answer = useCallback(
 		(input: string) => {
-			if (status !== "playing") return false;
+			if (status !== "playing" || busy) return false;
 			if (!isSameFlag(findCountry(input), current)) {
 				setMissed(current);
 				setEndedBy("miss");
-				setStatus("over");
+				showFeedback("wrong");
 				return false;
 			}
 			setScore((value) => value + 1);
-			if (index + 1 >= deck.length) {
-				setEndedBy("finished");
-				setStatus("over");
-			} else {
-				setIndex(index + 1);
-			}
+			showFeedback("correct");
 			return true;
 		},
-		[current, deck.length, index, status]
+		[busy, current, showFeedback, status]
 	);
 
-	return { current, index, score, status, missed, endedBy, answer };
+	return {
+		current,
+		index,
+		score,
+		status,
+		missed,
+		endedBy,
+		answer,
+		feedback,
+		feedbackId
+	};
 };
