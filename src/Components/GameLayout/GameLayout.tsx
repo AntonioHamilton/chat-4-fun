@@ -25,7 +25,7 @@ export const GameLayout = ({
 		<SC.Page $background={background} $light={tone === "light"}>
 			<SC.TopBar>
 				<SC.LogoLink href="/" aria-label={t.back_to_games}>
-					<Image src="/images/logo.png" alt="" width={107} height={60} />
+					<Image src="/images/logo.webp" alt="" width={107} height={60} />
 				</SC.LogoLink>
 				{topActions}
 			</SC.TopBar>

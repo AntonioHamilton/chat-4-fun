@@ -11,7 +11,7 @@ export const Header = () => {
 		<SC.HeaderContainer>
 			<SC.LogoLink href="/" aria-label="Chat 4 Fun">
 				<Image
-					src="/images/logo.png"
+					src="/images/logo.webp"
 					alt="Chat 4 Fun"
 					width={107}
 					height={60}

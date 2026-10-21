@@ -94,7 +94,7 @@ export const Menu = ({ t, error, onComputer, onCreate, onJoin }: MenuProps) => {
 	return (
 		<>
 			<SC.Hero>
-				<SC.Mascot src="/GuessCountry/logo-without-background.png" alt="" />
+				<SC.Mascot src="/GuessCountry/logo-without-background.webp" alt="" />
 				<SC.Title>{t.title}</SC.Title>
 				<SC.Subtitle>{t.subtitle}</SC.Subtitle>
 			</SC.Hero>
