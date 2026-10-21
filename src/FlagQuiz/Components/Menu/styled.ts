@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { theme } from "@/styles/theme";
 
 export const Hero = styled.div`
 	display: flex;
@@ -9,9 +8,9 @@ export const Hero = styled.div`
 	text-align: center;
 `;
 
-export const Hint = styled.p`
-	margin: -6px 0 6px;
-	font-size: 13px;
-	text-align: center;
-	color: ${theme.textTertiary};
+export const BackRow = styled.div`
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	margin-top: 4px;
 `;

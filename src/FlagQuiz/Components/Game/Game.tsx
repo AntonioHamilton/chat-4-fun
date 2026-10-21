@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useCountdown } from "@/GuessCountry/Hooks/useCountdown";
 import { COUNTRY_CODES } from "@/GuessCountry/Constants/countryCodes";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
+import { playSound } from "@/hooks/useSound";
 import * as Shared from "@/styles/guess-country.styled";
 import * as FlagSC from "@/styles/flag-quiz.styled";
 import { FLAG_MS, useFlagQuiz } from "../../Hooks/useFlagQuiz";
@@ -20,6 +21,8 @@ type AnswerProps = {
 	t: Translations;
 	onSubmit: (value: string) => void;
 };
+
+const CORRECT_SOUND = "/sounds/correct.mp3";
 
 const Answer = ({ t, onSubmit }: AnswerProps) => {
 	const [value, setValue] = useState("");
@@ -76,12 +79,25 @@ export const Game = ({ mode, t, onFinish }: GameProps) => {
 				)}
 			</SC.TopBar>
 			<Shared.Panel>
-				<SC.Flag
-					className={`fi fi-${COUNTRY_CODES[current]}`}
-					role="img"
-					aria-label={t.flagLabel}
+				<SC.Stage>
+					{score > 0 && (
+						<SC.Feedback key={score} role="status">
+							{t.correct} +1
+						</SC.Feedback>
+					)}
+					<SC.Flag
+						className={`fi fi-${COUNTRY_CODES[current]}`}
+						role="img"
+						aria-label={t.flagLabel}
+					/>
+				</SC.Stage>
+				<Answer
+					key={index}
+					t={t}
+					onSubmit={(value) => {
+						if (answer(value)) playSound(CORRECT_SOUND);
+					}}
 				/>
-				<Answer key={index} t={t} onSubmit={answer} />
 			</Shared.Panel>
 		</>
 	);

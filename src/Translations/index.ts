@@ -8,7 +8,9 @@ const PT_BR = {
 	back_to_games: "Voltar aos jogos",
 	portfolio_link: "Portfolio",
 	language_pt: "Mudar para Português",
-	language_en: "Switch to English"
+	language_en: "Switch to English",
+	sound_enable: "Ativar som",
+	sound_disable: "Desativar som"
 };
 
 const EN_US: typeof PT_BR = {
@@ -19,7 +21,9 @@ const EN_US: typeof PT_BR = {
 	back_to_games: "Back to games",
 	portfolio_link: "Portfolio",
 	language_pt: "Mudar para Português",
-	language_en: "Switch to English"
+	language_en: "Switch to English",
+	sound_enable: "Turn sound on",
+	sound_disable: "Turn sound off"
 };
 
 export const translations: Record<Language, typeof PT_BR> = { PT_BR, EN_US };

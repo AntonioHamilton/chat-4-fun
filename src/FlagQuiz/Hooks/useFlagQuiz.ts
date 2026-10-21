@@ -37,12 +37,12 @@ export const useFlagQuiz = (mode: Mode) => {
 
 	const answer = useCallback(
 		(input: string) => {
-			if (status !== "playing") return;
+			if (status !== "playing") return false;
 			if (!isSameFlag(findCountry(input), current)) {
 				setMissed(current);
 				setEndedBy("miss");
 				setStatus("over");
-				return;
+				return false;
 			}
 			setScore((value) => value + 1);
 			if (index + 1 >= deck.length) {
@@ -51,6 +51,7 @@ export const useFlagQuiz = (mode: Mode) => {
 			} else {
 				setIndex(index + 1);
 			}
+			return true;
 		},
 		[current, deck.length, index, status]
 	);

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
 import { NameLanguage } from "@/GuessCountry/Types/game.types";
-import * as Shared from "@/styles/guess-country.styled";
 import * as FlagSC from "@/styles/flag-quiz.styled";
-import { RankingEntry } from "../../Types/game.types";
+import * as Shared from "@/styles/guess-country.styled";
+import { Mode, RankingEntry } from "../../Types/game.types";
 import { fetchRanking } from "../../Utils/ranking";
 import * as SC from "./styled";
 
@@ -14,29 +14,25 @@ type RankingProps = {
 	language: NameLanguage;
 };
 
-type RankingData = {
-	timed: RankingEntry[];
-	untimed: RankingEntry[];
-};
+type RankingData = Record<Mode, RankingEntry[]>;
 
 type LoadState =
 	| { status: "loading" }
 	| { status: "error" }
 	| ({ status: "ready" } & RankingData);
 
+const MODES: Mode[] = ["timed", "untimed"];
+
 const RankingTable = ({
-	title,
 	entries,
 	t,
 	language
 }: {
-	title: string;
 	entries: RankingEntry[];
 	t: Translations;
 	language: NameLanguage;
 }) => (
 	<Shared.Panel>
-		<Shared.PanelTitle>{title}</Shared.PanelTitle>
 		{entries.length === 0 ? (
 			<FlagSC.Message>{t.rankingEmpty}</FlagSC.Message>
 		) : (
@@ -72,6 +68,11 @@ const RankingTable = ({
 
 export const Ranking = ({ t, language }: RankingProps) => {
 	const [state, setState] = useState<LoadState>({ status: "loading" });
+	const [selected, setSelected] = useState<Mode>("timed");
+	const tabRefs = useRef<Record<Mode, HTMLButtonElement | null>>({
+		timed: null,
+		untimed: null
+	});
 
 	useEffect(() => {
 		let active = true;
@@ -87,6 +88,22 @@ export const Ranking = ({ t, language }: RankingProps) => {
 		};
 	}, []);
 
+	const titles: Record<Mode, string> = {
+		timed: t.rankingTimedTitle,
+		untimed: t.rankingUntimedTitle
+	};
+
+	const handleKeyDown = (
+		event: KeyboardEvent<HTMLButtonElement>,
+		mode: Mode
+	) => {
+		if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+		event.preventDefault();
+		const next = mode === "timed" ? "untimed" : "timed";
+		setSelected(next);
+		tabRefs.current[next]?.focus();
+	};
+
 	return (
 		<FlagSC.Column>
 			<FlagSC.Title>{t.ranking}</FlagSC.Title>
@@ -98,18 +115,35 @@ export const Ranking = ({ t, language }: RankingProps) => {
 			)}
 			{state.status === "ready" && (
 				<>
-					<RankingTable
-						title={t.rankingTimedTitle}
-						entries={state.timed}
-						t={t}
-						language={language}
-					/>
-					<RankingTable
-						title={t.rankingUntimedTitle}
-						entries={state.untimed}
-						t={t}
-						language={language}
-					/>
+					<SC.Tabs role="tablist" aria-label={t.ranking}>
+						{MODES.map((mode) => (
+							<SC.Tab
+								key={mode}
+								ref={(element) => {
+									tabRefs.current[mode] = element;
+								}}
+								type="button"
+								role="tab"
+								id={`ranking-tab-${mode}`}
+								aria-selected={selected === mode}
+								aria-controls={`ranking-panel-${mode}`}
+								tabIndex={selected === mode ? 0 : -1}
+								$active={selected === mode}
+								onClick={() => setSelected(mode)}
+								onKeyDown={(event) => handleKeyDown(event, mode)}
+							>
+								{titles[mode]}
+							</SC.Tab>
+						))}
+					</SC.Tabs>
+					<div
+						role="tabpanel"
+						id={`ranking-panel-${selected}`}
+						aria-labelledby={`ranking-tab-${selected}`}
+						style={{ width: "100%" }}
+					>
+						<RankingTable entries={state[selected]} t={t} language={language} />
+					</div>
 				</>
 			)}
 		</FlagSC.Column>

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { breakpoints } from "@/styles/breakpoints";
 import { theme } from "@/styles/theme";
 
@@ -21,6 +21,43 @@ export const Timer = styled.span<{ $urgent: boolean }>`
 	font-weight: 800;
 	font-variant-numeric: tabular-nums;
 	color: ${({ $urgent }) => ($urgent ? "#ff6b6b" : theme.textPrimary)};
+`;
+
+const feedbackPop = keyframes`
+	0% {
+		opacity: 0;
+		transform: translateY(8px) scale(0.9);
+	}
+	15% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+	75% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+`;
+
+export const Feedback = styled.p`
+	position: absolute;
+	top: 12px;
+	left: 50%;
+	margin: 0;
+	padding: 6px 14px;
+	font-size: 16px;
+	font-weight: 800;
+	color: #0b1f12;
+	background: #6fdc8c;
+	border-radius: 999px;
+	pointer-events: none;
+	transform: translateX(-50%);
+	animation: ${feedbackPop} 1.4s ease-out forwards;
+`;
+
+export const Stage = styled.div`
+	position: relative;
 `;
 
 export const Flag = styled.span`

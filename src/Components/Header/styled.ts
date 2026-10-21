@@ -65,6 +65,31 @@ export const Wordmark = styled.div`
 	}
 `;
 
+export const Controls = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 16px;
+`;
+
+export const SoundButton = styled.button`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px;
+	font-size: 22px;
+	color: ${theme.gold400};
+	background: none;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: border-color 0.2s ease-out;
+
+	&:hover,
+	&:focus-visible {
+		border-color: ${theme.gold500};
+	}
+`;
+
 export const LanguageSelector = styled.div`
 	display: flex;
 	align-items: center;
