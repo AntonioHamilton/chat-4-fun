@@ -90,7 +90,6 @@ const Answer = ({ t, language, disabled, onSubmit }: AnswerProps) => {
 								<FlagSC.SuggestionButton
 									type="button"
 									role="option"
-									aria-selected={false}
 									onMouseDown={(event) => event.preventDefault()}
 									onClick={() => pickSuggestion(country)}
 								>

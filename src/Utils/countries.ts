@@ -53,7 +53,7 @@ const matchScore = (key: string, name: string): number => {
 	if (name.includes(key)) return 1;
 
 	const tolerance = key.length <= 4 ? 1 : 2;
-	let best = levenshtein(key, name);
+	let best = Infinity;
 	for (
 		let length = Math.max(1, key.length - tolerance);
 		length <= Math.min(name.length, key.length + tolerance);
@@ -65,10 +65,11 @@ const matchScore = (key: string, name: string): number => {
 	return best <= tolerance ? 2 + best : Infinity;
 };
 
+const SUGGESTION_LIMIT = 6;
+
 export const suggestCountries = (
 	query: string,
-	language: Language = "PT_BR",
-	limit = 6
+	language: Language = "PT_BR"
 ): string[] => {
 	const key = normalize(query);
 	if (!key) return [];
@@ -84,7 +85,7 @@ export const suggestCountries = (
 
 	return scored
 		.sort((a, b) => a[1] - b[1])
-		.slice(0, limit)
+		.slice(0, SUGGESTION_LIMIT)
 		.map(([name]) => name);
 };
 

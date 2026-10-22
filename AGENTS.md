@@ -39,7 +39,7 @@ Rode os checks do projeto antes de dar uma tarefa por concluída.
   - `src/Types/`: tipos compartilhados (ex: `Language.ts`, `Game.ts`).
   - `src/Translations/`: textos em PT_BR e EN_US, um arquivo por jogo.
   - `src/styles/`: styled-components globais e `breakpoints.ts`, `theme.ts`.
-- Jogos: `src/GuessCountry/` (Adivinhe o País) e `src/FlagQuiz/` (Qual a bandeira?). Guardam só o que não é compartilhado, com a mesma forma: Components, Hooks, Utils, Types, Constants (ex: `src/GuessCountry/Constants/game.ts`).
+- Jogos: `src/GuessCountry/` (Adivinhe o País) e `src/FlagQuiz/` (Qual a bandeira?). Mesma forma em cada um: Components, Hooks, Utils, Types, Constants (ex: `src/GuessCountry/Constants/game.ts`).
 - `public/`: arquivos estáticos (imagens, GIFs, ícones).
 
 ### Arquitetura fractal
