@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Language } from "@/types/Language";
+import { Language } from "@/Types/Language";
 
 const PARAM_LANGUAGES: Record<string, Language> = {
 	pt: "PT_BR",

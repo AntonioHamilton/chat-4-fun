@@ -1,14 +1,8 @@
-import { COUNTRIES_PER_PLAYER } from "../Constants/countries";
-import {
-	GameState,
-	GameView,
-	Mode,
-	NameLanguage,
-	Seat,
-	Side
-} from "../Types/game.types";
-import { countryName, findCountry, randomCountries } from "./countries";
-import { countLetters, normalize, revealPrefix } from "./text";
+import { COUNTRIES_PER_PLAYER } from "@/GuessCountry/Constants/game";
+import { GameState, GameView, Mode, Seat, Side } from "../Types/game.types";
+import { Language } from "@/Types/Language";
+import { countryName, findCountry, randomCountries } from "@/Utils/countries";
+import { countLetters, normalize, revealPrefix } from "@/Utils/text";
 
 export const PICK_MS = 120_000;
 export const GUESS_MS = 30_000;
@@ -238,7 +232,7 @@ export const viewFor = (
 	state: GameState,
 	viewer: Seat,
 	now: number,
-	language: NameLanguage = "PT_BR"
+	language: Language = "PT_BR"
 ): GameView => {
 	const opp = other(viewer);
 	const playing = state.phase === "playing";

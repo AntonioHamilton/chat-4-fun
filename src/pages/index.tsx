@@ -4,7 +4,7 @@ import { FeaturedGame } from "@/Components/FeaturedGame/FeaturedGame";
 import { Header } from "@/Components/Header/Header";
 import BackgroundAnimation from "@/Components/BackgroundAnimation/BackgroundAnimation";
 import { Footer } from "@/Components/Footer/Footer";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/Hooks/useTranslation";
 import { translations } from "@/Translations";
 import { featuredGameId, games } from "@/Translations/games";
 

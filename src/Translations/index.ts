@@ -1,4 +1,4 @@
-import { Language } from "@/types/Language";
+import { Language } from "@/Types/Language";
 
 const PT_BR = {
 	tagline: "Uma biblioteca de jogos e experimentos feitos só por diversão",

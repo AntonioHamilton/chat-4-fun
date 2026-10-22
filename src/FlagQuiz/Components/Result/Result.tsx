@@ -1,8 +1,8 @@
 import { FormEvent, useCallback, useState } from "react";
-import { COUNTRY_CODES } from "@/GuessCountry/Constants/countryCodes";
-import { countryName } from "@/GuessCountry/Utils/countries";
+import { COUNTRY_CODES } from "@/Constants/countryCodes";
+import { countryName } from "@/Utils/countries";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
-import { NameLanguage } from "@/GuessCountry/Types/game.types";
+import { Language } from "@/Types/Language";
 import * as FlagSC from "@/styles/flag-quiz.styled";
 import { EndReason } from "../../Types/game.types";
 import { Toast } from "../Toast/Toast";
@@ -12,7 +12,7 @@ type Translations = (typeof flagQuizTranslations)["PT_BR"];
 
 type ResultProps = {
 	t: Translations;
-	language: NameLanguage;
+	language: Language;
 	score: number;
 	missed: string | null;
 	endedBy: EndReason;

@@ -65,6 +65,46 @@ export const Form = styled.form`
 	width: 100%;
 `;
 
+export const Field = styled.div`
+	position: relative;
+`;
+
+export const Suggestions = styled.ul`
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	right: 0;
+	z-index: 20;
+	margin: 0;
+	padding: 6px;
+	list-style: none;
+	background: ${theme.backgroundSecondary};
+	border: 1px solid ${theme.borderSubtle};
+	border-radius: 10px;
+	box-shadow: 0 12px 30px ${theme.shadowColor};
+`;
+
+export const SuggestionButton = styled.button`
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 12px;
+	font: inherit;
+	text-align: left;
+	color: ${theme.textPrimary};
+	background: transparent;
+	border: 0;
+	border-radius: 6px;
+	cursor: pointer;
+
+	&:hover,
+	&:focus-visible {
+		background: ${theme.cardBgHover};
+		outline: none;
+	}
+`;
+
 export const Label = styled.label`
 	font-size: 13px;
 	color: ${theme.textTertiary};

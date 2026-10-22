@@ -1,6 +1,6 @@
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
-import { NameLanguage } from "@/GuessCountry/Types/game.types";
+import { Language } from "@/Types/Language";
 import * as FlagSC from "@/styles/flag-quiz.styled";
 import * as Shared from "@/styles/guess-country.styled";
 import { Mode, RankingEntry } from "../../Types/game.types";
@@ -11,7 +11,7 @@ type Translations = (typeof flagQuizTranslations)["PT_BR"];
 
 type RankingProps = {
 	t: Translations;
-	language: NameLanguage;
+	language: Language;
 	initialMode?: Mode;
 	onPlay: (mode: Mode) => void;
 };
@@ -45,7 +45,7 @@ const Podium = ({
 	language
 }: {
 	entries: RankingEntry[];
-	language: NameLanguage;
+	language: Language;
 }) => {
 	const order = [1, 0, 2].filter((index) => index < entries.length);
 
@@ -78,7 +78,7 @@ const RankingRows = ({
 }: {
 	entries: RankingEntry[];
 	startAt: number;
-	language: NameLanguage;
+	language: Language;
 }) => (
 	<SC.RowList>
 		{entries.map((entry, index) => (

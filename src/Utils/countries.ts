@@ -1,11 +1,11 @@
-import { COUNTRIES } from "../Constants/countries";
-import { COUNTRY_NAMES_EN } from "../Constants/countryNames";
-import { NameLanguage } from "../Types/game.types";
-import { normalize } from "./text";
+import { COUNTRIES } from "@/Constants/countries";
+import { COUNTRY_NAMES_EN } from "@/Constants/countryNames";
+import { Language } from "@/Types/Language";
+import { levenshtein, normalize } from "./text";
 
 export const countryName = (
 	canonical: string,
-	language: NameLanguage = "PT_BR"
+	language: Language = "PT_BR"
 ): string =>
 	language === "EN_US" ? (COUNTRY_NAMES_EN[canonical] ?? canonical) : canonical;
 
@@ -16,7 +16,7 @@ const byKey = new Map(
 	])
 );
 
-const sortedByLanguage = (language: NameLanguage) =>
+const sortedByLanguage = (language: Language) =>
 	language === "EN_US"
 		? [...COUNTRIES].sort((a, b) =>
 				countryName(a, language).localeCompare(countryName(b, language))
@@ -29,7 +29,7 @@ export const findCountry = (input: string): string | null =>
 export const searchCountries = (
 	query: string,
 	exclude: string[] = [],
-	language: NameLanguage = "PT_BR"
+	language: Language = "PT_BR"
 ) => {
 	const key = normalize(query);
 	const excluded = new Set(exclude);
@@ -46,6 +46,46 @@ export const searchCountries = (
 		else if (normalized.includes(key)) includes.push(name);
 	}
 	return [...starts, ...includes];
+};
+
+const matchScore = (key: string, name: string): number => {
+	if (name.startsWith(key)) return 0;
+	if (name.includes(key)) return 1;
+
+	const tolerance = key.length <= 4 ? 1 : 2;
+	let best = levenshtein(key, name);
+	for (
+		let length = Math.max(1, key.length - tolerance);
+		length <= Math.min(name.length, key.length + tolerance);
+		length++
+	) {
+		best = Math.min(best, levenshtein(key, name.slice(0, length)));
+	}
+
+	return best <= tolerance ? 2 + best : Infinity;
+};
+
+export const suggestCountries = (
+	query: string,
+	language: Language = "PT_BR",
+	limit = 6
+): string[] => {
+	const key = normalize(query);
+	if (!key) return [];
+
+	const scored: [string, number][] = [];
+	for (const name of sortedByLanguage(language)) {
+		const score = Math.min(
+			matchScore(key, normalize(countryName(name, language))),
+			matchScore(key, normalize(countryName(name, "EN_US")))
+		);
+		if (score !== Infinity) scored.push([name, score]);
+	}
+
+	return scored
+		.sort((a, b) => a[1] - b[1])
+		.slice(0, limit)
+		.map(([name]) => name);
 };
 
 export const shuffle = <T>(items: T[], random: () => number = Math.random) => {

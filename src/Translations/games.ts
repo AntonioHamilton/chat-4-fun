@@ -1,5 +1,5 @@
-import { Language } from "@/types/Language";
-import { Game } from "@/types/Game";
+import { Language } from "@/Types/Language";
+import { Game } from "@/Types/Game";
 
 const PT_BR: Game[] = [
 	{

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ReactNode } from "react";
 import { Footer } from "@/Components/Footer/Footer";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/Hooks/useTranslation";
 import { translations } from "@/Translations";
 import * as SC from "./styled";
 

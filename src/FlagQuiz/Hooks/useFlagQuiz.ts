@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { COUNTRY_CODES } from "@/GuessCountry/Constants/countryCodes";
-import { COUNTRIES } from "@/GuessCountry/Constants/countries";
-import { findCountry, shuffle } from "@/GuessCountry/Utils/countries";
+import { COUNTRY_CODES } from "@/Constants/countryCodes";
+import { COUNTRIES } from "@/Constants/countries";
+import { findCountry, shuffle } from "@/Utils/countries";
 import { EndReason, Mode } from "../Types/game.types";
 
 export const FLAG_MS = 10_000;

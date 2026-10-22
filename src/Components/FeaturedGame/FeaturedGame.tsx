@@ -1,4 +1,4 @@
-import { Game } from "@/types/Game";
+import { Game } from "@/Types/Game";
 import * as SC from "./styled";
 
 type FeaturedGameProps = { game: Game; playLabel: string };

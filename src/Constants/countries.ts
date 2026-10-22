@@ -199,5 +199,3 @@ export const COUNTRIES: string[] = [
 	"Zâmbia",
 	"Zimbábue"
 ];
-
-export const COUNTRIES_PER_PLAYER = 5;

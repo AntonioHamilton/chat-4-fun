@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { guessCountryTranslations } from "@/Translations/guessCountry";
 import * as Shared from "@/styles/guess-country.styled";
-import { COUNTRIES_PER_PLAYER } from "../../Constants/countries";
-import { NameLanguage } from "../../Types/game.types";
-import { countryName, randomCountries } from "../../Utils/countries";
+import { COUNTRIES_PER_PLAYER } from "@/GuessCountry/Constants/game";
+import { Language } from "@/Types/Language";
+import { countryName, randomCountries } from "@/Utils/countries";
 import { CountrySearch } from "../CountrySearch/CountrySearch";
-import { CountryFlag } from "../CountryFlag/CountryFlag";
+import { CountryFlag } from "@/Components/CountryFlag/CountryFlag";
 import * as SC from "./styled";
 
 type CountryPickerProps = {
 	t: (typeof guessCountryTranslations)["PT_BR"];
-	language: NameLanguage;
+	language: Language;
 	waiting: boolean;
 	onSubmit: (countries: string[]) => void;
 };

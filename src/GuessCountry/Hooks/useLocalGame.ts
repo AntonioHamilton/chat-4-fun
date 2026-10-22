@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { COUNTRIES_PER_PLAYER } from "../Constants/countries";
-import { GameAction, GameState, Mode, NameLanguage } from "../Types/game.types";
+import { COUNTRIES_PER_PLAYER } from "@/GuessCountry/Constants/game";
+import { GameAction, GameState, Mode } from "../Types/game.types";
+import { Language } from "@/Types/Language";
 import { computerGuess } from "../Utils/computer";
-import { randomCountries } from "../Utils/countries";
+import { randomCountries } from "@/Utils/countries";
 import {
 	continueRound,
 	createState,
@@ -12,12 +13,12 @@ import {
 	setCountries,
 	viewFor
 } from "../Utils/engine";
-import { revealPrefix } from "../Utils/text";
+import { revealPrefix } from "@/Utils/text";
 
 const COMPUTER = 1;
 const PLAYER = 0;
 
-export const useLocalGame = (mode: Mode, language: NameLanguage) => {
+export const useLocalGame = (mode: Mode, language: Language) => {
 	const [state, setState] = useState<GameState>(() =>
 		createState(mode, Date.now())
 	);

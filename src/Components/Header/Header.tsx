@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { changeLanguage, useTranslation } from "@/hooks/useTranslation";
-import { setSoundEnabled, useSoundEnabled } from "@/hooks/useSound";
+import { changeLanguage, useTranslation } from "@/Hooks/useTranslation";
+import { setSoundEnabled, useSoundEnabled } from "@/Hooks/useSound";
 import { translations } from "@/Translations";
 import { SoundOffIcon, SoundOnIcon } from "@/Components/Icons/UiIcons";
 import * as SC from "./styled";

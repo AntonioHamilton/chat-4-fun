@@ -1,5 +1,5 @@
-import { COUNTRIES } from "../Constants/countries";
-import { normalize } from "./text";
+import { COUNTRIES } from "@/Constants/countries";
+import { normalize } from "@/Utils/text";
 
 export const computerGuess = (
 	revealedPrefix: string,

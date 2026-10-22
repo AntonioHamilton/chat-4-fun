@@ -4,9 +4,9 @@ import {
 	GameAction,
 	GameView,
 	Mode,
-	NameLanguage,
 	ServerMessage
 } from "../Types/game.types";
+import { Language } from "@/Types/Language";
 
 export type OnlineStart =
 	| { type: "create"; mode: Mode }
@@ -29,7 +29,7 @@ const getSocketUrl = () => {
 	return `${protocol}://${window.location.host}/ws`;
 };
 
-export const useOnlineGame = (start: OnlineStart, language: NameLanguage) => {
+export const useOnlineGame = (start: OnlineStart, language: Language) => {
 	const [status, setStatus] = useState<OnlineStatus>("connecting");
 	const [code, setCode] = useState<string | null>(
 		start.type === "join" ? start.code.toUpperCase() : null

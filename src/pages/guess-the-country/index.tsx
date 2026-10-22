@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/Hooks/useTranslation";
 import { BackButton } from "@/Components/BackButton/BackButton";
 import { GameLayout } from "@/Components/GameLayout/GameLayout";
 import { ServerLoading } from "@/Components/ServerLoading/ServerLoading";
@@ -10,7 +10,8 @@ import { Menu } from "@/GuessCountry/Components/Menu/Menu";
 import * as MenuSC from "@/GuessCountry/Components/Menu/styled";
 import { useLocalGame } from "@/GuessCountry/Hooks/useLocalGame";
 import { OnlineStart, useOnlineGame } from "@/GuessCountry/Hooks/useOnlineGame";
-import { Mode, NameLanguage } from "@/GuessCountry/Types/game.types";
+import { Mode } from "@/GuessCountry/Types/game.types";
+import { Language } from "@/Types/Language";
 
 type Translations = (typeof guessCountryTranslations)["PT_BR"];
 
@@ -19,7 +20,7 @@ type Session =
 	| { kind: "computer"; mode: Mode }
 	| { kind: "online"; start: OnlineStart };
 
-const FLAGS: Record<NameLanguage, string> = {
+const FLAGS: Record<Language, string> = {
 	PT_BR: "/icons/br-flag.svg",
 	EN_US: "/icons/us-flag.svg"
 };
@@ -32,7 +33,7 @@ const ComputerGame = ({
 }: {
 	mode: Mode;
 	t: Translations;
-	language: NameLanguage;
+	language: Language;
 	onExit: () => void;
 }) => {
 	const { view, send } = useLocalGame(mode, language);
@@ -49,7 +50,7 @@ const OnlineGame = ({
 }: {
 	start: OnlineStart;
 	t: Translations;
-	language: NameLanguage;
+	language: Language;
 	onExit: (error: string | null) => void;
 }) => {
 	const { status, code, view, error, send } = useOnlineGame(start, language);

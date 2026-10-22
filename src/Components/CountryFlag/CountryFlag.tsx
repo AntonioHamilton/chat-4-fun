@@ -1,4 +1,4 @@
-import { COUNTRY_CODES } from "../../Constants/countryCodes";
+import { COUNTRY_CODES } from "@/Constants/countryCodes";
 import * as SC from "./styled";
 
 type CountryFlagProps = { country: string };

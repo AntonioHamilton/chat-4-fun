@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BackButton } from "@/Components/BackButton/BackButton";
 import { GameLayout } from "@/Components/GameLayout/GameLayout";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/Hooks/useTranslation";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
 import { pageBackground } from "@/styles/guess-country.styled";
 import { Game } from "@/FlagQuiz/Components/Game/Game";
@@ -53,6 +53,7 @@ const FlagQuiz = () => {
 				<Game
 					mode={session.mode}
 					t={t}
+					language={language}
 					onFinish={(score, missed, endedBy) =>
 						setSession({
 							kind: "result",

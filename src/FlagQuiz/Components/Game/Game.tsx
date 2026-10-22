@@ -1,8 +1,10 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useCountdown } from "@/GuessCountry/Hooks/useCountdown";
-import { COUNTRY_CODES } from "@/GuessCountry/Constants/countryCodes";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useCountdown } from "@/Hooks/useCountdown";
+import { COUNTRY_CODES } from "@/Constants/countryCodes";
+import { Language } from "@/Types/Language";
+import { countryName, suggestCountries } from "@/Utils/countries";
 import { flagQuizTranslations } from "@/Translations/flagQuiz";
-import { playSound } from "@/hooks/useSound";
+import { playSound } from "@/Hooks/useSound";
 import * as FlagSC from "@/styles/flag-quiz.styled";
 import { FLAG_MS, useFlagQuiz } from "../../Hooks/useFlagQuiz";
 import { EndReason, Mode } from "../../Types/game.types";
@@ -14,11 +16,13 @@ type Translations = (typeof flagQuizTranslations)["PT_BR"];
 type GameProps = {
 	mode: Mode;
 	t: Translations;
+	language: Language;
 	onFinish: (score: number, missed: string | null, endedBy: EndReason) => void;
 };
 
 type AnswerProps = {
 	t: Translations;
+	language: Language;
 	disabled: boolean;
 	onSubmit: (value: string) => void;
 };
@@ -26,8 +30,14 @@ type AnswerProps = {
 const CORRECT_SOUND = "/sounds/correct.mp3";
 const WRONG_SOUND = "/sounds/wrong.mp3";
 
-const Answer = ({ t, disabled, onSubmit }: AnswerProps) => {
+const Answer = ({ t, language, disabled, onSubmit }: AnswerProps) => {
 	const [value, setValue] = useState("");
+	const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const suggestions = useMemo(
+		() => suggestCountries(value, language),
+		[value, language]
+	);
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -35,19 +45,62 @@ const Answer = ({ t, disabled, onSubmit }: AnswerProps) => {
 		if (!input || disabled) return;
 		onSubmit(input);
 		setValue("");
+		setSuggestionsOpen(false);
+	};
+
+	const pickSuggestion = (country: string) => {
+		setValue(countryName(country, language));
+		setSuggestionsOpen(false);
+		inputRef.current?.focus();
 	};
 
 	return (
 		<FlagSC.Form onSubmit={handleSubmit}>
-			<FlagSC.Input
-				aria-label={t.inputLabel}
-				placeholder={t.inputPlaceholder}
-				autoComplete="off"
-				autoFocus
-				disabled={disabled}
-				value={value}
-				onChange={(event) => setValue(event.target.value)}
-			/>
+			<FlagSC.Field>
+				<FlagSC.Input
+					ref={inputRef}
+					aria-label={t.inputLabel}
+					aria-autocomplete="list"
+					placeholder={t.inputPlaceholder}
+					autoComplete="off"
+					autoFocus
+					disabled={disabled}
+					value={value}
+					onChange={(event) => {
+						setValue(event.target.value);
+						setSuggestionsOpen(true);
+					}}
+					onBlur={(event) => {
+						if (
+							!event.currentTarget.parentElement?.contains(
+								event.relatedTarget as Node
+							)
+						) {
+							setSuggestionsOpen(false);
+						}
+					}}
+					onKeyDown={(event) => {
+						if (event.key === "Escape") setSuggestionsOpen(false);
+					}}
+				/>
+				{suggestionsOpen && !disabled && suggestions.length > 0 && (
+					<FlagSC.Suggestions role="listbox">
+						{suggestions.map((country) => (
+							<li key={country} role="presentation">
+								<FlagSC.SuggestionButton
+									type="button"
+									role="option"
+									aria-selected={false}
+									onMouseDown={(event) => event.preventDefault()}
+									onClick={() => pickSuggestion(country)}
+								>
+									{countryName(country, language)}
+								</FlagSC.SuggestionButton>
+							</li>
+						))}
+					</FlagSC.Suggestions>
+				)}
+			</FlagSC.Field>
 			<FlagSC.SubmitButton type="submit" disabled={disabled || !value.trim()}>
 				{t.submit}
 			</FlagSC.SubmitButton>
@@ -55,7 +108,7 @@ const Answer = ({ t, disabled, onSubmit }: AnswerProps) => {
 	);
 };
 
-export const Game = ({ mode, t, onFinish }: GameProps) => {
+export const Game = ({ mode, t, language, onFinish }: GameProps) => {
 	const {
 		current,
 		index,
@@ -118,6 +171,7 @@ export const Game = ({ mode, t, onFinish }: GameProps) => {
 				<Answer
 					key={index}
 					t={t}
+					language={language}
 					disabled={feedback !== null}
 					onSubmit={(value) => {
 						answer(value);

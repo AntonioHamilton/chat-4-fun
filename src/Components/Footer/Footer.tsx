@@ -2,7 +2,7 @@ import React from "react";
 import { LinkedinIcon } from "../Icons/LinkedinIcon";
 import { GithubIcon } from "../Icons/GithubIcon";
 import { EmailIcon } from "../Icons/EmailIcon";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/Hooks/useTranslation";
 import { translations } from "@/Translations";
 import * as SC from "./styled";
 

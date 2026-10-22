@@ -1,18 +1,14 @@
 import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { NameLanguage } from "../../Types/game.types";
-import {
-	countryName,
-	findCountry,
-	searchCountries
-} from "../../Utils/countries";
-import { CountryFlag } from "../CountryFlag/CountryFlag";
+import { Language } from "@/Types/Language";
+import { countryName, findCountry, searchCountries } from "@/Utils/countries";
+import { CountryFlag } from "@/Components/CountryFlag/CountryFlag";
 import * as SC from "./styled";
 
 type CountrySearchProps = {
 	label: string;
 	placeholder: string;
 	noResultsLabel: string;
-	language?: NameLanguage;
+	language?: Language;
 	exclude?: string[];
 	disabled?: boolean;
 	clearOnPick?: boolean;

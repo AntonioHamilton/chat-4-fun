@@ -1,6 +1,7 @@
 import { guessCountryTranslations } from "@/Translations/guessCountry";
-import { useCountdown } from "../../Hooks/useCountdown";
-import { GameAction, GameView, NameLanguage } from "../../Types/game.types";
+import { useCountdown } from "@/Hooks/useCountdown";
+import { GameAction, GameView } from "../../Types/game.types";
+import { Language } from "@/Types/Language";
 import { Board } from "../Board/Board";
 import * as BoardSC from "../Board/styled";
 import { CountryPicker } from "../CountryPicker/CountryPicker";
@@ -8,7 +9,7 @@ import { CountryPicker } from "../CountryPicker/CountryPicker";
 type GameProps = {
 	view: GameView;
 	t: (typeof guessCountryTranslations)["PT_BR"];
-	language: NameLanguage;
+	language: Language;
 	send: (action: GameAction) => void;
 	onExit: () => void;
 };
