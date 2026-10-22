@@ -31,12 +31,23 @@ Rode os checks do projeto antes de dar uma tarefa por concluída.
 
 - `src/`: todo o código fonte.
 - `src/pages/`: rotas do Next.js.
-- `src/Components/`: componentes reutilizáveis compartilhados.
-- `src/GuessCountry/`: jogo Adivinhe o País (Components, Hooks, Utils, Types, Constants).
-- `src/FlagQuiz/`: jogo Qual a bandeira? (Components, Hooks, Utils, Types).
-- `src/Translations/`: textos em PT_BR e EN_US, um arquivo por jogo.
-- `src/styles/`: styled-components globais e `breakpoints.ts`, `theme.ts`.
+- Compartilhado, na raiz de `src/`, em pastas específicas:
+  - `src/Components/`: componentes usados por mais de um jogo ou área (ex: `CountryFlag/`).
+  - `src/Hooks/`: hooks compartilhados (ex: `useCountdown.ts`, `useTranslation.ts`).
+  - `src/Utils/`: funções compartilhadas (ex: `countries.ts`, `text.ts`).
+  - `src/Constants/`: constantes compartilhadas (ex: `countries.ts`, `countryCodes.ts`).
+  - `src/Types/`: tipos compartilhados (ex: `Language.ts`, `Game.ts`).
+  - `src/Translations/`: textos em PT_BR e EN_US, um arquivo por jogo.
+  - `src/styles/`: styled-components globais e `breakpoints.ts`, `theme.ts`.
+- Jogos: `src/GuessCountry/` (Adivinhe o País) e `src/FlagQuiz/` (Qual a bandeira?). Guardam só o que não é compartilhado, com a mesma forma: Components, Hooks, Utils, Types, Constants (ex: `src/GuessCountry/Constants/game.ts`).
 - `public/`: arquivos estáticos (imagens, GIFs, ícones).
+
+### Arquitetura fractal
+
+- Cada unidade (site, jogo) repete a mesma forma de pastas. O que é de uma unidade fica dentro dela; o que é usado por mais de uma unidade vai para a raiz de `src/`, na pasta do tipo certo.
+- Nunca importar de outra pasta de jogo (ex: `src/FlagQuiz` importando de `src/GuessCountry`). Se dois jogos precisam do mesmo código, mova para a raiz de `src/`.
+- Antes de criar um módulo num jogo, confira se ele já existe na raiz e reutilize. Use o alias `@/` nos imports entre pastas (ex: `@/Utils/countries`).
+- Ao criar um novo jogo, copie a forma de um existente (ex: `src/FlagQuiz/`) em vez de inventar pastas.
 
 ### Padrão de Código
 
