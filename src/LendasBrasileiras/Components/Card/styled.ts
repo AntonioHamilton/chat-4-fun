@@ -55,12 +55,14 @@ export const Name = styled.span`
 	-webkit-box-orient: vertical;
 `;
 
-export const Body = styled.span<{ $large: boolean }>`
+export const Body = styled.span<{ $large: boolean; $darkText: boolean }>`
 	display: block;
 	flex: 1;
 	padding: 4px;
 	font-size: ${({ $large }) => ($large ? "0.8rem" : "0.55rem")};
 	line-height: 1.2;
+	color: ${({ $darkText }) =>
+		$darkText ? theme.backgroundPrimary : "inherit"};
 	opacity: 0.9;
 `;
 

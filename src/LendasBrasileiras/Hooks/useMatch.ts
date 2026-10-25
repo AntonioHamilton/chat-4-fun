@@ -43,11 +43,6 @@ const failure = (message: string): Outcome => ({
 	entry: ""
 });
 
-const success = (match: Match, entry: string): Outcome => ({
-	result: { ok: true, match },
-	entry
-});
-
 const describeStep = (step: AiStep, name: string): string => {
 	const { action } = step;
 	if (action.kind === "playLand")
@@ -169,11 +164,12 @@ export const useMatch = (
 	const changeLife = useCallback(
 		(index: PlayerIndex, delta: number) =>
 			apply((match) => {
-				const next = adjustLife(match, index, delta);
-				return success(
-					next,
-					`${names[index]} agora tem ${next.players[index].life} de vida`
-				);
+				const result = adjustLife(match, index, delta);
+				if (!result.ok) return { result, entry: "" };
+				return {
+					result,
+					entry: `${names[index]} agora tem ${result.match.players[index].life} de vida`
+				};
 			}, index),
 		[apply, names]
 	);
@@ -198,11 +194,10 @@ export const useMatch = (
 	const clearUsage = useCallback(
 		(index: PlayerIndex) =>
 			apply(
-				(match) =>
-					success(
-						resolveUsage(match, index),
-						`${names[index]} enviou a área de uso ao cemitério`
-					),
+				(match) => ({
+					result: resolveUsage(match, index),
+					entry: `${names[index]} enviou a área de uso ao cemitério`
+				}),
 				index
 			),
 		[apply, names]

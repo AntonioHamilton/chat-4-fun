@@ -153,7 +153,7 @@ describe("engine", () => {
 		const match: Match = matchWithMana(1);
 		const used: Match = unwrap(castCard(match, 0, handIdOf(match, "instant")));
 		assert.equal(used.players[0].zones.usage.length, 1);
-		const resolved: Match = resolveUsage(used, 0);
+		const resolved: Match = unwrap(resolveUsage(used, 0));
 		assert.equal(resolved.players[0].zones.usage.length, 0);
 		assert.equal(resolved.players[0].zones.graveyard[0].card.id, "instant");
 	});

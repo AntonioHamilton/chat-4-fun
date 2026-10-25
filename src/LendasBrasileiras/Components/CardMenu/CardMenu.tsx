@@ -13,11 +13,30 @@ export const CardMenu = ({ title, options, onClose }: CardMenuProps) => {
 	const dialogRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		const opener = document.activeElement;
 		dialogRef.current?.querySelector("button")?.focus();
+		return () => {
+			if (opener instanceof HTMLElement) opener.focus();
+		};
 	}, []);
 
 	const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-		if (event.key === "Escape") onClose();
+		if (event.key === "Escape") {
+			onClose();
+			return;
+		}
+		if (event.key !== "Tab") return;
+		const buttons = dialogRef.current?.querySelectorAll("button");
+		if (!buttons || buttons.length === 0) return;
+		const first = buttons[0];
+		const last = buttons[buttons.length - 1];
+		if (event.shiftKey && document.activeElement === first) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && document.activeElement === last) {
+			event.preventDefault();
+			first.focus();
+		}
 	};
 
 	return (

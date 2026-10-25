@@ -85,9 +85,7 @@ const execute = (
 	if (action.kind === "tap") return tapLand(match, index, action.instanceId);
 	if (action.kind === "cast") {
 		const result: MoveResult = castCard(match, index, action.instanceId);
-		return result.ok
-			? { ok: true, match: resolveUsage(result.match, index) }
-			: result;
+		return result.ok ? resolveUsage(result.match, index) : result;
 	}
 	return advancePhase(match);
 };

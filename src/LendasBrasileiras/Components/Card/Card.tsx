@@ -77,7 +77,7 @@ export const Card = ({
 			onContextMenu={(event: MouseEvent) => event.preventDefault()}
 		>
 			<SC.Name>{card.name}</SC.Name>
-			<SC.Body $large={large}>
+			<SC.Body $large={large} $darkText={getCardColor(card) === "white"}>
 				{typeLabels[card.type]}
 				{large && card.flavor ? <i> {card.flavor}</i> : null}
 			</SC.Body>

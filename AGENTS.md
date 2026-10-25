@@ -185,9 +185,30 @@ export const Container = styled.div`
 - Salvar estado do jogo em formato JSON.
 - Carregar estado na inicialização quando apropriado.
 
+## Personas de teste (Lendas Brasileiras)
+
+- **Duda, celular (390 px):** toca e arrasta mal. Fluxos: lobby, tocar carta e usar o menu (jogar, cemitério, ampliar), toque longo para ampliar, Próxima fase. Erros típicos: toque duplo, arrasto curto que vira clique, tocar na vez do computador. Verificar sem overflow horizontal a 320 e 390 px.
+- **Rafa, PC com mouse (1280 px):** arrasta tudo. Fluxos: arrastar mão para Terrenos/Campo/Cemitério, virar terreno, vida +/-, histórico lateral. Erros típicos: soltar carta em zona errada, arrastar duas vezes o terreno, soltar fora das zonas, arrastar carta do oponente.
+- **Léo, teclado e leitor de tela (820 px):** só Tab, Enter e Esc. Fluxos: Tab até a carta, Enter abre o menu, escolher destino, Esc fecha, Próxima fase. Erros típicos: Tab saindo do menu, foco perdido ao fechar, ordem de foco.
+
+Todas rodam contra o computador. Automatizado: `npm run test:lendas`. Manual: `npm run dev`, abrir `/lendas-brasileiras` e repetir os fluxos acima; casos já achados estão em "Regressão".
+
 ## Regressão: testes que quebram a aplicação
 
-Ainda sem casos registrados. Cada bug corrigido deve entrar aqui com: o que quebra, como reproduzir e qual teste ou conferência cobre.
+Suíte do motor e da IA: `npm run test:lendas`. Testes marcados `todo` documentam bugs ainda abertos (falham hoje sem quebrar a suíte); ao corrigir o bug, tire o `todo`.
+
+Lendas Brasileiras, validação de 25/10/2026 (testado em iframes de 320, 390, 820 e 1280 px no Chrome; sem overflow horizontal em nenhum):
+
+1. [baixa] Motor aceita jogada depois do fim da partida. Com `winner` definido, `moveCard` ainda move carta e `adjustLife` ainda muda a vida (na UI, menu da carta e botões +/- da vida seguem ativos após "Partida encerrada"). Reproduzir: jogar até a biblioteca esvaziar (clicar Comprar na sua vez) e então mover carta para o Cemitério ou clicar +. Teste: `src/LendasBrasileiras/Utils/engine/regression.test.ts` ("rejects moveCard after the match is over", "keeps life unchanged after the match is over").
+2. [baixa] `tappedLands` guarda terreno que já saiu da zona de terrenos, e o contador "Terrenos livres/total" pode ficar negativo. Reproduzir: jogar terreno, virar para gerar mana, mover para Cemitério pelo menu: aparece "Terrenos -1/0". Teste: `regression.test.ts` ("drops a tapped land from tappedLands...").
+3. [média, só tela] Menu da carta (`CardMenu`) tem `aria-modal` mas não prende o foco: Tab sai do menu e vai para os links do rodapé; Esc só fecha com o foco dentro do menu; ao fechar, o foco vai para o `body` e não volta à carta. Reproduzir: Tab até uma carta da sua mão, Enter, Tab 7 vezes (foco chega em "← Portfolio"), Esc (menu continua aberto). Sem teste automatizado (não há framework de UI no projeto).
+4. [baixa, só tela] Ordem do Tab começa nas cartas do computador (mão dele, zona de comando) antes das suas; leitor de tela passa por ~10 cartas do oponente antes de chegar às suas. Reproduzir: abrir mesa contra o computador e apertar Tab 4 vezes após "Próxima fase".
+5. [baixa, decisão a confirmar] A mão do computador aparece virada para cima (nomes e custos visíveis). A spec seção 11 não pede mão oculta; confirmar se é intencional.
+6. [baixa, só tela] Cartas de terreno branco (ex: "Mirante do Sol", "Savana Clara") têm o rótulo "Terreno" claro sobre fundo bege, contraste fraco. Reproduzir: deck Capivara, olhar a mão a 1280 px.
+
+Cobertura automática adicional (sem bugs): `src/LendasBrasileiras/Utils/engine/ai.test.ts` (IA passa fora do seu turno, joga partida inteira contra si mesma até alguém perder, não mexe nas zonas do oponente).
+
+Conferido sem bug: escolher deck, jogar terreno (segundo terreno recusado), virar terreno e pool, mover para Cemitério pelo menu, comprar, ajustar vida, passar fase, IA joga sozinha (terreno, feitiço, criatura, encantamento), humano bloqueado no turno da IA (botões desabilitados), fim de partida por biblioteca vazia ("Vitória de Computador"), arrastar com mouse para zona válida e inválida.
 
 ## O que não fazer
 

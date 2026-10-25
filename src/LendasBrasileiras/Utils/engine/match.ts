@@ -222,7 +222,8 @@ export const castCard = (
 	return { ok: true, match: replacePlayer(match, index, next) };
 };
 
-export const resolveUsage = (match: Match, index: PlayerIndex): Match => {
+export const resolveUsage = (match: Match, index: PlayerIndex): MoveResult => {
+	if (match.winner !== null) return fail("match_over", "Partida encerrada");
 	const player: Player = match.players[index];
 	const next: Player = {
 		...player,
@@ -232,7 +233,7 @@ export const resolveUsage = (match: Match, index: PlayerIndex): Match => {
 			graveyard: [...player.zones.graveyard, ...player.zones.usage]
 		}
 	};
-	return replacePlayer(match, index, next);
+	return { ok: true, match: replacePlayer(match, index, next) };
 };
 
 export const moveCard = (
@@ -241,10 +242,18 @@ export const moveCard = (
 	instanceId: string,
 	to: Zone
 ): MoveResult => {
+	if (match.winner !== null) return fail("match_over", "Partida encerrada");
 	const player: Player = match.players[index];
 	const found = findCard(player, instanceId);
 	if (!found) return fail("card_not_found", "Carta não encontrada");
-	const next: Player = moveInPlayer(player, found.instance, found.zone, to);
+	const moved: Player = moveInPlayer(player, found.instance, found.zone, to);
+	const next: Player =
+		found.zone === "lands"
+			? {
+					...moved,
+					tappedLands: moved.tappedLands.filter((id) => id !== instanceId)
+				}
+			: moved;
 	return { ok: true, match: replacePlayer(match, index, next) };
 };
 
@@ -252,11 +261,16 @@ export const adjustLife = (
 	match: Match,
 	index: PlayerIndex,
 	delta: number
-): Match =>
-	replacePlayer(match, index, {
-		...match.players[index],
-		life: match.players[index].life + delta
-	});
+): MoveResult => {
+	if (match.winner !== null) return fail("match_over", "Partida encerrada");
+	return {
+		ok: true,
+		match: replacePlayer(match, index, {
+			...match.players[index],
+			life: match.players[index].life + delta
+		})
+	};
+};
 
 const nextPhase: Record<Phase, Phase> = {
 	draw: "main1",
