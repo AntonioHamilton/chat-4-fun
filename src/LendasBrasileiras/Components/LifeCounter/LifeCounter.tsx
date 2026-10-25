@@ -3,14 +3,20 @@ import * as SC from "./styled";
 type LifeCounterProps = {
 	life: number;
 	onChange: (delta: number) => void;
+	disabled?: boolean;
 };
 
-export const LifeCounter = ({ life, onChange }: LifeCounterProps) => {
+export const LifeCounter = ({
+	life,
+	onChange,
+	disabled = false
+}: LifeCounterProps) => {
 	return (
 		<SC.Container role="group" aria-label="Vida">
 			<SC.Button
 				type="button"
 				aria-label="Diminuir vida"
+				disabled={disabled}
 				onClick={() => onChange(-1)}
 			>
 				-
@@ -19,6 +25,7 @@ export const LifeCounter = ({ life, onChange }: LifeCounterProps) => {
 			<SC.Button
 				type="button"
 				aria-label="Aumentar vida"
+				disabled={disabled}
 				onClick={() => onChange(1)}
 			>
 				+

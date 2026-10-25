@@ -158,6 +158,32 @@ describe("engine", () => {
 		assert.equal(resolved.players[0].zones.graveyard[0].card.id, "instant");
 	});
 
+	const opponentTurnWithMana = (): Match => {
+		let match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+		for (let i = 0; i < 4; i++) match = unwrap(advancePhase(match));
+		assert.equal(match.activePlayer, 1);
+		for (let i = 0; i < 3; i++) match = unwrap(drawCard(match, 0));
+		const landId: string = match.players[0].zones.hand.filter(
+			(item) => item.card.type === "land"
+		)[0].instanceId;
+		match = unwrap(moveCard(match, 0, landId, "lands"));
+		return unwrap(tapLand(match, 0, landId));
+	};
+
+	it("casts an instant during the opponent's turn", () => {
+		const match: Match = opponentTurnWithMana();
+		const next: Match = unwrap(castCard(match, 0, handIdOf(match, "instant")));
+		assert.equal(next.players[0].zones.usage.length, 1);
+		assert.equal(next.players[0].zones.usage[0].card.id, "instant");
+	});
+
+	it("fails to cast a non-instant during the opponent's turn", () => {
+		const match: Match = opponentTurnWithMana();
+		const result: MoveResult = castCard(match, 0, handIdOf(match, "creature"));
+		assert.equal(result.ok, false);
+		if (!result.ok) assert.equal(result.error.code, "not_active_player");
+	});
+
 	it("loses when drawing from an empty library", () => {
 		let match: Match = createMatch(
 			makeDeck(Array.from({ length: 7 }, (_, i) => land(`l${i}`))),

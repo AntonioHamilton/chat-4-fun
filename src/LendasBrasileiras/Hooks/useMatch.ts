@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Deck } from "@/LendasBrasileiras/Types/deck";
 import type {
 	Match,
@@ -7,6 +7,11 @@ import type {
 } from "@/LendasBrasileiras/Types/match";
 import type { CardSource, DropTarget } from "@/LendasBrasileiras/Types/ui";
 import { phaseLabels, zoneLabels } from "@/LendasBrasileiras/Constants/labels";
+import { COMPUTER_STEP_DELAY_MS } from "@/LendasBrasileiras/Constants/computer";
+import {
+	playComputerStep,
+	type AiStep
+} from "@/LendasBrasileiras/Utils/ai/computerPlayer";
 import {
 	getDestinations,
 	isPlayMove
@@ -43,10 +48,28 @@ const success = (match: Match, entry: string): Outcome => ({
 	entry
 });
 
-export const useMatch = (deckA: Deck, deckB: Deck) => {
+const describeStep = (step: AiStep, name: string): string => {
+	const { action } = step;
+	if (action.kind === "playLand")
+		return `${name} jogou o terreno ${action.cardName}`;
+	if (action.kind === "tap") return `${name} virou ${action.cardName}`;
+	if (action.kind === "cast") return `${name} lançou ${action.cardName}`;
+	return "";
+};
+
+export const useMatch = (
+	deckA: Deck,
+	deckB: Deck,
+	computerIndex: PlayerIndex | null = null
+) => {
 	const names = useMemo<[string, string]>(
-		() => [`Jogador 1 (${deckA.name})`, `Jogador 2 (${deckB.name})`],
-		[deckA.name, deckB.name]
+		() => [
+			`Jogador 1 (${deckA.name})`,
+			computerIndex === 1
+				? `Computador (${deckB.name})`
+				: `Jogador 2 (${deckB.name})`
+		],
+		[deckA.name, deckB.name, computerIndex]
 	);
 
 	const [state, setState] = useState<MatchState>(() => ({
@@ -55,20 +78,65 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 		error: null
 	}));
 
-	const apply = useCallback((compute: (match: Match) => Outcome) => {
-		setState((prev) => {
-			const { result, entry } = compute(prev.match);
-			if (!result.ok) return { ...prev, error: result.error.message };
-			return {
-				match: result.match,
-				log: [`T${prev.match.turn}: ${entry}`, ...prev.log].slice(
-					0,
-					MAX_LOG_LINES
-				),
-				error: null
-			};
-		});
-	}, []);
+	const apply = useCallback(
+		(compute: (match: Match) => Outcome, index?: PlayerIndex) => {
+			setState((prev) => {
+				if (
+					computerIndex !== null &&
+					(prev.match.activePlayer === computerIndex || index === computerIndex)
+				)
+					return { ...prev, error: "Aguarde: é a vez do computador" };
+				const { result, entry } = compute(prev.match);
+				if (!result.ok) return { ...prev, error: result.error.message };
+				return {
+					match: result.match,
+					log: [`T${prev.match.turn}: ${entry}`, ...prev.log].slice(
+						0,
+						MAX_LOG_LINES
+					),
+					error: null
+				};
+			});
+		},
+		[computerIndex]
+	);
+
+	const isComputerTurn =
+		computerIndex !== null &&
+		state.match.winner === null &&
+		state.match.activePlayer === computerIndex;
+
+	useEffect(() => {
+		if (!isComputerTurn || computerIndex === null) return undefined;
+		const timer = window.setTimeout(() => {
+			setState((prev) => {
+				if (
+					prev.match.winner !== null ||
+					prev.match.activePlayer !== computerIndex
+				)
+					return prev;
+				const step = playComputerStep(prev.match, computerIndex);
+				let entry = describeStep(step, names[computerIndex]);
+				if (step.action.kind === "pass") {
+					entry =
+						step.match.turn !== prev.match.turn
+							? `Turno de ${names[step.match.activePlayer]}: ${phaseLabels[step.match.phase]}`
+							: `Fase: ${phaseLabels[step.match.phase]}`;
+					if (step.match.winner !== null)
+						entry = `${names[step.match.activePlayer]} não tem cartas e perdeu`;
+				}
+				return {
+					match: step.match,
+					log: [`T${prev.match.turn}: ${entry}`, ...prev.log].slice(
+						0,
+						MAX_LOG_LINES
+					),
+					error: null
+				};
+			});
+		}, COMPUTER_STEP_DELAY_MS);
+		return () => window.clearTimeout(timer);
+	}, [isComputerTurn, computerIndex, state.match, names]);
 
 	const draw = useCallback(
 		(index: PlayerIndex) =>
@@ -80,7 +148,7 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 						entry: `${names[index]} não tem cartas e perdeu`
 					};
 				return { result, entry: `${names[index]} comprou uma carta` };
-			}),
+			}, index),
 		[apply, names]
 	);
 
@@ -94,7 +162,7 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 					result: tapLand(match, index, instanceId),
 					entry: `${names[index]} virou ${found?.card.name ?? "terreno"}`
 				};
-			}),
+			}, index),
 		[apply, names]
 	);
 
@@ -106,7 +174,7 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 					next,
 					`${names[index]} agora tem ${next.players[index].life} de vida`
 				);
-			}),
+			}, index),
 		[apply, names]
 	);
 
@@ -129,11 +197,13 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 
 	const clearUsage = useCallback(
 		(index: PlayerIndex) =>
-			apply((match) =>
-				success(
-					resolveUsage(match, index),
-					`${names[index]} enviou a área de uso ao cemitério`
-				)
+			apply(
+				(match) =>
+					success(
+						resolveUsage(match, index),
+						`${names[index]} enviou a área de uso ao cemitério`
+					),
+				index
 			),
 		[apply, names]
 	);
@@ -170,7 +240,7 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 					result: moveCard(match, index, source.instanceId, target.zone),
 					entry: `${names[index]} moveu ${card.name} para ${zoneLabels[target.zone]}`
 				};
-			});
+			}, source.playerIndex);
 		},
 		[apply, names]
 	);
@@ -180,6 +250,7 @@ export const useMatch = (deckA: Deck, deckB: Deck) => {
 		log: state.log,
 		error: state.error,
 		names,
+		isComputerTurn,
 		draw,
 		tap,
 		changeLife,

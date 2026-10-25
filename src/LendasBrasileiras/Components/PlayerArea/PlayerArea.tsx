@@ -19,6 +19,7 @@ type PlayerAreaProps = {
 	isActive: boolean;
 	dragTarget: DropTarget | null;
 	draggingId: string | null;
+	locked: boolean;
 	onDraw: () => void;
 	onLifeChange: (delta: number) => void;
 	onClearUsage: () => void;
@@ -40,6 +41,7 @@ export const PlayerArea = ({
 	isActive,
 	dragTarget,
 	draggingId,
+	locked,
 	onDraw,
 	onLifeChange,
 	onClearUsage,
@@ -66,10 +68,12 @@ export const PlayerArea = ({
 					zone === "lands" && player.tappedLands.includes(instance.instanceId)
 				}
 				dragging={draggingId === instance.instanceId}
-				onPointerDown={(event) =>
-					onCardPointerDown(event, source, instance.card)
-				}
-				onClick={() => onCardClick(source)}
+				onPointerDown={(event) => {
+					if (!locked) onCardPointerDown(event, source, instance.card);
+				}}
+				onClick={() => {
+					if (!locked) onCardClick(source);
+				}}
 				onFocus={() => onCardFocus(instance.card)}
 				onBlur={onCardBlur}
 			/>
@@ -113,7 +117,11 @@ export const PlayerArea = ({
 					{name}
 					{isActive && <SC.Badge>Na vez</SC.Badge>}
 				</SC.Name>
-				<LifeCounter life={player.life} onChange={onLifeChange} />
+				<LifeCounter
+					life={player.life}
+					onChange={onLifeChange}
+					disabled={locked}
+				/>
 				<ManaPool
 					pool={player.manaPool}
 					landsCount={landsCount}
@@ -130,7 +138,7 @@ export const PlayerArea = ({
 					highlighted={isHighlighted("library")}
 				>
 					<SC.Back aria-hidden="true" />
-					<SC.DrawButton type="button" onClick={onDraw}>
+					<SC.DrawButton type="button" disabled={locked} onClick={onDraw}>
 						Comprar
 					</SC.DrawButton>
 				</Zone>
@@ -143,7 +151,11 @@ export const PlayerArea = ({
 				{renderZone("usage", "usage", {
 					action:
 						player.zones.usage.length > 0 ? (
-							<SC.ClearButton type="button" onClick={onClearUsage}>
+							<SC.ClearButton
+								type="button"
+								disabled={locked}
+								onClick={onClearUsage}
+							>
 								Limpar
 							</SC.ClearButton>
 						) : null

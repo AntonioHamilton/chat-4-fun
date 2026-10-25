@@ -15,6 +15,7 @@ import {
 	getDestinations,
 	isPlayMove
 } from "@/LendasBrasileiras/Utils/destinations";
+import { COMPUTER_PLAYER_INDEX } from "@/LendasBrasileiras/Constants/computer";
 import * as SC from "./styled";
 
 type TableProps = {
@@ -33,8 +34,9 @@ export const Table = ({ deckA, deckB }: TableProps) => {
 		changeLife,
 		nextPhase,
 		clearUsage,
-		moveTo
-	} = useMatch(deckA, deckB);
+		moveTo,
+		isComputerTurn
+	} = useMatch(deckA, deckB, COMPUTER_PLAYER_INDEX);
 	const [menu, setMenu] = useState<CardSource | null>(null);
 	const [preview, setPreview] = useState<CardData | null>(null);
 
@@ -95,6 +97,7 @@ export const Table = ({ deckA, deckB }: TableProps) => {
 			isActive={match.activePlayer === index}
 			dragTarget={drag?.target ?? null}
 			draggingId={drag?.source.instanceId ?? null}
+			locked={isComputerTurn || index === COMPUTER_PLAYER_INDEX}
 			onDraw={() => draw(index)}
 			onLifeChange={(delta) => changeLife(index, delta)}
 			onClearUsage={() => clearUsage(index)}
@@ -116,7 +119,7 @@ export const Table = ({ deckA, deckB }: TableProps) => {
 					<SC.PhaseButton
 						type="button"
 						onClick={nextPhase}
-						disabled={match.winner !== null}
+						disabled={match.winner !== null || isComputerTurn}
 					>
 						Próxima fase
 					</SC.PhaseButton>

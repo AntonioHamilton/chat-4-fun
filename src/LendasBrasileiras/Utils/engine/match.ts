@@ -200,13 +200,13 @@ export const castCard = (
 	instanceId: string
 ): MoveResult => {
 	if (match.winner !== null) return fail("match_over", "Partida encerrada");
-	if (match.activePlayer !== index)
-		return fail("not_active_player", "Não é o turno deste jogador");
 	const player: Player = match.players[index];
 	const found = findCard(player, instanceId);
 	if (!found) return fail("card_not_found", "Carta não encontrada");
 	const { zone, instance } = found;
 	const type = instance.card.type;
+	if (type !== "instant" && match.activePlayer !== index)
+		return fail("not_active_player", "Não é o turno deste jogador");
 	if (type === "land") return fail("not_castable", "Terreno não é lançado");
 	const expectedZone: Zone = type === "commander" ? "command" : "hand";
 	if (zone !== expectedZone)
