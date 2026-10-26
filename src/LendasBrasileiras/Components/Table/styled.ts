@@ -96,6 +96,13 @@ export const PassButton = styled.button`
 	font-weight: 700;
 	cursor: pointer;
 
+	@media (max-height: 599px) {
+		min-width: 0;
+		padding: 4px;
+		font-size: 0.6rem;
+		line-height: 1.1;
+	}
+
 	&:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;

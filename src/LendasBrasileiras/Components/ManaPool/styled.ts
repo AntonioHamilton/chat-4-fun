@@ -8,6 +8,15 @@ export const Container = styled.div`
 	align-items: center;
 	gap: 4px;
 	min-height: 26px;
+
+	@media (max-height: 599px) {
+		flex-direction: column;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		align-content: flex-end;
+		max-height: 100%;
+		gap: 2px;
+	}
 `;
 
 export const Circle = styled.span<{ $color: string }>`
@@ -24,4 +33,10 @@ export const Circle = styled.span<{ $color: string }>`
 	font-size: 0.8rem;
 	font-weight: 700;
 	text-shadow: 0 1px 2px ${theme.shadowColor};
+
+	@media (max-height: 599px) {
+		width: 20px;
+		height: 20px;
+		font-size: 0.65rem;
+	}
 `;

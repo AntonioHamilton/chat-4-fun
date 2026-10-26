@@ -8,13 +8,10 @@ const areas = (position: Position) =>
 		? `"lands support" "battle battle"`
 		: `"battle battle" "lands support"`;
 
-const rows = (position: Position) =>
-	position === "top" ? "auto minmax(0, 1fr)" : "minmax(0, 1fr) auto";
-
 export const Root = styled.section<{ $position: Position; $active: boolean }>`
 	display: grid;
 	grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-	grid-template-rows: ${({ $position }) => rows($position)};
+	grid-template-rows: repeat(2, minmax(0, 1fr));
 	grid-template-areas: ${({ $position }) => areas($position)};
 	--row-w: calc(var(--card-w) * 0.8);
 	gap: 8px 6px;

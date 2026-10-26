@@ -4,7 +4,7 @@ import { theme } from "@/styles/theme";
 export const Dock = styled.section`
 	--card-w: var(--hand-w);
 	display: grid;
-	grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+	grid-template-columns: auto auto minmax(0, 1fr) auto;
 	align-items: stretch;
 	gap: 4px 10px;
 	min-width: 0;
@@ -22,6 +22,12 @@ export const Hero = styled.div`
 	flex-direction: column;
 	align-items: stretch;
 	gap: 14px;
+
+	@media (max-height: 599px) {
+		box-sizing: border-box;
+		width: calc(var(--hand-w) * 1.3 + 8px);
+		gap: 6px;
+	}
 `;
 
 export const Portrait = styled.div`
@@ -66,8 +72,18 @@ export const Piles = styled.div`
 	}
 `;
 
-export const Hand = styled.div`
+export const Center = styled.div`
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 8px;
+	min-width: 0;
+`;
+
+export const Hand = styled.div<{ $count: number }>`
 	position: relative;
+	flex: 0 1
+		calc(var(--card-w) * ${({ $count }) => 0.25 + 0.75 * Math.max($count, 2)});
 	z-index: 9;
 	container-type: inline-size;
 	min-width: 0;
@@ -122,7 +138,7 @@ export const FanItem = styled.span<FanItemProps>`
 `;
 
 export const CommandSlot = styled.div`
-	align-self: end;
+	flex: 0 0 auto;
 	padding: 18px 0 calc(var(--hand-w) * 0.15);
 
 	[data-zone="command"] > span {
@@ -141,6 +157,11 @@ export const End = styled.div`
 	align-items: flex-end;
 	align-self: start;
 	gap: 6px;
+
+	@media (max-height: 599px) {
+		align-self: stretch;
+		min-height: 0;
+	}
 `;
 
 export const Back = styled.div`

@@ -24,7 +24,7 @@ export const Container = styled.div<{ $variant: Variant }>`
 export const Value = styled.span<{ $variant: Variant }>`
 	min-width: 2.2ch;
 	text-align: center;
-	font-size: 1.3rem;
+	font-size: 1rem;
 	font-weight: 700;
 	color: ${theme.gold400};
 
@@ -32,7 +32,7 @@ export const Value = styled.span<{ $variant: Variant }>`
 		$variant === "portrait" &&
 		css`
 			margin-top: 20%;
-			font-size: clamp(1.6rem, 6vh, 2.6rem);
+			font-size: clamp(1rem, 3.8vh, 1.7rem);
 			line-height: 1;
 			color: ${theme.textPrimary};
 			text-shadow:

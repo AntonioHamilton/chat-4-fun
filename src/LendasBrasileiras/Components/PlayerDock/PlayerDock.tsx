@@ -88,45 +88,47 @@ export const PlayerDock = ({
 				</Zone>
 			</SC.Piles>
 
-			<SC.Hand>
-				<PlayerZone
-					zone="hand"
-					player={player}
-					playerIndex={playerIndex}
-					handlers={handlers}
-					touch="none"
-					fan
-					renderItem={(card, index, total) => {
-						const half = (total - 1) / 2;
-						const offset = index - half;
-						const ratio = half > 0 ? offset / half : 1;
-						const lift = FAN_ARC_LIFT * (1 - ratio * ratio);
-						return (
-							<SC.FanItem
-								$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
-								$lift={`calc(var(--card-w) * -${lift.toFixed(3)})`}
-								$count={total}
-							>
-								{card}
-							</SC.FanItem>
-						);
-					}}
-				/>
-			</SC.Hand>
-
-			{player.zones.command.length > 0 && (
-				<SC.CommandSlot>
+			<SC.Center>
+				<SC.Hand $count={player.zones.hand.length}>
 					<PlayerZone
-						zone="command"
+						zone="hand"
 						player={player}
 						playerIndex={playerIndex}
 						handlers={handlers}
 						touch="none"
 						fan
-						countLabel="Comandante"
+						renderItem={(card, index, total) => {
+							const half = (total - 1) / 2;
+							const offset = index - half;
+							const ratio = half > 0 ? offset / half : 1;
+							const lift = FAN_ARC_LIFT * (1 - ratio * ratio);
+							return (
+								<SC.FanItem
+									$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
+									$lift={`calc(var(--card-w) * -${lift.toFixed(3)})`}
+									$count={total}
+								>
+									{card}
+								</SC.FanItem>
+							);
+						}}
 					/>
-				</SC.CommandSlot>
-			)}
+				</SC.Hand>
+
+				{player.zones.command.length > 0 && (
+					<SC.CommandSlot>
+						<PlayerZone
+							zone="command"
+							player={player}
+							playerIndex={playerIndex}
+							handlers={handlers}
+							touch="none"
+							fan
+							countLabel="Comandante"
+						/>
+					</SC.CommandSlot>
+				)}
+			</SC.Center>
 
 			<SC.End>
 				<ManaPool lands={player.zones.lands} tappedLands={player.tappedLands} />
