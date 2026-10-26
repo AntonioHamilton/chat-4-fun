@@ -12,8 +12,7 @@ import {
 	drawCard,
 	moveCard,
 	passTurn,
-	playLand,
-	resolveUsage
+	playLand
 } from "./match";
 
 const land = (id: string): Card => ({
@@ -90,8 +89,30 @@ const handIdOf = (match: Match, cardId: string): string => {
 	return found.instanceId;
 };
 
-const matchWithMana = (lands: number): Match => {
-	let match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+const sorcery: Card = {
+	id: "sorcery",
+	name: "sorcery",
+	type: "sorcery",
+	cost: { green: 1 },
+	art: null
+};
+
+const sorceryDeck = (): Deck =>
+	makeDeck([
+		land("l1"),
+		land("l2"),
+		land("l3"),
+		land("l4"),
+		land("l5"),
+		land("l6"),
+		land("l7"),
+		creature,
+		sorcery,
+		land("l8")
+	]);
+
+const matchWithMana = (lands: number, deck: Deck = fullDeck()): Match => {
+	let match: Match = createMatch(deck, deck, noShuffle);
 	match = unwrap(drawCard(match, 0));
 	match = unwrap(drawCard(match, 0));
 	match = unwrap(drawCard(match, 0));
@@ -150,13 +171,30 @@ describe("engine", () => {
 		assert.equal(next.players[0].tappedLands.length, 2);
 	});
 
-	it("moves an instant to the graveyard after use", () => {
+	it("sends an instant straight to the graveyard and pays its cost", () => {
 		const match: Match = matchWithMana(1);
 		const used: Match = unwrap(castCard(match, 0, handIdOf(match, "instant")));
-		assert.equal(used.players[0].zones.usage.length, 1);
-		const resolved: Match = unwrap(resolveUsage(used, 0));
-		assert.equal(resolved.players[0].zones.usage.length, 0);
-		assert.equal(resolved.players[0].zones.graveyard[0].card.id, "instant");
+		assert.equal("usage" in used.players[0].zones, false);
+		assert.equal(used.players[0].zones.graveyard.length, 1);
+		assert.equal(used.players[0].zones.graveyard[0].card.id, "instant");
+		assert.equal(
+			used.players[0].zones.hand.some((item) => item.card.id === "instant"),
+			false
+		);
+		assert.equal(used.players[0].tappedLands.length, 1);
+	});
+
+	it("sends a sorcery straight to the graveyard and pays its cost", () => {
+		const match: Match = matchWithMana(1, sorceryDeck());
+		const used: Match = unwrap(castCard(match, 0, handIdOf(match, "sorcery")));
+		assert.equal("usage" in used.players[0].zones, false);
+		assert.equal(used.players[0].zones.graveyard.length, 1);
+		assert.equal(used.players[0].zones.graveyard[0].card.id, "sorcery");
+		assert.equal(
+			used.players[0].zones.hand.some((item) => item.card.id === "sorcery"),
+			false
+		);
+		assert.equal(used.players[0].tappedLands.length, 1);
 	});
 
 	const opponentTurnWithMana = (): Match => {
@@ -173,8 +211,8 @@ describe("engine", () => {
 	it("casts an instant during the opponent's turn", () => {
 		const match: Match = opponentTurnWithMana();
 		const next: Match = unwrap(castCard(match, 0, handIdOf(match, "instant")));
-		assert.equal(next.players[0].zones.usage.length, 1);
-		assert.equal(next.players[0].zones.usage[0].card.id, "instant");
+		assert.equal(next.players[0].zones.graveyard.length, 1);
+		assert.equal(next.players[0].zones.graveyard[0].card.id, "instant");
 	});
 
 	it("fails to cast a non-instant during the opponent's turn", () => {

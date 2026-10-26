@@ -20,7 +20,6 @@ type PlayerZoneProps = {
 	fan?: boolean;
 	animateEntry?: boolean;
 	countLabel?: string;
-	action?: ReactNode;
 	pickVisible?: (cards: CardInstance[]) => CardInstance[];
 	renderItem?: (card: ReactNode, index: number, total: number) => ReactNode;
 	overlay?: ReactNode;
@@ -39,7 +38,6 @@ export const PlayerZone = ({
 	fan,
 	animateEntry = false,
 	countLabel,
-	action,
 	pickVisible,
 	renderItem,
 	overlay,
@@ -97,7 +95,6 @@ export const PlayerZone = ({
 			scroll={scroll}
 			pile={pile}
 			fan={fan}
-			action={action}
 			onOpen={onOpenList}
 		>
 			{visible.map((instance, index) => {

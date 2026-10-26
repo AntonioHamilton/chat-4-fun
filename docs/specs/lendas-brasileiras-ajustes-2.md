@@ -35,3 +35,12 @@ Status: pedido direto do usuário após testar a mesa v2 no celular. Base: `mast
 - `npx tsc --noEmit`, `rtk proxy npm run lint`, `npm run test:lendas`, `npx prettier --check`, build numa cópia.
 - Testes novos no motor: desvirar no início do turno; compra no início do turno; pagamento automático de custo com terrenos livres; erro sem mana suficiente.
 - Visual em 844x390, 1024x768 e 1280x800.
+
+## 6. Ajuste 5: instantâneo e feitiço direto ao cemitério; área de uso removida
+
+- Instantâneo e feitiço, ao serem lançados, vão no mesmo passo para o cemitério, com o custo pago normalmente (mana automática). Não passam mais pela área de Uso.
+- A zona `usage` sai do estado, dos tipos, dos rótulos e da tela (campo do jogador e do adversário). O botão "Limpar" e `resolveUsage` foram removidos.
+- Encantamento e artefato continuam na zona de suporte; criatura e comandante, no campo.
+- Arrastar instantâneo ou feitiço para o cemitério do próprio jogador lança a carta (o cemitério passou a aceitar soltar). Menu "Lançar" faz o mesmo.
+- A animação da IA (SpellFlash) continua lendo o topo do cemitério do computador.
+- Testes: instantâneo e feitiço vão ao cemitério sem zona de uso; custo pago; instantâneo no turno do oponente também vai ao cemitério.

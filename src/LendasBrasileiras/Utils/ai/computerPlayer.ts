@@ -5,12 +5,7 @@ import type {
 	PlayerIndex
 } from "@/LendasBrasileiras/Types/match";
 import type { CardInstance, Player } from "@/LendasBrasileiras/Types/player";
-import {
-	advancePhase,
-	castCard,
-	playLand,
-	resolveUsage
-} from "../engine/match";
+import { advancePhase, castCard, playLand } from "../engine/match";
 import { findLandsToTap } from "../engine/mana";
 
 export type AiAction =
@@ -73,10 +68,7 @@ const execute = (
 ): MoveResult => {
 	if (action.kind === "playLand")
 		return playLand(match, index, action.instanceId);
-	if (action.kind === "cast") {
-		const result: MoveResult = castCard(match, index, action.instanceId);
-		return result.ok ? resolveUsage(result.match, index) : result;
-	}
+	if (action.kind === "cast") return castCard(match, index, action.instanceId);
 	return advancePhase(match);
 };
 

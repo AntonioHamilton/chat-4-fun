@@ -11,7 +11,6 @@ type PlayerAreaProps = {
 	position: "top" | "bottom";
 	isActive: boolean;
 	handlers: CardHandlers;
-	onClearUsage: () => void;
 };
 
 export const PlayerArea = ({
@@ -20,8 +19,7 @@ export const PlayerArea = ({
 	playerIndex,
 	position,
 	isActive,
-	handlers,
-	onClearUsage
+	handlers
 }: PlayerAreaProps) => {
 	const landsTotal = player.zones.lands.length;
 	const landsTapped = player.tappedLands.length;
@@ -63,25 +61,6 @@ export const PlayerArea = ({
 				handlers={handlers}
 				area="support"
 				scroll
-			/>
-			<PlayerZone
-				zone="usage"
-				player={player}
-				playerIndex={playerIndex}
-				handlers={handlers}
-				area="usage"
-				scroll
-				action={
-					player.zones.usage.length > 0 ? (
-						<SC.ClearButton
-							type="button"
-							disabled={handlers.locked}
-							onClick={onClearUsage}
-						>
-							Limpar
-						</SC.ClearButton>
-					) : null
-				}
 			/>
 		</SC.Root>
 	);

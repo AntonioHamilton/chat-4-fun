@@ -45,7 +45,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 		names,
 		passTurn,
 		dismissError,
-		clearUsage,
 		moveTo,
 		isComputerTurn
 	} = useMatch(deckA, deckB, COMPUTER_PLAYER_INDEX);
@@ -201,7 +200,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						position="top"
 						isActive={match.activePlayer === opponentIndex}
 						handlers={getHandlers(opponentIndex)}
-						onClearUsage={() => clearUsage(opponentIndex)}
 					/>
 				</SC.OpponentField>
 
@@ -213,7 +211,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						position="bottom"
 						isActive={match.activePlayer === playerIndex}
 						handlers={getHandlers(playerIndex)}
-						onClearUsage={() => clearUsage(playerIndex)}
 					/>
 				</SC.PlayerField>
 

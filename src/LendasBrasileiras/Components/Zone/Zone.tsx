@@ -15,7 +15,6 @@ type ZoneProps = {
 	scroll?: boolean;
 	pile?: boolean;
 	fan?: boolean;
-	action?: ReactNode;
 	onOpen?: () => void;
 	children?: ReactNode;
 };
@@ -31,7 +30,6 @@ export const Zone = ({
 	scroll = false,
 	pile = false,
 	fan = false,
-	action,
 	onOpen,
 	children
 }: ZoneProps) => {
@@ -53,7 +51,6 @@ export const Zone = ({
 			{!fan && (
 				<SC.Header>
 					<SC.Label $always={alwaysLabel}>{label}</SC.Label>
-					{action}
 				</SC.Header>
 			)}
 			{(!fan || countLabel) && <SC.Count>{countLabel ?? count}</SC.Count>}

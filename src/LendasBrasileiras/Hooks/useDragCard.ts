@@ -22,7 +22,7 @@ type DragOptions = {
 	onLongPress: (card: Card) => void;
 };
 
-const undroppableZones: Zone[] = ["graveyard", "exile"];
+const undroppableZones: Zone[] = ["exile"];
 
 const findTarget = (x: number, y: number): DropTarget | null => {
 	const nodes = document.querySelectorAll<HTMLElement>("[data-zone]");

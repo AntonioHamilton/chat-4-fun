@@ -22,8 +22,7 @@ import {
 	createMatch,
 	moveCard,
 	passTurn,
-	playLand,
-	resolveUsage
+	playLand
 } from "@/LendasBrasileiras/Utils/engine/match";
 
 type MatchState = {
@@ -154,18 +153,6 @@ export const useMatch = (
 		[]
 	);
 
-	const clearUsage = useCallback(
-		(index: PlayerIndex) =>
-			apply(
-				(match) => ({
-					result: resolveUsage(match, index),
-					entry: `${names[index]} enviou a área de uso ao cemitério`
-				}),
-				index
-			),
-		[apply, names]
-	);
-
 	const moveTo = useCallback(
 		(source: CardSource, target: DropTarget) => {
 			if (
@@ -211,7 +198,6 @@ export const useMatch = (
 		isComputerTurn,
 		passTurn: pass,
 		dismissError,
-		clearUsage,
 		moveTo
 	};
 };

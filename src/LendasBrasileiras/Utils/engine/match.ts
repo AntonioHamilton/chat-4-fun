@@ -167,8 +167,8 @@ const castDestinations: Record<string, Zone> = {
 	commander: "battlefield",
 	enchantment: "support",
 	artifact: "support",
-	instant: "usage",
-	sorcery: "usage"
+	instant: "graveyard",
+	sorcery: "graveyard"
 };
 
 export const castCard = (
@@ -199,20 +199,6 @@ export const castCard = (
 	const next: Player = {
 		...moveInPlayer(player, instance, zone, castDestinations[type]),
 		tappedLands: [...player.tappedLands, ...toTap]
-	};
-	return { ok: true, match: replacePlayer(match, index, next) };
-};
-
-export const resolveUsage = (match: Match, index: PlayerIndex): MoveResult => {
-	if (match.winner !== null) return fail("match_over", "Partida encerrada");
-	const player: Player = match.players[index];
-	const next: Player = {
-		...player,
-		zones: {
-			...player.zones,
-			usage: [],
-			graveyard: [...player.zones.graveyard, ...player.zones.usage]
-		}
 	};
 	return { ok: true, match: replacePlayer(match, index, next) };
 };
