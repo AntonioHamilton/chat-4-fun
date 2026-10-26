@@ -15,7 +15,7 @@ type ZoneProps = {
 	scroll?: boolean;
 	pile?: boolean;
 	fan?: boolean;
-	action?: ReactNode;
+	bare?: boolean;
 	onOpen?: () => void;
 	children?: ReactNode;
 };
@@ -31,7 +31,7 @@ export const Zone = ({
 	scroll = false,
 	pile = false,
 	fan = false,
-	action,
+	bare = false,
 	onOpen,
 	children
 }: ZoneProps) => {
@@ -49,15 +49,23 @@ export const Zone = ({
 			$highlighted={highlighted}
 			$touch={touch}
 			$fan={fan}
+			$bare={bare}
 		>
-			{!fan && (
+			{!fan && !bare && (
 				<SC.Header>
 					<SC.Label $always={alwaysLabel}>{label}</SC.Label>
-					{action}
 				</SC.Header>
 			)}
-			<SC.Count>{countLabel ?? count}</SC.Count>
-			<SC.Cards $scroll={scroll} $touch={touch} $pile={pile} $fan={fan}>
+			{!bare && (!fan || countLabel) && (
+				<SC.Count>{countLabel ?? count}</SC.Count>
+			)}
+			<SC.Cards
+				$scroll={scroll}
+				$touch={touch}
+				$pile={pile}
+				$fan={fan}
+				$bare={bare}
+			>
 				{children}
 			</SC.Cards>
 			{onOpen && (

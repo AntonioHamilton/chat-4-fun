@@ -4,8 +4,8 @@ import { pageBackground } from "@/styles/guess-country.styled";
 import { theme } from "@/styles/theme";
 
 export const Wrapper = styled.div`
-	--card-w: clamp(32px, 9vh, 88px);
-	--hand-w: clamp(46px, 12vh, 110px);
+	--card-w: clamp(38px, 10.6vh, 104px);
+	--hand-w: clamp(39px, 10.6vh, 93px);
 	position: fixed;
 	inset: 0;
 	z-index: 30;
@@ -33,7 +33,7 @@ export const SpellFlash = styled.div`
 	top: 22%;
 	left: 50%;
 	z-index: 15;
-	--card-w: var(--hand-w);
+	--card-w: calc(var(--hand-w) * 1.7);
 	transform: translateX(-50%);
 	pointer-events: none;
 	filter: drop-shadow(0 8px 12px ${theme.shadowColor});
@@ -85,17 +85,23 @@ export const TurnInfo = styled.span`
 `;
 
 export const PassButton = styled.button`
-	align-self: flex-end;
-	min-width: 84px;
+	min-width: 72px;
 	min-height: 44px;
-	padding: 8px 12px;
+	padding: 6px 10px;
 	border-radius: 8px;
 	border: none;
 	background: ${theme.gold500};
 	color: ${theme.backgroundPrimary};
-	font-size: 0.85rem;
+	font-size: 0.75rem;
 	font-weight: 700;
 	cursor: pointer;
+
+	@media (max-height: 599px) {
+		min-width: 0;
+		padding: 4px;
+		font-size: 0.6rem;
+		line-height: 1.1;
+	}
 
 	&:disabled {
 		opacity: 0.5;

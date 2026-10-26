@@ -43,12 +43,8 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 		log,
 		error,
 		names,
-		draw,
-		tap,
-		changeLife,
 		passTurn,
 		dismissError,
-		clearUsage,
 		moveTo,
 		isComputerTurn
 	} = useMatch(deckA, deckB, COMPUTER_PLAYER_INDEX);
@@ -131,7 +127,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 			!isComputerTurn &&
 			match.winner === null;
 		if (!canAct) return actions;
-		const player = match.players[source.playerIndex];
 		const playable =
 			card.type === "land"
 				? canPlayLand(match, source.playerIndex, source.instanceId)
@@ -144,17 +139,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						playerIndex: source.playerIndex,
 						zone: getPlayZone(card)
 					})
-			});
-		if (
-			source.zone === "lands" &&
-			!player.tappedLands.includes(source.instanceId)
-		)
-			actions.push({
-				label: "Virar para gerar mana",
-				onSelect: () => {
-					tap(source.playerIndex, source.instanceId);
-					setZoom(null);
-				}
 			});
 		return actions;
 	};
@@ -216,7 +200,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						position="top"
 						isActive={match.activePlayer === opponentIndex}
 						handlers={getHandlers(opponentIndex)}
-						onClearUsage={() => clearUsage(opponentIndex)}
 					/>
 				</SC.OpponentField>
 
@@ -228,7 +211,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						position="bottom"
 						isActive={match.activePlayer === playerIndex}
 						handlers={getHandlers(playerIndex)}
-						onClearUsage={() => clearUsage(playerIndex)}
 					/>
 				</SC.PlayerField>
 
@@ -240,8 +222,6 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						player={match.players[playerIndex]}
 						playerIndex={playerIndex}
 						handlers={getHandlers(playerIndex)}
-						onDraw={() => draw(playerIndex)}
-						onLifeChange={(delta) => changeLife(playerIndex, delta)}
 						onOpenList={(zone) => setList({ playerIndex, zone })}
 					>
 						<SC.PassButton

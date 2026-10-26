@@ -12,9 +12,7 @@ import {
 	drawCard,
 	moveCard,
 	passTurn,
-	playLand,
-	resolveUsage,
-	tapLand
+	playLand
 } from "./match";
 
 const land = (id: string): Card => ({
@@ -91,8 +89,30 @@ const handIdOf = (match: Match, cardId: string): string => {
 	return found.instanceId;
 };
 
-const matchWithMana = (lands: number): Match => {
-	let match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+const sorcery: Card = {
+	id: "sorcery",
+	name: "sorcery",
+	type: "sorcery",
+	cost: { green: 1 },
+	art: null
+};
+
+const sorceryDeck = (): Deck =>
+	makeDeck([
+		land("l1"),
+		land("l2"),
+		land("l3"),
+		land("l4"),
+		land("l5"),
+		land("l6"),
+		land("l7"),
+		creature,
+		sorcery,
+		land("l8")
+	]);
+
+const matchWithMana = (lands: number, deck: Deck = fullDeck()): Match => {
+	let match: Match = createMatch(deck, deck, noShuffle);
 	match = unwrap(drawCard(match, 0));
 	match = unwrap(drawCard(match, 0));
 	match = unwrap(drawCard(match, 0));
@@ -102,7 +122,6 @@ const matchWithMana = (lands: number): Match => {
 		.slice(0, lands);
 	for (const id of landIds) {
 		match = unwrap(moveCard(match, 0, id, "lands"));
-		match = unwrap(tapLand(match, 0, id));
 	}
 	return match;
 };
@@ -149,16 +168,33 @@ describe("engine", () => {
 		const next: Match = unwrap(castCard(match, 0, handIdOf(match, "creature")));
 		assert.equal(next.players[0].zones.battlefield.length, 1);
 		assert.equal(next.players[0].zones.battlefield[0].card.id, "creature");
-		assert.equal(next.players[0].manaPool.green, 0);
+		assert.equal(next.players[0].tappedLands.length, 2);
 	});
 
-	it("moves an instant to the graveyard after use", () => {
+	it("sends an instant straight to the graveyard and pays its cost", () => {
 		const match: Match = matchWithMana(1);
 		const used: Match = unwrap(castCard(match, 0, handIdOf(match, "instant")));
-		assert.equal(used.players[0].zones.usage.length, 1);
-		const resolved: Match = unwrap(resolveUsage(used, 0));
-		assert.equal(resolved.players[0].zones.usage.length, 0);
-		assert.equal(resolved.players[0].zones.graveyard[0].card.id, "instant");
+		assert.equal("usage" in used.players[0].zones, false);
+		assert.equal(used.players[0].zones.graveyard.length, 1);
+		assert.equal(used.players[0].zones.graveyard[0].card.id, "instant");
+		assert.equal(
+			used.players[0].zones.hand.some((item) => item.card.id === "instant"),
+			false
+		);
+		assert.equal(used.players[0].tappedLands.length, 1);
+	});
+
+	it("sends a sorcery straight to the graveyard and pays its cost", () => {
+		const match: Match = matchWithMana(1, sorceryDeck());
+		const used: Match = unwrap(castCard(match, 0, handIdOf(match, "sorcery")));
+		assert.equal("usage" in used.players[0].zones, false);
+		assert.equal(used.players[0].zones.graveyard.length, 1);
+		assert.equal(used.players[0].zones.graveyard[0].card.id, "sorcery");
+		assert.equal(
+			used.players[0].zones.hand.some((item) => item.card.id === "sorcery"),
+			false
+		);
+		assert.equal(used.players[0].tappedLands.length, 1);
 	});
 
 	const opponentTurnWithMana = (): Match => {
@@ -169,15 +205,14 @@ describe("engine", () => {
 		const landId: string = match.players[0].zones.hand.filter(
 			(item) => item.card.type === "land"
 		)[0].instanceId;
-		match = unwrap(moveCard(match, 0, landId, "lands"));
-		return unwrap(tapLand(match, 0, landId));
+		return unwrap(moveCard(match, 0, landId, "lands"));
 	};
 
 	it("casts an instant during the opponent's turn", () => {
 		const match: Match = opponentTurnWithMana();
 		const next: Match = unwrap(castCard(match, 0, handIdOf(match, "instant")));
-		assert.equal(next.players[0].zones.usage.length, 1);
-		assert.equal(next.players[0].zones.usage[0].card.id, "instant");
+		assert.equal(next.players[0].zones.graveyard.length, 1);
+		assert.equal(next.players[0].zones.graveyard[0].card.id, "instant");
 	});
 
 	it("fails to cast a non-instant during the opponent's turn", () => {
@@ -216,6 +251,56 @@ describe("engine", () => {
 		assert.equal(next.activePlayer, 1);
 		assert.equal(next.phase, "main1");
 		assert.equal(next.turn, 2);
+	});
+
+	it("untaps the lands of the new active player at the start of the turn", () => {
+		const match: Match = matchWithMana(2);
+		const cast: Match = unwrap(castCard(match, 0, handIdOf(match, "creature")));
+		assert.equal(cast.players[0].tappedLands.length, 2);
+		const opponentTurn: Match = unwrap(passTurn(cast));
+		assert.equal(opponentTurn.players[0].tappedLands.length, 2);
+		const backToFirst: Match = unwrap(passTurn(opponentTurn));
+		assert.equal(backToFirst.activePlayer, 0);
+		assert.equal(backToFirst.players[0].tappedLands.length, 0);
+	});
+
+	it("draws a card at the start of each turn of the new active player", () => {
+		const match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+		const second: Match = unwrap(passTurn(match));
+		assert.equal(second.players[1].zones.hand.length, 8);
+		assert.equal(second.players[0].zones.hand.length, 7);
+		const third: Match = unwrap(passTurn(second));
+		assert.equal(third.players[0].zones.hand.length, 8);
+		assert.equal(third.players[1].zones.hand.length, 8);
+	});
+
+	it("taps the free lands automatically when casting a card", () => {
+		const match: Match = matchWithMana(2);
+		assert.equal(match.players[0].tappedLands.length, 0);
+		const next: Match = unwrap(castCard(match, 0, handIdOf(match, "creature")));
+		const lands = next.players[0].zones.lands.map((item) => item.instanceId);
+		assert.deepEqual(
+			[...next.players[0].tappedLands].sort(),
+			[...lands].sort()
+		);
+	});
+
+	it("does not tap any land when casting without enough mana", () => {
+		const match: Match = matchWithMana(1);
+		const result: MoveResult = castCard(match, 0, handIdOf(match, "creature"));
+		assert.equal(result.ok, false);
+		if (!result.ok) assert.equal(result.error.code, "insufficient_mana");
+		assert.equal(match.players[0].tappedLands.length, 0);
+	});
+
+	it("does not reuse lands that are already tapped", () => {
+		const match: Match = matchWithMana(2);
+		const first: Match = unwrap(
+			castCard(match, 0, handIdOf(match, "creature"))
+		);
+		const second: MoveResult = castCard(first, 0, handIdOf(first, "instant"));
+		assert.equal(second.ok, false);
+		if (!second.ok) assert.equal(second.error.code, "insufficient_mana");
 	});
 
 	it("fails to pass the turn after the match is over", () => {

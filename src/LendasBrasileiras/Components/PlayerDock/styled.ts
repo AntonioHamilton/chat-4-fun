@@ -5,8 +5,8 @@ export const Dock = styled.section`
 	--card-w: var(--hand-w);
 	display: grid;
 	grid-template-columns: auto auto minmax(0, 1fr) auto;
-	align-items: end;
-	gap: 8px 10px;
+	align-items: stretch;
+	gap: 4px 10px;
 	min-width: 0;
 	padding: 12px 8px 6px;
 	border-radius: 12px;
@@ -17,19 +17,25 @@ export const Dock = styled.section`
 `;
 
 export const Hero = styled.div`
-	padding: 0 48px;
+	padding: 0 4px;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 4px;
+	align-items: stretch;
+	gap: 14px;
+	box-sizing: border-box;
+	width: calc(var(--hand-w) * 1.3 + 8px);
+
+	@media (max-height: 599px) {
+		gap: 6px;
+	}
 `;
 
 export const Portrait = styled.div`
 	position: relative;
 	box-sizing: border-box;
-	width: calc(var(--hand-w) * 1.3);
-	aspect-ratio: 1;
-	border-radius: 50%;
+	flex: 1;
+	min-height: 40px;
+	border-radius: 10px;
 	border: 3px solid ${theme.gold500};
 	background: radial-gradient(
 		circle at 50% 35%,
@@ -49,15 +55,34 @@ export const Initials = styled.span`
 	font-size: clamp(0.6rem, 2vh, 0.9rem);
 	font-weight: 700;
 	color: ${theme.textTertiary};
+
+	@media (max-height: 599px) {
+		display: none;
+	}
 `;
 
 export const Piles = styled.div`
 	display: flex;
 	gap: 8px;
+
+	& > * {
+		flex: 0 0 auto;
+		width: calc(var(--card-w) + 12px);
+	}
 `;
 
-export const Hand = styled.div`
+export const Center = styled.div`
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 8px;
+	min-width: 0;
+`;
+
+export const Hand = styled.div<{ $count: number }>`
 	position: relative;
+	flex: 0 1
+		calc(var(--card-w) * ${({ $count }) => 0.25 + 0.75 * Math.max($count, 2)});
 	z-index: 9;
 	container-type: inline-size;
 	min-width: 0;
@@ -74,7 +99,7 @@ export const Hand = styled.div`
 
 type FanItemProps = {
 	$angle: string;
-	$drop: string;
+	$lift: string;
 	$count: number;
 };
 
@@ -83,13 +108,13 @@ export const FanItem = styled.span<FanItemProps>`
 	display: block;
 	flex: 0 0 auto;
 	margin-left: min(
-		calc(var(--card-w) * -0.42),
+		calc(var(--card-w) * -0.25),
 		calc(
 			(100cqw - var(--card-w) * 2) /
 				${({ $count }) => Math.max($count - 1, 1)} - var(--card-w)
 		)
 	);
-	transform: translateY(${({ $drop }) => $drop})
+	transform: translateY(${({ $lift }) => $lift})
 		rotate(${({ $angle }) => $angle});
 	transform-origin: 50% 130%;
 	transition: transform 0.15s ease-out;
@@ -98,39 +123,40 @@ export const FanItem = styled.span<FanItemProps>`
 		margin-left: 0;
 	}
 
-	&:hover,
-	&:focus-within {
+	&:has(:focus-visible) {
 		z-index: 6;
 		transform: translateY(-30%) scale(1.4);
 	}
+
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			z-index: 6;
+			transform: translateY(-30%) scale(1.4);
+		}
+	}
+`;
+
+export const CommandSlot = styled.div`
+	flex: 0 0 auto;
+	padding: 0 0 calc(var(--hand-w) * 0.15);
 `;
 
 export const End = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: flex-end;
-	gap: 8px;
-`;
+	align-self: start;
+	gap: 6px;
 
-export const DeckButton = styled.button`
-	padding: 0;
-	border: none;
-	background: none;
-	cursor: pointer;
-
-	&:disabled {
-		cursor: not-allowed;
-		opacity: 0.6;
-	}
-
-	&:focus-visible {
-		outline: 2px solid ${theme.gold400};
-		outline-offset: 2px;
+	@media (max-height: 599px) {
+		align-self: stretch;
+		min-height: 0;
 	}
 `;
 
 export const Back = styled.div`
 	width: var(--card-w);
-	aspect-ratio: 5 / 7;
+	height: 100%;
 	border-radius: 6px;
 	border: 2px solid ${theme.gold500};
 	background: repeating-linear-gradient(

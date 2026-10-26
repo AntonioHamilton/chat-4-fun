@@ -6,8 +6,8 @@ const playZones: Record<CardType, Zone> = {
 	commander: "battlefield",
 	enchantment: "support",
 	artifact: "support",
-	instant: "usage",
-	sorcery: "usage",
+	instant: "graveyard",
+	sorcery: "graveyard",
 	land: "lands"
 };
 
@@ -32,7 +32,6 @@ export const getDestinations = (card: Card, zone: Zone): Zone[] => {
 		case "battlefield":
 		case "support":
 		case "lands":
-		case "usage":
 			return [back];
 		default:
 			return [];

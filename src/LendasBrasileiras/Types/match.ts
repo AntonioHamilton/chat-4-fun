@@ -21,7 +21,6 @@ export type MatchErrorCode =
 	| "land_already_played"
 	| "not_a_land"
 	| "not_castable"
-	| "land_already_tapped"
 	| "insufficient_mana";
 
 export type MatchError = {

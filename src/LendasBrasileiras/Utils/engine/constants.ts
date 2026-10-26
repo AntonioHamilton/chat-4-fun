@@ -12,8 +12,7 @@ export const ZONES: Zone[] = [
 	"lands",
 	"graveyard",
 	"exile",
-	"command",
-	"usage"
+	"command"
 ];
 
 export const MANA_COLORS: ManaColor[] = [

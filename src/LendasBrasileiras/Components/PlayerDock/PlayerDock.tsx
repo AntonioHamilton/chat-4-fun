@@ -14,14 +14,12 @@ type PlayerDockProps = {
 	player: Player;
 	playerIndex: PlayerIndex;
 	handlers: CardHandlers;
-	onDraw: () => void;
-	onLifeChange: (delta: number) => void;
 	onOpenList: (zone: ListZone) => void;
 	children?: ReactNode;
 };
 
 const FAN_STEP_DEGREES = 3;
-const FAN_DROP_PX = 2;
+const FAN_ARC_LIFT = 0.28;
 const FAN_MAX_SPREAD_DEGREES = 30;
 
 const getInitials = (name: string): string =>
@@ -38,8 +36,6 @@ export const PlayerDock = ({
 	player,
 	playerIndex,
 	handlers,
-	onDraw,
-	onLifeChange,
 	onOpenList,
 	children
 }: PlayerDockProps) => {
@@ -56,14 +52,9 @@ export const PlayerDock = ({
 					<SC.Initials aria-hidden="true">
 						{getInitials(portraitName)}
 					</SC.Initials>
-					<LifeCounter
-						life={player.life}
-						onChange={onLifeChange}
-						disabled={handlers.locked}
-						variant="portrait"
-					/>
+					<LifeCounter life={player.life} variant="portrait" />
 				</SC.Portrait>
-				<ManaPool pool={player.manaPool} />
+				{children}
 			</SC.Hero>
 
 			<SC.Piles>
@@ -83,33 +74,6 @@ export const PlayerDock = ({
 					pile
 					onOpenList={() => onOpenList("exile")}
 				/>
-			</SC.Piles>
-
-			<SC.Hand>
-				<PlayerZone
-					zone="hand"
-					player={player}
-					playerIndex={playerIndex}
-					handlers={handlers}
-					touch="none"
-					fan
-					countLabel={`Mão ${player.zones.hand.length}`}
-					renderItem={(card, index, total) => {
-						const offset = index - (total - 1) / 2;
-						return (
-							<SC.FanItem
-								$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
-								$drop={`${Math.abs(offset) * FAN_DROP_PX}px`}
-								$count={total}
-							>
-								{card}
-							</SC.FanItem>
-						);
-					}}
-				/>
-			</SC.Hand>
-
-			<SC.End>
 				<Zone
 					zone="library"
 					playerIndex={playerIndex}
@@ -120,16 +84,53 @@ export const PlayerDock = ({
 					}
 					pile
 				>
-					<SC.DeckButton
-						type="button"
-						aria-label={`Comprar carta, ${library} na biblioteca`}
-						disabled={handlers.locked}
-						onClick={onDraw}
-					>
-						<SC.Back aria-hidden="true" />
-					</SC.DeckButton>
+					<SC.Back aria-hidden="true" />
 				</Zone>
-				{children}
+			</SC.Piles>
+
+			<SC.Center>
+				<SC.Hand $count={player.zones.hand.length}>
+					<PlayerZone
+						zone="hand"
+						player={player}
+						playerIndex={playerIndex}
+						handlers={handlers}
+						touch="none"
+						fan
+						renderItem={(card, index, total) => {
+							const half = (total - 1) / 2;
+							const offset = index - half;
+							const ratio = half > 0 ? offset / half : 1;
+							const lift = FAN_ARC_LIFT * (1 - ratio * ratio);
+							return (
+								<SC.FanItem
+									$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
+									$lift={`calc(var(--card-w) * -${lift.toFixed(3)})`}
+									$count={total}
+								>
+									{card}
+								</SC.FanItem>
+							);
+						}}
+					/>
+				</SC.Hand>
+
+				{player.zones.command.length > 0 && (
+					<SC.CommandSlot>
+						<PlayerZone
+							zone="command"
+							player={player}
+							playerIndex={playerIndex}
+							handlers={handlers}
+							touch="none"
+							fan
+						/>
+					</SC.CommandSlot>
+				)}
+			</SC.Center>
+
+			<SC.End>
+				<ManaPool lands={player.zones.lands} tappedLands={player.tappedLands} />
 			</SC.End>
 		</SC.Dock>
 	);

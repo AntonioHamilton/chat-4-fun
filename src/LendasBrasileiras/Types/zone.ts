@@ -6,7 +6,6 @@ export type Zone =
 	| "lands"
 	| "graveyard"
 	| "exile"
-	| "command"
-	| "usage";
+	| "command";
 
 export type ListZone = Extract<Zone, "graveyard" | "exile">;

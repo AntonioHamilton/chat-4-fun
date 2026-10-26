@@ -10,8 +10,7 @@ export const zoneLabels: Record<Zone, string> = {
 	lands: "Terrenos",
 	graveyard: "Cemitério",
 	exile: "Exílio",
-	command: "Comando",
-	usage: "Uso"
+	command: "Comando"
 };
 
 export const typeLabels: Record<CardType, string> = {

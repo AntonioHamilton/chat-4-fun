@@ -3,14 +3,7 @@ import { describe, it } from "node:test";
 import type { Card } from "@/LendasBrasileiras/Types/card";
 import type { Deck } from "@/LendasBrasileiras/Types/deck";
 import type { Match, MoveResult } from "@/LendasBrasileiras/Types/match";
-import {
-	adjustLife,
-	createMatch,
-	drawCard,
-	moveCard,
-	playLand,
-	tapLand
-} from "./match";
+import { castCard, createMatch, drawCard, moveCard, playLand } from "./match";
 
 const land = (id: string): Card => ({
 	id,
@@ -31,10 +24,20 @@ const commander: Card = {
 	art: null
 };
 
-const deck = (size: number): Deck => ({
+const cheapCreature: Card = {
+	id: "cheap",
+	name: "cheap",
+	type: "creature",
+	cost: { green: 1 },
+	power: 1,
+	toughness: 1,
+	art: null
+};
+
+const deck = (size: number, extra: Card[] = []): Deck => ({
 	id: "test",
 	name: "test",
-	cards: Array.from({ length: size }, (_, i) => land(`l${i}`)),
+	cards: [...Array.from({ length: size }, (_, i) => land(`l${i}`)), ...extra],
 	commander
 });
 
@@ -62,18 +65,23 @@ describe("regression: lendas brasileiras", () => {
 		if (!result.ok) assert.equal(result.error.code, "match_over");
 	});
 
-	it("keeps life unchanged after the match is over", () => {
-		const match: Match = finishedMatch();
-		const result: MoveResult = adjustLife(match, 0, -1);
-		assert.equal(result.ok, false);
-		if (!result.ok) assert.equal(result.error.code, "match_over");
-	});
-
 	it("drops a tapped land from tappedLands when it leaves the lands zone", () => {
-		let match: Match = createMatch(deck(12), deck(12), noShuffle);
-		const landId: string = match.players[0].zones.hand[0].instanceId;
+		let match: Match = createMatch(
+			deck(11, [cheapCreature]),
+			deck(12),
+			noShuffle
+		);
+		for (let i = 0; i < 5; i++) match = unwrap(drawCard(match, 0));
+		const hand = match.players[0].zones.hand;
+		const landId: string = hand.find(
+			(item) => item.card.type === "land"
+		)!.instanceId;
+		const creatureId: string = hand.find(
+			(item) => item.card.type === "creature"
+		)!.instanceId;
 		match = unwrap(playLand(match, 0, landId));
-		match = unwrap(tapLand(match, 0, landId));
+		match = unwrap(castCard(match, 0, creatureId));
+		assert.equal(match.players[0].tappedLands.length, 1);
 		match = unwrap(moveCard(match, 0, landId, "graveyard"));
 		const player = match.players[0];
 		assert.ok(

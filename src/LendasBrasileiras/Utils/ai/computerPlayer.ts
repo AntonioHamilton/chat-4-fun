@@ -5,18 +5,11 @@ import type {
 	PlayerIndex
 } from "@/LendasBrasileiras/Types/match";
 import type { CardInstance, Player } from "@/LendasBrasileiras/Types/player";
-import {
-	advancePhase,
-	castCard,
-	playLand,
-	resolveUsage,
-	tapLand
-} from "../engine/match";
-import { spendMana } from "../engine/mana";
+import { advancePhase, castCard, playLand } from "../engine/match";
+import { findLandsToTap } from "../engine/mana";
 
 export type AiAction =
 	| { kind: "playLand"; instanceId: string; cardName: string }
-	| { kind: "tap"; instanceId: string; cardName: string }
 	| { kind: "cast"; instanceId: string; cardName: string }
 	| { kind: "pass" };
 
@@ -45,34 +38,27 @@ export const chooseAction = (match: Match, index: PlayerIndex): AiAction => {
 			};
 	}
 
-	const untapped: CardInstance[] = player.zones.lands.filter(
-		(item) => !player.tappedLands.includes(item.instanceId)
-	);
-	const potential = { ...player.manaPool };
-	for (const land of untapped) {
-		const color = land.card.produces;
-		if (color) potential[color] += 1;
-	}
-
 	const candidates: CardInstance[] = [
 		...player.zones.hand.filter((item) => item.card.type !== "land"),
 		...player.zones.command
 	]
-		.filter((item) => spendMana(potential, item.card.cost) !== null)
+		.filter(
+			(item) =>
+				findLandsToTap(
+					player.zones.lands,
+					player.tappedLands,
+					item.card.cost
+				) !== null
+		)
 		.sort((a, b) => totalCost(b.card) - totalCost(a.card));
 	const target: CardInstance | undefined = candidates[0];
 	if (!target) return pass;
 
-	if (spendMana(player.manaPool, target.card.cost) !== null)
-		return {
-			kind: "cast",
-			instanceId: target.instanceId,
-			cardName: target.card.name
-		};
-
-	const land: CardInstance | undefined = untapped[0];
-	if (!land) return pass;
-	return { kind: "tap", instanceId: land.instanceId, cardName: land.card.name };
+	return {
+		kind: "cast",
+		instanceId: target.instanceId,
+		cardName: target.card.name
+	};
 };
 
 const execute = (
@@ -82,11 +68,7 @@ const execute = (
 ): MoveResult => {
 	if (action.kind === "playLand")
 		return playLand(match, index, action.instanceId);
-	if (action.kind === "tap") return tapLand(match, index, action.instanceId);
-	if (action.kind === "cast") {
-		const result: MoveResult = castCard(match, index, action.instanceId);
-		return result.ok ? resolveUsage(result.match, index) : result;
-	}
+	if (action.kind === "cast") return castCard(match, index, action.instanceId);
 	return advancePhase(match);
 };
 
