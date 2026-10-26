@@ -92,6 +92,18 @@ export const Chip = styled.button`
 	}
 `;
 
+export const CommanderTag = styled.span`
+	max-width: 160px;
+	padding: 2px 8px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-radius: 8px;
+	border: 1px solid ${theme.gold500};
+	background: ${theme.cardBg};
+	color: ${theme.gold400};
+	white-space: nowrap;
+`;
+
 export const End = styled.div`
 	min-width: 0;
 	margin-left: auto;

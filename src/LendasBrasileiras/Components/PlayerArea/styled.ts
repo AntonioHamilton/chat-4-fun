@@ -5,20 +5,18 @@ type Position = "top" | "bottom";
 
 const areas = (position: Position) =>
 	position === "top"
-		? `"lands support cmd usage" "battle battle battle battle"`
-		: `"battle battle battle battle" "lands support cmd usage"`;
+		? `"lands support usage" "battle battle battle"`
+		: `"battle battle battle" "lands support usage"`;
 
 const rows = (position: Position) =>
 	position === "top" ? "auto minmax(0, 1fr)" : "minmax(0, 1fr) auto";
 
 export const Root = styled.section<{ $position: Position; $active: boolean }>`
 	display: grid;
-	grid-template-columns:
-		calc(var(--card-w) + 12px) minmax(0, 1fr) calc(var(--cmd-w) + 12px)
-		minmax(0, 0.7fr);
+	grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.7fr);
 	grid-template-rows: ${({ $position }) => rows($position)};
 	grid-template-areas: ${({ $position }) => areas($position)};
-	--cmd-w: calc(var(--card-w) * 1.5);
+	--row-w: calc(var(--card-w) * 0.8);
 	gap: 8px 6px;
 	min-height: 0;
 	padding: 10px 8px 6px;
@@ -29,17 +27,20 @@ export const Root = styled.section<{ $position: Position; $active: boolean }>`
 
 	@media (max-height: 599px) {
 		grid-template-columns:
-			calc(var(--card-w) + 12px) minmax(0, 1fr) minmax(0, 0.5fr)
-			calc(var(--card-w) + 12px) minmax(0, 0.4fr);
+			minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 0.7fr)
+			minmax(0, 0.5fr);
 		grid-template-rows: minmax(0, 1fr);
-		grid-template-areas: "lands battle support cmd usage";
+		grid-template-areas: "lands battle support usage";
+		--row-w: var(--card-w);
 	}
 
 	user-select: none;
 	-webkit-user-select: none;
 
-	[data-zone="command"] {
-		--card-w: var(--cmd-w);
+	[data-zone="lands"],
+	[data-zone="support"],
+	[data-zone="usage"] {
+		--card-w: var(--row-w);
 	}
 `;
 

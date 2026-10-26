@@ -21,6 +21,9 @@ export const OpponentBar = ({
 	end,
 	onOpenList
 }: OpponentBarProps) => {
+	const commander = Object.values(player.zones)
+		.flat()
+		.find((instance) => instance.card.type === "commander");
 	const handCount = player.zones.hand.length;
 
 	return (
@@ -43,6 +46,11 @@ export const OpponentBar = ({
 				<SC.Extra>
 					<span>Biblioteca {player.zones.library.length}</span>
 				</SC.Extra>
+				{commander && (
+					<SC.CommanderTag title={commander.card.name}>
+						Comandante: {commander.card.name}
+					</SC.CommanderTag>
+				)}
 				<SC.Chip type="button" onClick={() => onOpenList("graveyard")}>
 					Cemitério {player.zones.graveyard.length}
 				</SC.Chip>

@@ -5,7 +5,7 @@ import { theme } from "@/styles/theme";
 
 export const Wrapper = styled.div`
 	--card-w: clamp(32px, 9vh, 88px);
-	--hand-w: clamp(52px, 15vh, 120px);
+	--hand-w: clamp(33px, 9vh, 79px);
 	position: fixed;
 	inset: 0;
 	z-index: 30;
@@ -33,7 +33,7 @@ export const SpellFlash = styled.div`
 	top: 22%;
 	left: 50%;
 	z-index: 15;
-	--card-w: var(--hand-w);
+	--card-w: calc(var(--hand-w) * 1.7);
 	transform: translateX(-50%);
 	pointer-events: none;
 	filter: drop-shadow(0 8px 12px ${theme.shadowColor});

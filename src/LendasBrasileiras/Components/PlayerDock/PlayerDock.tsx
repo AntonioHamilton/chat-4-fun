@@ -19,7 +19,7 @@ type PlayerDockProps = {
 };
 
 const FAN_STEP_DEGREES = 3;
-const FAN_DROP_PX = 2;
+const FAN_ARC_LIFT = 0.28;
 const FAN_MAX_SPREAD_DEGREES = 30;
 
 const getInitials = (name: string): string =>
@@ -74,34 +74,6 @@ export const PlayerDock = ({
 					pile
 					onOpenList={() => onOpenList("exile")}
 				/>
-			</SC.Piles>
-
-			<SC.Hand>
-				<PlayerZone
-					zone="hand"
-					player={player}
-					playerIndex={playerIndex}
-					handlers={handlers}
-					touch="none"
-					fan
-					countLabel={`Mão ${player.zones.hand.length}`}
-					renderItem={(card, index, total) => {
-						const offset = index - (total - 1) / 2;
-						return (
-							<SC.FanItem
-								$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
-								$drop={`${Math.abs(offset) * FAN_DROP_PX}px`}
-								$count={total}
-							>
-								{card}
-							</SC.FanItem>
-						);
-					}}
-				/>
-			</SC.Hand>
-
-			<SC.End>
-				<ManaPool lands={player.zones.lands} tappedLands={player.tappedLands} />
 				<Zone
 					zone="library"
 					playerIndex={playerIndex}
@@ -114,6 +86,50 @@ export const PlayerDock = ({
 				>
 					<SC.Back aria-hidden="true" />
 				</Zone>
+			</SC.Piles>
+
+			<SC.Hand>
+				<PlayerZone
+					zone="hand"
+					player={player}
+					playerIndex={playerIndex}
+					handlers={handlers}
+					touch="none"
+					fan
+					renderItem={(card, index, total) => {
+						const half = (total - 1) / 2;
+						const offset = index - half;
+						const ratio = half > 0 ? offset / half : 1;
+						const lift = FAN_ARC_LIFT * (1 - ratio * ratio);
+						return (
+							<SC.FanItem
+								$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
+								$lift={`calc(var(--card-w) * -${lift.toFixed(3)})`}
+								$count={total}
+							>
+								{card}
+							</SC.FanItem>
+						);
+					}}
+				/>
+			</SC.Hand>
+
+			{player.zones.command.length > 0 && (
+				<SC.CommandSlot>
+					<PlayerZone
+						zone="command"
+						player={player}
+						playerIndex={playerIndex}
+						handlers={handlers}
+						touch="none"
+						fan
+						countLabel="Comandante"
+					/>
+				</SC.CommandSlot>
+			)}
+
+			<SC.End>
+				<ManaPool lands={player.zones.lands} tappedLands={player.tappedLands} />
 			</SC.End>
 		</SC.Dock>
 	);

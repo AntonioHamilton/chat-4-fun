@@ -56,7 +56,7 @@ export const Zone = ({
 					{action}
 				</SC.Header>
 			)}
-			<SC.Count>{countLabel ?? count}</SC.Count>
+			{(!fan || countLabel) && <SC.Count>{countLabel ?? count}</SC.Count>}
 			<SC.Cards $scroll={scroll} $touch={touch} $pile={pile} $fan={fan}>
 				{children}
 			</SC.Cards>

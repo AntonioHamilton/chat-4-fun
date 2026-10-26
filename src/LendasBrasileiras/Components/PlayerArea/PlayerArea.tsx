@@ -1,5 +1,5 @@
 import type { PlayerIndex } from "@/LendasBrasileiras/Types/match";
-import type { CardInstance, Player } from "@/LendasBrasileiras/Types/player";
+import type { Player } from "@/LendasBrasileiras/Types/player";
 import type { CardHandlers } from "@/LendasBrasileiras/Types/ui";
 import { PlayerZone } from "@/LendasBrasileiras/Components/PlayerZone/PlayerZone";
 import * as SC from "./styled";
@@ -26,15 +26,6 @@ export const PlayerArea = ({
 	const landsTotal = player.zones.lands.length;
 	const landsTapped = player.tappedLands.length;
 
-	const pickLand = (cards: CardInstance[]): CardInstance[] => {
-		const free = cards.filter(
-			(instance) => !player.tappedLands.includes(instance.instanceId)
-		);
-		const top =
-			free.length > 0 ? free[free.length - 1] : cards[cards.length - 1];
-		return top ? [top] : [];
-	};
-
 	return (
 		<SC.Root $position={position} $active={isActive} aria-label={name}>
 			<PlayerZone
@@ -53,8 +44,7 @@ export const PlayerArea = ({
 				playerIndex={playerIndex}
 				handlers={handlers}
 				area="lands"
-				pile
-				pickVisible={pickLand}
+				scroll
 				countLabel={`${landsTotal - landsTapped}/${landsTotal}`}
 				overlay={
 					landsTapped > 0 ? (
@@ -73,15 +63,6 @@ export const PlayerArea = ({
 				handlers={handlers}
 				area="support"
 				scroll
-			/>
-			<PlayerZone
-				zone="command"
-				animateEntry={position === "top"}
-				player={player}
-				playerIndex={playerIndex}
-				handlers={handlers}
-				area="cmd"
-				pile
 			/>
 			<PlayerZone
 				zone="usage"

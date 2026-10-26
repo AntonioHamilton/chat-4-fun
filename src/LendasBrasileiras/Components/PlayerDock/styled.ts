@@ -4,8 +4,8 @@ import { theme } from "@/styles/theme";
 export const Dock = styled.section`
 	--card-w: var(--hand-w);
 	display: grid;
-	grid-template-columns: auto auto minmax(0, 1fr) auto;
-	align-items: end;
+	grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+	align-items: stretch;
 	gap: 4px 10px;
 	min-width: 0;
 	padding: 12px 8px 6px;
@@ -20,16 +20,17 @@ export const Hero = styled.div`
 	padding: 0 4px;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	gap: 4px;
+	align-items: stretch;
+	gap: 14px;
 `;
 
 export const Portrait = styled.div`
 	position: relative;
 	box-sizing: border-box;
+	flex: 1;
+	min-height: 40px;
 	width: calc(var(--hand-w) * 1.3);
-	aspect-ratio: 1;
-	border-radius: 50%;
+	border-radius: 10px;
 	border: 3px solid ${theme.gold500};
 	background: radial-gradient(
 		circle at 50% 35%,
@@ -49,6 +50,10 @@ export const Initials = styled.span`
 	font-size: clamp(0.6rem, 2vh, 0.9rem);
 	font-weight: 700;
 	color: ${theme.textTertiary};
+
+	@media (max-height: 599px) {
+		display: none;
+	}
 `;
 
 export const Piles = styled.div`
@@ -79,7 +84,7 @@ export const Hand = styled.div`
 
 type FanItemProps = {
 	$angle: string;
-	$drop: string;
+	$lift: string;
 	$count: number;
 };
 
@@ -94,7 +99,7 @@ export const FanItem = styled.span<FanItemProps>`
 				${({ $count }) => Math.max($count - 1, 1)} - var(--card-w)
 		)
 	);
-	transform: translateY(${({ $drop }) => $drop})
+	transform: translateY(${({ $lift }) => $lift})
 		rotate(${({ $angle }) => $angle});
 	transform-origin: 50% 130%;
 	transition: transform 0.15s ease-out;
@@ -116,16 +121,31 @@ export const FanItem = styled.span<FanItemProps>`
 	}
 `;
 
+export const CommandSlot = styled.div`
+	align-self: end;
+	padding: 18px 0 calc(var(--hand-w) * 0.15);
+
+	[data-zone="command"] > span {
+		top: -16px;
+	}
+
+	button {
+		border: 3px solid ${theme.gold400};
+		box-shadow: 0 0 8px ${theme.gold500};
+	}
+`;
+
 export const End = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
+	align-self: start;
 	gap: 6px;
 `;
 
 export const Back = styled.div`
 	width: var(--card-w);
-	aspect-ratio: 5 / 7;
+	height: 100%;
 	border-radius: 6px;
 	border: 2px solid ${theme.gold500};
 	background: repeating-linear-gradient(
