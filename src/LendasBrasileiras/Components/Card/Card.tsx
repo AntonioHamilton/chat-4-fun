@@ -3,8 +3,9 @@ import type {
 	Card as CardData,
 	ManaColor
 } from "@/LendasBrasileiras/Types/card";
-import { manaColors, manaSymbols } from "@/LendasBrasileiras/Constants/colors";
+import { manaColors } from "@/LendasBrasileiras/Constants/colors";
 import { typeLabels } from "@/LendasBrasileiras/Constants/labels";
+import { formatCost } from "@/LendasBrasileiras/Utils/formatCost";
 import * as SC from "./styled";
 
 type CardProps = {
@@ -27,12 +28,6 @@ const getCardColor = (card: CardData): ManaColor => {
 	);
 	return paid ?? "colorless";
 };
-
-const formatCost = (card: CardData): string =>
-	(Object.keys(card.cost) as ManaColor[])
-		.filter((color) => (card.cost[color] ?? 0) > 0)
-		.map((color) => `${card.cost[color]}${manaSymbols[color]}`)
-		.join(" ");
 
 export const Card = ({
 	card,

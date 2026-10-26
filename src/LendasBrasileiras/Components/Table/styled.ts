@@ -14,14 +14,10 @@ export const Wrapper = styled.div`
 	grid-template-columns: minmax(0, 1fr);
 	grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto;
 	gap: 6px;
-	padding: 6px;
+	padding: 6px 6px 6px 30px;
 	overflow: hidden;
 	background: ${pageBackground};
 	color: ${theme.textPrimary};
-
-	@media (min-width: ${breakpoints.xl}) {
-		grid-template-columns: minmax(0, 1fr) 220px;
-	}
 
 	@media (orientation: portrait) and (max-width: ${breakpoints.sm}) {
 		display: none;
@@ -30,10 +26,6 @@ export const Wrapper = styled.div`
 
 export const TopArea = styled.div`
 	min-width: 0;
-
-	@media (min-width: ${breakpoints.xl}) {
-		grid-column: 1 / -1;
-	}
 `;
 
 export const OpponentField = styled.div`
@@ -46,24 +38,8 @@ export const PlayerField = styled.div`
 	min-height: 0;
 `;
 
-export const Side = styled.div`
-	display: none;
-
-	@media (min-width: ${breakpoints.xl}) {
-		display: block;
-		grid-column: 2;
-		grid-row: 2 / 4;
-		min-height: 0;
-		overflow-y: auto;
-	}
-`;
-
 export const Bottom = styled.div`
 	min-width: 0;
-
-	@media (min-width: ${breakpoints.xl}) {
-		grid-column: 1 / -1;
-	}
 `;
 
 export const MenuButton = styled.button`

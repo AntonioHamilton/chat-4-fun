@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Player } from "@/LendasBrasileiras/Types/player";
+import type { ListZone } from "@/LendasBrasileiras/Types/zone";
 import { LifeCounter } from "@/LendasBrasileiras/Components/LifeCounter/LifeCounter";
 import { ManaPool } from "@/LendasBrasileiras/Components/ManaPool/ManaPool";
 import * as SC from "./styled";
@@ -10,6 +11,7 @@ type OpponentBarProps = {
 	isActive: boolean;
 	start?: ReactNode;
 	end?: ReactNode;
+	onOpenList: (zone: ListZone) => void;
 };
 
 export const OpponentBar = ({
@@ -17,7 +19,8 @@ export const OpponentBar = ({
 	player,
 	isActive,
 	start,
-	end
+	end,
+	onOpenList
 }: OpponentBarProps) => {
 	const handCount = player.zones.hand.length;
 
@@ -38,10 +41,16 @@ export const OpponentBar = ({
 				))}
 			</SC.Hand>
 			<SC.Chips>
-				<span>Biblioteca {player.zones.library.length}</span>
-				<span>Cemitério {player.zones.graveyard.length}</span>
-				<span>Exílio {player.zones.exile.length}</span>
-				<ManaPool pool={player.manaPool} />
+				<SC.Extra>
+					<span>Biblioteca {player.zones.library.length}</span>
+					<ManaPool pool={player.manaPool} />
+				</SC.Extra>
+				<SC.Chip type="button" onClick={() => onOpenList("graveyard")}>
+					Cemitério {player.zones.graveyard.length}
+				</SC.Chip>
+				<SC.Chip type="button" onClick={() => onOpenList("exile")}>
+					Exílio {player.zones.exile.length}
+				</SC.Chip>
 			</SC.Chips>
 
 			<SC.End>{end}</SC.End>

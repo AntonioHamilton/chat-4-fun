@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { PlayerIndex } from "@/LendasBrasileiras/Types/match";
 import type { Player } from "@/LendasBrasileiras/Types/player";
 import type { CardHandlers } from "@/LendasBrasileiras/Types/ui";
+import type { ListZone } from "@/LendasBrasileiras/Types/zone";
 import { LifeCounter } from "@/LendasBrasileiras/Components/LifeCounter/LifeCounter";
 import { ManaPool } from "@/LendasBrasileiras/Components/ManaPool/ManaPool";
 import { PlayerZone } from "@/LendasBrasileiras/Components/PlayerZone/PlayerZone";
@@ -15,6 +16,7 @@ type PlayerDockProps = {
 	handlers: CardHandlers;
 	onDraw: () => void;
 	onLifeChange: (delta: number) => void;
+	onOpenList: (zone: ListZone) => void;
 	children?: ReactNode;
 };
 
@@ -37,6 +39,7 @@ export const PlayerDock = ({
 	handlers,
 	onDraw,
 	onLifeChange,
+	onOpenList,
 	children
 }: PlayerDockProps) => {
 	const commander = Object.values(player.zones)
@@ -69,6 +72,7 @@ export const PlayerDock = ({
 					playerIndex={playerIndex}
 					handlers={handlers}
 					pile
+					onOpenList={() => onOpenList("graveyard")}
 				/>
 				<PlayerZone
 					zone="exile"
@@ -76,6 +80,7 @@ export const PlayerDock = ({
 					playerIndex={playerIndex}
 					handlers={handlers}
 					pile
+					onOpenList={() => onOpenList("exile")}
 				/>
 			</SC.Piles>
 

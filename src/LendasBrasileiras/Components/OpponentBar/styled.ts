@@ -57,11 +57,38 @@ export const Back = styled.div`
 `;
 
 export const Chips = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 10px;
+`;
+
+export const Extra = styled.div`
 	display: none;
+	align-items: center;
 	gap: 10px;
 
 	@media (min-width: ${breakpoints.lg}) {
 		display: flex;
+	}
+`;
+
+export const Chip = styled.button`
+	padding: 2px 8px;
+	border-radius: 8px;
+	border: 1px solid ${theme.borderSubtle};
+	background: ${theme.cardBg};
+	color: inherit;
+	font-size: inherit;
+	white-space: nowrap;
+	cursor: pointer;
+
+	&:hover {
+		background: ${theme.cardBgHover};
+		border-color: ${theme.gold500};
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${theme.gold400};
 	}
 `;
 

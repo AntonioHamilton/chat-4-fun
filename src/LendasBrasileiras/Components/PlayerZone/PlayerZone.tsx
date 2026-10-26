@@ -23,6 +23,7 @@ type PlayerZoneProps = {
 	pickVisible?: (cards: CardInstance[]) => CardInstance[];
 	renderItem?: (card: ReactNode, index: number, total: number) => ReactNode;
 	overlay?: ReactNode;
+	onOpenList?: () => void;
 };
 
 export const PlayerZone = ({
@@ -39,7 +40,8 @@ export const PlayerZone = ({
 	action,
 	pickVisible,
 	renderItem,
-	overlay
+	overlay,
+	onOpenList
 }: PlayerZoneProps) => {
 	const cards = player.zones[zone];
 	const visible = pickVisible
@@ -58,6 +60,7 @@ export const PlayerZone = ({
 			<Card
 				key={instance.instanceId}
 				card={instance.card}
+				interactive={!onOpenList}
 				zoneLabel={zoneLabels[zone]}
 				tapped={
 					zone === "lands" &&
@@ -69,9 +72,7 @@ export const PlayerZone = ({
 					if (!handlers.locked)
 						handlers.onCardPointerDown(event, source, instance.card);
 				}}
-				onClick={() => {
-					if (!handlers.locked) handlers.onCardClick(source);
-				}}
+				onClick={() => handlers.onCardClick(source)}
 				onFocus={() => handlers.onCardFocus(instance.card)}
 				onBlur={handlers.onCardBlur}
 			/>
@@ -94,6 +95,7 @@ export const PlayerZone = ({
 			pile={pile}
 			fan={fan}
 			action={action}
+			onOpen={onOpenList}
 		>
 			{visible.map((instance, index) => {
 				const node = renderCard(instance);

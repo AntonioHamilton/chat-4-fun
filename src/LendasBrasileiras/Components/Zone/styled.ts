@@ -96,3 +96,23 @@ export const Cards = styled.div<{
 		$fan ? "visible" : $scroll ? "hidden" : "auto"};
 	overscroll-behavior: contain;
 `;
+
+export const OpenButton = styled.button`
+	position: absolute;
+	inset: 0;
+	z-index: 7;
+	padding: 0;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	cursor: pointer;
+
+	&:hover {
+		background: ${theme.cardBgHover};
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${theme.gold400};
+		outline-offset: 2px;
+	}
+`;

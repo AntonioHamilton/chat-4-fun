@@ -23,6 +23,7 @@ import {
 	createMatch,
 	drawCard,
 	moveCard,
+	passTurn,
 	playLand,
 	resolveUsage,
 	tapLand
@@ -111,17 +112,27 @@ export const useMatch = (
 				)
 					return prev;
 				const step = playComputerStep(prev.match, computerIndex);
+				let nextMatch = step.match;
+				if (
+					step.action.kind === "pass" &&
+					nextMatch.winner === null &&
+					nextMatch.activePlayer !== computerIndex &&
+					nextMatch.phase === "draw"
+				) {
+					const entered = advancePhase(nextMatch);
+					if (entered.ok) nextMatch = entered.match;
+				}
 				let entry = describeStep(step, names[computerIndex]);
 				if (step.action.kind === "pass") {
 					entry =
-						step.match.turn !== prev.match.turn
-							? `Turno de ${names[step.match.activePlayer]}: ${phaseLabels[step.match.phase]}`
-							: `Fase: ${phaseLabels[step.match.phase]}`;
-					if (step.match.winner !== null)
-						entry = `${names[step.match.activePlayer]} não tem cartas e perdeu`;
+						nextMatch.turn !== prev.match.turn
+							? `Turno de ${names[nextMatch.activePlayer]}: ${phaseLabels[nextMatch.phase]}`
+							: `Fase: ${phaseLabels[nextMatch.phase]}`;
+					if (nextMatch.winner !== null)
+						entry = `${names[nextMatch.activePlayer]} não tem cartas e perdeu`;
 				}
 				return {
-					match: step.match,
+					match: nextMatch,
 					log: [`T${prev.match.turn}: ${entry}`, ...prev.log].slice(
 						0,
 						MAX_LOG_LINES
@@ -174,21 +185,26 @@ export const useMatch = (
 		[apply, names]
 	);
 
-	const nextPhase = useCallback(
+	const pass = useCallback(
 		() =>
 			apply((match) => {
-				const result = advancePhase(match);
+				const result = passTurn(match);
 				if (!result.ok) return { result, entry: "" };
-				const label = phaseLabels[result.match.phase];
-				const turnChanged = result.match.turn !== match.turn;
+				const next = result.match;
 				return {
 					result,
-					entry: turnChanged
-						? `Turno de ${names[result.match.activePlayer]}: ${label}`
-						: `Fase: ${label}`
+					entry:
+						next.winner !== null
+							? `${names[next.activePlayer]} não tem cartas e perdeu`
+							: `Turno de ${names[next.activePlayer]}: ${phaseLabels[next.phase]}`
 				};
 			}),
 		[apply, names]
+	);
+
+	const dismissError = useCallback(
+		() => setState((prev) => (prev.error ? { ...prev, error: null } : prev)),
+		[]
 	);
 
 	const clearUsage = useCallback(
@@ -249,7 +265,8 @@ export const useMatch = (
 		draw,
 		tap,
 		changeLife,
-		nextPhase,
+		passTurn: pass,
+		dismissError,
 		clearUsage,
 		moveTo
 	};

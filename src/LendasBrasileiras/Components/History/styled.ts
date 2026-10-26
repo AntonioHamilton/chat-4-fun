@@ -8,7 +8,7 @@ export const Container = styled.aside`
 	padding: 12px;
 	border-radius: 12px;
 	border: 1px solid ${theme.borderSubtle};
-	background: ${theme.panelBg};
+	background: ${theme.panelBgSoft};
 `;
 
 export const Title = styled.h2`

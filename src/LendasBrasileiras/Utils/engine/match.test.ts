@@ -9,6 +9,7 @@ import {
 	createMatch,
 	drawCard,
 	moveCard,
+	passTurn,
 	playLand,
 	resolveUsage,
 	tapLand
@@ -205,5 +206,30 @@ describe("engine", () => {
 		assert.deepEqual(phases, ["main2", "end", "draw", "main1"]);
 		assert.equal(match.activePlayer, 1);
 		assert.equal(match.players[1].zones.hand.length, 8);
+	});
+
+	it("passes the whole turn to the opponent in the main phase", () => {
+		const match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+		const next: Match = unwrap(passTurn(match));
+		assert.equal(next.activePlayer, 1);
+		assert.equal(next.phase, "main1");
+		assert.equal(next.turn, 2);
+	});
+
+	it("fails to pass the turn after the match is over", () => {
+		const match: Match = {
+			...createMatch(fullDeck(), fullDeck(), noShuffle),
+			winner: 1
+		};
+		const result: MoveResult = passTurn(match);
+		assert.equal(result.ok, false);
+		if (!result.ok) assert.equal(result.error.code, "match_over");
+	});
+
+	it("draws a card for the new active player when passing the turn", () => {
+		const match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+		const next: Match = unwrap(passTurn(match));
+		assert.equal(next.players[1].zones.hand.length, 8);
+		assert.equal(next.players[0].zones.hand.length, 7);
 	});
 });

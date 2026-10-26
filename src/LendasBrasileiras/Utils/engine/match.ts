@@ -306,3 +306,17 @@ export const advancePhase = (match: Match): MoveResult => {
 		upcoming
 	);
 };
+
+export const passTurn = (match: Match): MoveResult => {
+	if (match.winner !== null) return fail("match_over", "Partida encerrada");
+	const turnOwner: PlayerIndex = match.activePlayer;
+	let current: Match = match;
+	while (current.activePlayer === turnOwner && current.winner === null) {
+		const result: MoveResult = advancePhase(current);
+		if (!result.ok) return result;
+		current = result.match;
+	}
+	if (current.winner === null && current.phase === "draw")
+		return advancePhase(current);
+	return { ok: true, match: current };
+};

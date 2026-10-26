@@ -16,6 +16,7 @@ type ZoneProps = {
 	pile?: boolean;
 	fan?: boolean;
 	action?: ReactNode;
+	onOpen?: () => void;
 	children?: ReactNode;
 };
 
@@ -31,6 +32,7 @@ export const Zone = ({
 	pile = false,
 	fan = false,
 	action,
+	onOpen,
 	children
 }: ZoneProps) => {
 	const label = zoneLabels[zone];
@@ -58,6 +60,13 @@ export const Zone = ({
 			<SC.Cards $scroll={scroll} $touch={touch} $pile={pile} $fan={fan}>
 				{children}
 			</SC.Cards>
+			{onOpen && (
+				<SC.OpenButton
+					type="button"
+					aria-label={`Ver lista: ${label}, ${count} ${count === 1 ? "carta" : "cartas"}`}
+					onClick={onOpen}
+				/>
+			)}
 		</SC.Container>
 	);
 };

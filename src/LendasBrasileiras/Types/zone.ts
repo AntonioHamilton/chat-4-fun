@@ -8,3 +8,5 @@ export type Zone =
 	| "exile"
 	| "command"
 	| "usage";
+
+export type ListZone = Extract<Zone, "graveyard" | "exile">;

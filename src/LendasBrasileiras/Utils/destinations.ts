@@ -13,6 +13,12 @@ const playZones: Record<CardType, Zone> = {
 
 export const getPlayZone = (card: Card): Zone => playZones[card.type];
 
+export const getPlayLabel = (card: Card): string => {
+	if (card.type === "land") return "Jogar terreno";
+	if (card.type === "instant" || card.type === "sorcery") return "Lançar";
+	return "Colocar em campo";
+};
+
 export const isPlayMove = (card: Card, from: Zone, to: Zone): boolean =>
 	(from === "hand" || from === "command") && to === getPlayZone(card);
 

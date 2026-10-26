@@ -7,19 +7,21 @@ import type {
 	CardSource,
 	MenuOption
 } from "@/LendasBrasileiras/Types/ui";
+import type { ListZone } from "@/LendasBrasileiras/Types/zone";
 import { phaseLabels, zoneLabels } from "@/LendasBrasileiras/Constants/labels";
 import { Card } from "@/LendasBrasileiras/Components/Card/Card";
-import { CardMenu } from "@/LendasBrasileiras/Components/CardMenu/CardMenu";
+import { CardZoom } from "@/LendasBrasileiras/Components/CardZoom/CardZoom";
 import { CardPreview } from "@/LendasBrasileiras/Components/CardPreview/CardPreview";
-import { History } from "@/LendasBrasileiras/Components/History/History";
+import { HistoryPanel } from "@/LendasBrasileiras/Components/HistoryPanel/HistoryPanel";
 import { PlayerArea } from "@/LendasBrasileiras/Components/PlayerArea/PlayerArea";
 import { OpponentBar } from "@/LendasBrasileiras/Components/OpponentBar/OpponentBar";
 import { PlayerDock } from "@/LendasBrasileiras/Components/PlayerDock/PlayerDock";
+import { ZoneList } from "@/LendasBrasileiras/Components/ZoneList/ZoneList";
 import { useDragCard } from "@/LendasBrasileiras/Hooks/useDragCard";
 import { useMatch } from "@/LendasBrasileiras/Hooks/useMatch";
 import {
-	getDestinations,
-	isPlayMove
+	getPlayLabel,
+	getPlayZone
 } from "@/LendasBrasileiras/Utils/destinations";
 import { COMPUTER_PLAYER_INDEX } from "@/LendasBrasileiras/Constants/computer";
 import * as SC from "./styled";
@@ -39,12 +41,17 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 		draw,
 		tap,
 		changeLife,
-		nextPhase,
+		passTurn,
+		dismissError,
 		clearUsage,
 		moveTo,
 		isComputerTurn
 	} = useMatch(deckA, deckB, COMPUTER_PLAYER_INDEX);
-	const [menu, setMenu] = useState<CardSource | null>(null);
+	const [zoom, setZoom] = useState<CardSource | null>(null);
+	const [list, setList] = useState<{
+		playerIndex: PlayerIndex;
+		zone: ListZone;
+	} | null>(null);
 	const [preview, setPreview] = useState<CardData | null>(null);
 
 	useEffect(() => {
@@ -68,39 +75,53 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 	const handleCardClick = useCallback(
 		(source: CardSource) => {
 			if (consumeClick()) return;
-			setMenu(source);
+			dismissError();
+			setPreview(null);
+			setZoom(source);
 		},
-		[consumeClick]
+		[consumeClick, dismissError]
 	);
 
-	const buildOptions = (source: CardSource, card: CardData): MenuOption[] => {
-		const options: MenuOption[] = [];
+	const zoomCard = zoom ? findCard(zoom) : null;
+
+	useEffect(() => {
+		if (zoom && !zoomCard) setZoom(null);
+	}, [zoom, zoomCard]);
+
+	const buildZoomActions = (
+		source: CardSource,
+		card: CardData
+	): MenuOption[] => {
+		const actions: MenuOption[] = [];
+		const canAct =
+			source.playerIndex !== COMPUTER_PLAYER_INDEX &&
+			!isComputerTurn &&
+			match.winner === null;
+		if (!canAct) return actions;
 		const player = match.players[source.playerIndex];
+		if (source.zone === "hand" || source.zone === "command")
+			actions.push({
+				label: getPlayLabel(card),
+				onSelect: () =>
+					moveTo(source, {
+						playerIndex: source.playerIndex,
+						zone: getPlayZone(card)
+					})
+			});
 		if (
 			source.zone === "lands" &&
 			!player.tappedLands.includes(source.instanceId)
 		)
-			options.push({
+			actions.push({
 				label: "Virar para gerar mana",
-				onSelect: () => tap(source.playerIndex, source.instanceId)
+				onSelect: () => {
+					tap(source.playerIndex, source.instanceId);
+					setZoom(null);
+				}
 			});
-		for (const zone of getDestinations(card, source.zone)) {
-			const label = isPlayMove(card, source.zone, zone)
-				? card.type === "land"
-					? "Jogar terreno"
-					: `Lançar em ${zoneLabels[zone]}`
-				: `Mover para ${zoneLabels[zone]}`;
-			options.push({
-				label,
-				onSelect: () =>
-					moveTo(source, { playerIndex: source.playerIndex, zone })
-			});
-		}
-		options.push({ label: "Ampliar carta", onSelect: () => setPreview(card) });
-		return options;
+		return actions;
 	};
 
-	const menuCard = menu ? findCard(menu) : null;
 	const activeName = names[match.activePlayer];
 
 	const getHandlers = (index: PlayerIndex): CardHandlers => ({
@@ -134,6 +155,7 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 								Menu
 							</SC.MenuButton>
 						}
+						onOpenList={(zone) => setList({ playerIndex: opponentIndex, zone })}
 						end={
 							<SC.TurnInfo>
 								Turno {match.turn} · {phaseLabels[match.phase]} · Vez de{" "}
@@ -167,9 +189,7 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 					/>
 				</SC.PlayerField>
 
-				<SC.Side>
-					<History lines={log} />
-				</SC.Side>
+				<HistoryPanel lines={log} />
 
 				<SC.Bottom>
 					<PlayerDock
@@ -179,10 +199,11 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 						handlers={getHandlers(playerIndex)}
 						onDraw={() => draw(playerIndex)}
 						onLifeChange={(delta) => changeLife(playerIndex, delta)}
+						onOpenList={(zone) => setList({ playerIndex, zone })}
 					>
 						<SC.PassButton
 							type="button"
-							onClick={nextPhase}
+							onClick={passTurn}
 							disabled={match.winner !== null || isComputerTurn}
 						>
 							Passar turno
@@ -190,14 +211,14 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 					</PlayerDock>
 				</SC.Bottom>
 
-				{(match.winner !== null || error) && (
+				{(match.winner !== null || (error && !zoom)) && (
 					<SC.Messages>
 						{match.winner !== null && (
 							<SC.Message $kind="winner" role="status">
 								Vitória de {names[match.winner]}
 							</SC.Message>
 						)}
-						{error && (
+						{error && !zoom && (
 							<SC.Message $kind="error" role="alert">
 								{error}
 							</SC.Message>
@@ -206,11 +227,20 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 				)}
 			</SC.Wrapper>
 
-			{menu && menuCard && (
-				<CardMenu
-					title={menuCard.name}
-					options={buildOptions(menu, menuCard)}
-					onClose={() => setMenu(null)}
+			{zoom && zoomCard && (
+				<CardZoom
+					card={zoomCard}
+					actions={buildZoomActions(zoom, zoomCard)}
+					error={error}
+					onClose={() => setZoom(null)}
+				/>
+			)}
+
+			{list && (
+				<ZoneList
+					title={`${zoneLabels[list.zone]} de ${names[list.playerIndex]}`}
+					cards={match.players[list.playerIndex].zones[list.zone]}
+					onClose={() => setList(null)}
 				/>
 			)}
 
