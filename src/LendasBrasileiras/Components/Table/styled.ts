@@ -5,7 +5,7 @@ import { theme } from "@/styles/theme";
 
 export const Wrapper = styled.div`
 	--card-w: clamp(32px, 9vh, 88px);
-	--hand-w: clamp(46px, 12vh, 110px);
+	--hand-w: clamp(52px, 15vh, 120px);
 	position: fixed;
 	inset: 0;
 	z-index: 30;
@@ -85,7 +85,6 @@ export const TurnInfo = styled.span`
 `;
 
 export const PassButton = styled.button`
-	align-self: flex-end;
 	min-width: 72px;
 	min-height: 44px;
 	padding: 6px 10px;

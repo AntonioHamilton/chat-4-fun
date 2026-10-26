@@ -54,6 +54,7 @@ export const PlayerDock = ({
 					</SC.Initials>
 					<LifeCounter life={player.life} variant="portrait" />
 				</SC.Portrait>
+				{children}
 			</SC.Hero>
 
 			<SC.Piles>
@@ -101,21 +102,18 @@ export const PlayerDock = ({
 
 			<SC.End>
 				<ManaPool lands={player.zones.lands} tappedLands={player.tappedLands} />
-				<SC.EndRow>
-					<Zone
-						zone="library"
-						playerIndex={playerIndex}
-						count={library}
-						highlighted={
-							handlers.dragTarget?.playerIndex === playerIndex &&
-							handlers.dragTarget.zone === "library"
-						}
-						pile
-					>
-						<SC.Back aria-hidden="true" />
-					</Zone>
-					{children}
-				</SC.EndRow>
+				<Zone
+					zone="library"
+					playerIndex={playerIndex}
+					count={library}
+					highlighted={
+						handlers.dragTarget?.playerIndex === playerIndex &&
+						handlers.dragTarget.zone === "library"
+					}
+					pile
+				>
+					<SC.Back aria-hidden="true" />
+				</Zone>
 			</SC.End>
 		</SC.Dock>
 	);

@@ -6,7 +6,7 @@ export const Dock = styled.section`
 	display: grid;
 	grid-template-columns: auto auto minmax(0, 1fr) auto;
 	align-items: end;
-	gap: 8px 10px;
+	gap: 4px 10px;
 	min-width: 0;
 	padding: 12px 8px 6px;
 	border-radius: 12px;
@@ -17,7 +17,7 @@ export const Dock = styled.section`
 `;
 
 export const Hero = styled.div`
-	padding: 0 48px;
+	padding: 0 4px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -88,7 +88,7 @@ export const FanItem = styled.span<FanItemProps>`
 	display: block;
 	flex: 0 0 auto;
 	margin-left: min(
-		calc(var(--card-w) * -0.42),
+		calc(var(--card-w) * -0.25),
 		calc(
 			(100cqw - var(--card-w) * 2) /
 				${({ $count }) => Math.max($count - 1, 1)} - var(--card-w)
@@ -103,10 +103,16 @@ export const FanItem = styled.span<FanItemProps>`
 		margin-left: 0;
 	}
 
-	&:hover,
-	&:focus-within {
+	&:has(:focus-visible) {
 		z-index: 6;
 		transform: translateY(-30%) scale(1.4);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			z-index: 6;
+			transform: translateY(-30%) scale(1.4);
+		}
 	}
 `;
 
@@ -115,12 +121,6 @@ export const End = styled.div`
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 6px;
-`;
-
-export const EndRow = styled.div`
-	display: flex;
-	align-items: flex-end;
-	gap: 8px;
 `;
 
 export const Back = styled.div`
