@@ -9,7 +9,7 @@ import type {
 import type { CardInstance, Player } from "@/LendasBrasileiras/Types/player";
 import type { Zone } from "@/LendasBrasileiras/Types/zone";
 import { STARTING_HAND_SIZE, STARTING_LIFE, ZONES } from "./constants";
-import { createEmptyManaPool, spendMana } from "./mana";
+import { findLandsToTap } from "./mana";
 import { shuffle, type RandomFn } from "./random";
 
 const fail = (code: MatchErrorCode, message: string): MoveResult => ({
@@ -84,7 +84,6 @@ const createPlayer = (
 		life: STARTING_LIFE,
 		zones,
 		tappedLands: [],
-		manaPool: createEmptyManaPool(),
 		landPlayedThisTurn: false
 	};
 };
@@ -163,28 +162,6 @@ export const playLand = (
 	return { ok: true, match: replacePlayer(match, index, next) };
 };
 
-export const tapLand = (
-	match: Match,
-	index: PlayerIndex,
-	instanceId: string
-): MoveResult => {
-	if (match.winner !== null) return fail("match_over", "Partida encerrada");
-	const player: Player = match.players[index];
-	const found = findCard(player, instanceId);
-	if (!found) return fail("card_not_found", "Carta não encontrada");
-	const color = found.instance.card.produces;
-	if (found.zone !== "lands" || !color)
-		return fail("not_a_land", "A carta não é um terreno em jogo");
-	if (player.tappedLands.includes(instanceId))
-		return fail("land_already_tapped", "Terreno já virado");
-	const next: Player = {
-		...player,
-		tappedLands: [...player.tappedLands, instanceId],
-		manaPool: { ...player.manaPool, [color]: player.manaPool[color] + 1 }
-	};
-	return { ok: true, match: replacePlayer(match, index, next) };
-};
-
 const castDestinations: Record<string, Zone> = {
 	creature: "battlefield",
 	commander: "battlefield",
@@ -213,11 +190,15 @@ export const castCard = (
 		return fail("wrong_zone", "Carta não está na zona de origem correta");
 	if (type !== "instant" && match.phase !== "main1" && match.phase !== "main2")
 		return fail("wrong_phase", "Só é possível na fase principal");
-	const pool = spendMana(player.manaPool, instance.card.cost);
-	if (!pool) return fail("insufficient_mana", "Mana insuficiente");
+	const toTap = findLandsToTap(
+		player.zones.lands,
+		player.tappedLands,
+		instance.card.cost
+	);
+	if (!toTap) return fail("insufficient_mana", "Mana insuficiente");
 	const next: Player = {
 		...moveInPlayer(player, instance, zone, castDestinations[type]),
-		manaPool: pool
+		tappedLands: [...player.tappedLands, ...toTap]
 	};
 	return { ok: true, match: replacePlayer(match, index, next) };
 };
@@ -257,21 +238,6 @@ export const moveCard = (
 	return { ok: true, match: replacePlayer(match, index, next) };
 };
 
-export const adjustLife = (
-	match: Match,
-	index: PlayerIndex,
-	delta: number
-): MoveResult => {
-	if (match.winner !== null) return fail("match_over", "Partida encerrada");
-	return {
-		ok: true,
-		match: replacePlayer(match, index, {
-			...match.players[index],
-			life: match.players[index].life + delta
-		})
-	};
-};
-
 const nextPhase: Record<Phase, Phase> = {
 	draw: "main1",
 	main1: "main2",
@@ -282,18 +248,12 @@ const nextPhase: Record<Phase, Phase> = {
 
 export const advancePhase = (match: Match): MoveResult => {
 	if (match.winner !== null) return fail("match_over", "Partida encerrada");
-	const active: Player = match.players[match.activePlayer];
-	const cleared: Match = replacePlayer(match, match.activePlayer, {
-		...active,
-		manaPool: createEmptyManaPool()
-	});
 	if (match.phase !== "end")
-		return { ok: true, match: { ...cleared, phase: nextPhase[match.phase] } };
+		return { ok: true, match: { ...match, phase: nextPhase[match.phase] } };
 	const upcoming: PlayerIndex = opponentOf(match.activePlayer);
-	const refreshed: Match = replacePlayer(cleared, upcoming, {
-		...cleared.players[upcoming],
+	const refreshed: Match = replacePlayer(match, upcoming, {
+		...match.players[upcoming],
 		tappedLands: [],
-		manaPool: createEmptyManaPool(),
 		landPlayedThisTurn: false
 	});
 	return drawCard(

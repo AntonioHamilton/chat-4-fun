@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import type { Player } from "@/LendasBrasileiras/Types/player";
 import type { ListZone } from "@/LendasBrasileiras/Types/zone";
 import { LifeCounter } from "@/LendasBrasileiras/Components/LifeCounter/LifeCounter";
-import { ManaPool } from "@/LendasBrasileiras/Components/ManaPool/ManaPool";
 import * as SC from "./styled";
 
 type OpponentBarProps = {
@@ -31,7 +30,7 @@ export const OpponentBar = ({
 				{name}
 				{isActive && <SC.Badge>Na vez</SC.Badge>}
 			</SC.Name>
-			<LifeCounter life={player.life} onChange={() => undefined} disabled />
+			<LifeCounter life={player.life} />
 			<SC.Hand
 				role="img"
 				aria-label={`Mão de ${name}, ${handCount} ${handCount === 1 ? "carta" : "cartas"} viradas para baixo`}
@@ -43,7 +42,6 @@ export const OpponentBar = ({
 			<SC.Chips>
 				<SC.Extra>
 					<span>Biblioteca {player.zones.library.length}</span>
-					<ManaPool pool={player.manaPool} />
 				</SC.Extra>
 				<SC.Chip type="button" onClick={() => onOpenList("graveyard")}>
 					Cemitério {player.zones.graveyard.length}

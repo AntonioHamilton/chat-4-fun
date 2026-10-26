@@ -54,6 +54,11 @@ export const Initials = styled.span`
 export const Piles = styled.div`
 	display: flex;
 	gap: 8px;
+
+	& > * {
+		flex: 0 0 auto;
+		width: calc(var(--card-w) + 12px);
+	}
 `;
 
 export const Hand = styled.div`
@@ -107,25 +112,15 @@ export const FanItem = styled.span<FanItemProps>`
 
 export const End = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: flex-end;
-	gap: 8px;
+	gap: 6px;
 `;
 
-export const DeckButton = styled.button`
-	padding: 0;
-	border: none;
-	background: none;
-	cursor: pointer;
-
-	&:disabled {
-		cursor: not-allowed;
-		opacity: 0.6;
-	}
-
-	&:focus-visible {
-		outline: 2px solid ${theme.gold400};
-		outline-offset: 2px;
-	}
+export const EndRow = styled.div`
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
 `;
 
 export const Back = styled.div`

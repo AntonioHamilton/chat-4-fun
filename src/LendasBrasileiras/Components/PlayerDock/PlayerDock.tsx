@@ -14,8 +14,6 @@ type PlayerDockProps = {
 	player: Player;
 	playerIndex: PlayerIndex;
 	handlers: CardHandlers;
-	onDraw: () => void;
-	onLifeChange: (delta: number) => void;
 	onOpenList: (zone: ListZone) => void;
 	children?: ReactNode;
 };
@@ -38,8 +36,6 @@ export const PlayerDock = ({
 	player,
 	playerIndex,
 	handlers,
-	onDraw,
-	onLifeChange,
 	onOpenList,
 	children
 }: PlayerDockProps) => {
@@ -56,14 +52,8 @@ export const PlayerDock = ({
 					<SC.Initials aria-hidden="true">
 						{getInitials(portraitName)}
 					</SC.Initials>
-					<LifeCounter
-						life={player.life}
-						onChange={onLifeChange}
-						disabled={handlers.locked}
-						variant="portrait"
-					/>
+					<LifeCounter life={player.life} variant="portrait" />
 				</SC.Portrait>
-				<ManaPool pool={player.manaPool} />
 			</SC.Hero>
 
 			<SC.Piles>
@@ -110,26 +100,22 @@ export const PlayerDock = ({
 			</SC.Hand>
 
 			<SC.End>
-				<Zone
-					zone="library"
-					playerIndex={playerIndex}
-					count={library}
-					highlighted={
-						handlers.dragTarget?.playerIndex === playerIndex &&
-						handlers.dragTarget.zone === "library"
-					}
-					pile
-				>
-					<SC.DeckButton
-						type="button"
-						aria-label={`Comprar carta, ${library} na biblioteca`}
-						disabled={handlers.locked}
-						onClick={onDraw}
+				<ManaPool lands={player.zones.lands} tappedLands={player.tappedLands} />
+				<SC.EndRow>
+					<Zone
+						zone="library"
+						playerIndex={playerIndex}
+						count={library}
+						highlighted={
+							handlers.dragTarget?.playerIndex === playerIndex &&
+							handlers.dragTarget.zone === "library"
+						}
+						pile
 					>
 						<SC.Back aria-hidden="true" />
-					</SC.DeckButton>
-				</Zone>
-				{children}
+					</Zone>
+					{children}
+				</SC.EndRow>
 			</SC.End>
 		</SC.Dock>
 	);

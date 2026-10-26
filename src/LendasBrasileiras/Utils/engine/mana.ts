@@ -1,30 +1,31 @@
 import type { ManaCost } from "@/LendasBrasileiras/Types/card";
-import type { ManaPool } from "@/LendasBrasileiras/Types/player";
+import type { CardInstance } from "@/LendasBrasileiras/Types/player";
 import { MANA_COLORS } from "./constants";
 
-export const createEmptyManaPool = (): ManaPool => ({
-	green: 0,
-	blue: 0,
-	black: 0,
-	red: 0,
-	white: 0,
-	colorless: 0
-});
-
-export const spendMana = (pool: ManaPool, cost: ManaCost): ManaPool | null => {
-	const remaining: ManaPool = { ...pool };
+export const findLandsToTap = (
+	lands: CardInstance[],
+	tapped: string[],
+	cost: ManaCost
+): string[] | null => {
+	const free: CardInstance[] = lands.filter(
+		(land) => !tapped.includes(land.instanceId)
+	);
+	const chosen: string[] = [];
 	for (const color of MANA_COLORS) {
 		if (color === "colorless") continue;
 		const needed: number = cost[color] ?? 0;
-		if (remaining[color] < needed) return null;
-		remaining[color] -= needed;
+		const matching: CardInstance[] = free.filter(
+			(land) =>
+				land.card.produces === color && !chosen.includes(land.instanceId)
+		);
+		if (matching.length < needed) return null;
+		chosen.push(...matching.slice(0, needed).map((land) => land.instanceId));
 	}
-	let colorlessNeeded: number = cost.colorless ?? 0;
-	for (const color of MANA_COLORS) {
-		if (colorlessNeeded === 0) break;
-		const used: number = Math.min(remaining[color], colorlessNeeded);
-		remaining[color] -= used;
-		colorlessNeeded -= used;
-	}
-	return colorlessNeeded === 0 ? remaining : null;
+	const colorlessNeeded: number = cost.colorless ?? 0;
+	const rest: CardInstance[] = free.filter(
+		(land) => land.card.produces && !chosen.includes(land.instanceId)
+	);
+	if (rest.length < colorlessNeeded) return null;
+	chosen.push(...rest.slice(0, colorlessNeeded).map((land) => land.instanceId));
+	return chosen;
 };

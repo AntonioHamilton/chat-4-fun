@@ -187,10 +187,10 @@ export const Container = styled.div`
 
 ## Personas de teste (Lendas Brasileiras)
 
-Mesa v2: campo do adversário em cima, campo do jogador no meio, faixa inferior (comandante com vida, mana, cemitério e exílio à esquerda, mão em leque, biblioteca e Passar turno à direita). Em retrato até 480 px aparece só o aviso "Gire o celular" (inclusive no lobby). Clicar em carta abre a carta ampliada com o botão de ação ("Jogar terreno", "Colocar em campo", "Virar para gerar mana"); não existe menu de carta.
+Mesa v2: campo do adversário em cima, campo do jogador no meio, faixa inferior (comandante com vida (só exibição), cemitério e exílio à esquerda, mão em leque, biblioteca, terrenos livres por cor e Passar turno à direita). Em retrato até 480 px aparece só o aviso "Gire o celular" (inclusive no lobby). Clicar em carta abre a carta ampliada com o botão de ação ("Jogar terreno", "Colocar em campo"); não existe menu de carta. Regras automáticas: compra e desvirar terrenos no início do turno de cada jogador (exceto o primeiro turno da partida), mana paga virando terrenos livres ao lançar a carta.
 
-- **Duda, celular em paisagem (844x390, toque):** toca e arrasta mal. Fluxos: lobby, tocar carta da mão e usar "Colocar em campo" / "Jogar terreno" na carta ampliada, tocar terreno em campo e "Virar para gerar mana", tocar Cemitério e Exílio para ver a lista, abrir e fechar o histórico pelo ícone à esquerda, Passar turno e ver a IA jogar, girar para retrato (aviso). Erros típicos: toque duplo, tocar na vez do computador, tocar carta sem mana ("Mana insuficiente"), alvo pequeno nos botões de vida (24 px), girar o celular no meio da partida. Verificar sem overflow horizontal ou vertical a 844x390, e o aviso em 390x844, 480x800 (aviso) e 481x800 (mesa).
-- **Rafa, PC com mouse (1280x800, também 1024x768):** arrasta tudo. Fluxos: arrastar mão para Terrenos/Campo, clicar carta para ampliar, virar terreno, vida +/- (só a própria), histórico sobreposto, comprar muitas cartas, Passar turno. Erros típicos: soltar carta fora das zonas, segundo terreno no turno, arrastar carta para o campo do oponente, clicar em Menu sem querer (volta ao lobby), clicar fora da carta ampliada e do histórico.
+- **Duda, celular em paisagem (844x390, toque):** toca e arrasta mal. Fluxos: lobby, tocar carta da mão e usar "Colocar em campo" / "Jogar terreno" na carta ampliada, tocar Cemitério e Exílio para ver a lista, abrir e fechar o histórico pelo ícone à esquerda, Passar turno e ver a IA jogar, girar para retrato (aviso). Erros típicos: toque duplo, tocar na vez do computador, tocar carta sem mana ("Mana insuficiente"), girar o celular no meio da partida. Verificar sem overflow horizontal ou vertical a 844x390, e o aviso em 390x844, 480x800 (aviso) e 481x800 (mesa).
+- **Rafa, PC com mouse (1280x800, também 1024x768):** arrasta tudo. Fluxos: arrastar mão para Terrenos/Campo, clicar carta para ampliar, histórico sobreposto, lançar carta sem mana suficiente, Passar turno. Erros típicos: soltar carta fora das zonas, segundo terreno no turno, arrastar carta para o campo do oponente, clicar em Menu sem querer (volta ao lobby), clicar fora da carta ampliada e do histórico.
 - **Léo, teclado e leitor de tela (1024x768):** só Tab, Enter e Esc. Fluxos: Tab até a carta da mão, Enter abre a carta ampliada, Tab entre "Colocar em campo" e "Fechar" (foco preso), Esc fecha e devolve o foco à carta, abrir histórico e listas de Cemitério/Exílio pelo teclado, Passar turno. Erros típicos: Tab saindo da carta ampliada, foco perdido ao fechar, ordem de foco, botão sem rótulo.
 
 Todas rodam contra o computador. Automatizado (motor e IA): `npm run test:lendas`. Manual: com o `npm run dev` rodando, abrir `/lendas-brasileiras` (dá para simular as telas com um iframe de WxH na mesma origem) e repetir os fluxos acima; casos já achados estão em "Regressão".
@@ -201,21 +201,20 @@ Suíte do motor e da IA: `npm run test:lendas`. Testes marcados `todo` documenta
 
 ### Corrigidos (histórico)
 
-- Motor aceitava jogada depois do fim da partida (`moveCard`, `adjustLife`): corrigido. Testes: `src/LendasBrasileiras/Utils/engine/regression.test.ts` ("rejects moveCard after the match is over", "keeps life unchanged after the match is over"). Conferido na mesa v2 em 26/10/2026: vida não muda após a vitória.
-- `tappedLands` guardava terreno que saiu da zona de terrenos (contador negativo): corrigido. Teste: `regression.test.ts` ("drops a tapped land from tappedLands..."). Na mesa v2 o jogador não move carta para o cemitério.
+- Motor aceitava jogada depois do fim da partida (`moveCard`, `adjustLife`): corrigido. Teste: `src/LendasBrasileiras/Utils/engine/regression.test.ts` ("rejects moveCard after the match is over"). `adjustLife` foi removido nos ajustes 2 (vida só exibição), junto com o teste "keeps life unchanged...".
+- `tappedLands` guardava terreno que saiu da zona de terrenos (contador negativo): corrigido. Teste: `regression.test.ts` ("drops a tapped land from tappedLands...", agora tapando o terreno ao lançar uma carta, já que `tapLand` foi removido). Na mesa v2 o jogador não move carta para o cemitério.
 - Menu da carta sem trap de foco: removido, menu apagado (a carta ampliada prende o foco, Esc fecha e devolve o foco à carta; conferido por teclado em 26/10/2026).
 
 ### Abertos (tela, sem teste automatizado: não há framework de UI)
 
+Casos de mão sem limite (comprar sem parar) e de botões de vida (habilitados após o fim, alvo de 24 px) deixaram de existir nos ajustes 2: não há mais botão Comprar nem +/- na vida.
+
 Validação da mesa v2 de 26/10/2026 (iframes 844x390, 1024x768, 1280x800 e retrato 390x844/480x800/481x800/320x568 no Chrome; sem overflow em nenhum; Lendas v2 no commit 7d19a5c):
 
-1. [baixa] Mão sem limite estoura a faixa: comprar cartas sem parar (clicar Comprar ~95 vezes) abre o leque além das bordas, cobrindo biblioteca e Passar turno. Reproduzir: 1280x640, clicar Comprar até a biblioteca zerar e olhar a faixa inferior.
-2. [baixa] Após "Partida encerrada" os botões de vida (- e +) do jogador seguem habilitados (o motor ignora o clique). Reproduzir: esvaziar a biblioteca clicando Comprar e clicar + ou -.
-3. [baixa] Botão "Menu" (topo esquerdo) volta ao lobby na hora, sem confirmar e perdendo a partida. Reproduzir: iniciar partida, clicar Menu.
-4. [baixa] Botões de vida do jogador têm 24x24 px em 844x390, alvo de toque pequeno e sobreposto ao retrato do comandante. Reproduzir: 844x390, medir os botões - e + sob o retrato.
-5. [baixa] Em retrato (até 480 px) o aviso "Gire o celular" cobre também o lobby, sem botão de voltar ao portfólio. Reproduzir: abrir `/lendas-brasileiras` em 390x844. Confirmar se é intencional (D3 só pede a mesa).
-6. [baixa] Painel do histórico (fundo 72% opaco) deixa o texto misturado com as cartas atrás em 844x390. Reproduzir: abrir o histórico no meio da partida.
-7. [baixa, só tela] Cartas de terreno branco (ex: "Mirante do Sol") com rótulo claro sobre fundo bege, contraste fraco (caso antigo; não reconferido).
+1. [baixa] Botão "Menu" (topo esquerdo) volta ao lobby na hora, sem confirmar e perdendo a partida. Reproduzir: iniciar partida, clicar Menu.
+2. [baixa] Em retrato (até 480 px) o aviso "Gire o celular" cobre também o lobby, sem botão de voltar ao portfólio. Reproduzir: abrir `/lendas-brasileiras` em 390x844. Confirmar se é intencional (D3 só pede a mesa).
+3. [baixa] Painel do histórico (fundo 72% opaco) deixa o texto misturado com as cartas atrás em 844x390. Reproduzir: abrir o histórico no meio da partida.
+4. [baixa, só tela] Cartas de terreno branco (ex: "Mirante do Sol") com rótulo claro sobre fundo bege, contraste fraco (caso antigo; não reconferido).
 
 Cobertura automática adicional (sem bugs): `src/LendasBrasileiras/Utils/engine/ai.test.ts` (IA passa fora do seu turno, joga partida inteira contra si mesma até alguém perder, não mexe nas zonas do oponente).
 

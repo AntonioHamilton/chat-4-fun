@@ -17,16 +17,13 @@ import {
 	isPlayMove
 } from "@/LendasBrasileiras/Utils/destinations";
 import {
-	adjustLife,
 	advancePhase,
 	castCard,
 	createMatch,
-	drawCard,
 	moveCard,
 	passTurn,
 	playLand,
-	resolveUsage,
-	tapLand
+	resolveUsage
 } from "@/LendasBrasileiras/Utils/engine/match";
 
 type MatchState = {
@@ -46,7 +43,6 @@ const describeStep = (step: AiStep, name: string): string => {
 	const { action } = step;
 	if (action.kind === "playLand")
 		return `${name} jogou o terreno ${action.cardName}`;
-	if (action.kind === "tap") return `${name} virou ${action.cardName}`;
 	if (action.kind === "cast") return `${name} lançou ${action.cardName}`;
 	return "";
 };
@@ -136,47 +132,6 @@ export const useMatch = (
 		return () => window.clearTimeout(timer);
 	}, [isComputerTurn, computerIndex, state.match, names]);
 
-	const draw = useCallback(
-		(index: PlayerIndex) =>
-			apply((match) => {
-				const result = drawCard(match, index);
-				if (result.ok && result.match.winner !== null)
-					return {
-						result,
-						entry: `${names[index]} não tem cartas e perdeu`
-					};
-				return { result, entry: `${names[index]} comprou uma carta` };
-			}, index),
-		[apply, names]
-	);
-
-	const tap = useCallback(
-		(index: PlayerIndex, instanceId: string) =>
-			apply((match) => {
-				const found = match.players[index].zones.lands.find(
-					(item) => item.instanceId === instanceId
-				);
-				return {
-					result: tapLand(match, index, instanceId),
-					entry: `${names[index]} virou ${found?.card.name ?? "terreno"}`
-				};
-			}, index),
-		[apply, names]
-	);
-
-	const changeLife = useCallback(
-		(index: PlayerIndex, delta: number) =>
-			apply((match) => {
-				const result = adjustLife(match, index, delta);
-				if (!result.ok) return { result, entry: "" };
-				return {
-					result,
-					entry: `${names[index]} agora tem ${result.match.players[index].life} de vida`
-				};
-			}, index),
-		[apply, names]
-	);
-
 	const pass = useCallback(
 		() =>
 			apply((match) => {
@@ -254,9 +209,6 @@ export const useMatch = (
 		error: state.error,
 		names,
 		isComputerTurn,
-		draw,
-		tap,
-		changeLife,
 		passTurn: pass,
 		dismissError,
 		clearUsage,

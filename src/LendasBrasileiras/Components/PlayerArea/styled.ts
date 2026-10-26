@@ -14,10 +14,11 @@ const rows = (position: Position) =>
 export const Root = styled.section<{ $position: Position; $active: boolean }>`
 	display: grid;
 	grid-template-columns:
-		calc(var(--card-w) + 12px) minmax(0, 1fr) calc(var(--card-w) + 12px)
+		calc(var(--card-w) + 12px) minmax(0, 1fr) calc(var(--cmd-w) + 12px)
 		minmax(0, 0.7fr);
 	grid-template-rows: ${({ $position }) => rows($position)};
 	grid-template-areas: ${({ $position }) => areas($position)};
+	--cmd-w: calc(var(--card-w) * 1.5);
 	gap: 8px 6px;
 	min-height: 0;
 	padding: 10px 8px 6px;
@@ -36,6 +37,10 @@ export const Root = styled.section<{ $position: Position; $active: boolean }>`
 
 	user-select: none;
 	-webkit-user-select: none;
+
+	[data-zone="command"] {
+		--card-w: var(--cmd-w);
+	}
 `;
 
 export const TappedMarker = styled.span`

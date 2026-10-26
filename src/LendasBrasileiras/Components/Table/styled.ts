@@ -86,14 +86,14 @@ export const TurnInfo = styled.span`
 
 export const PassButton = styled.button`
 	align-self: flex-end;
-	min-width: 84px;
+	min-width: 72px;
 	min-height: 44px;
-	padding: 8px 12px;
+	padding: 6px 10px;
 	border-radius: 8px;
 	border: none;
 	background: ${theme.gold500};
 	color: ${theme.backgroundPrimary};
-	font-size: 0.85rem;
+	font-size: 0.75rem;
 	font-weight: 700;
 	cursor: pointer;
 
