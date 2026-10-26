@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { BackButton } from "@/Components/BackButton/BackButton";
 import { GameLayout } from "@/Components/GameLayout/GameLayout";
 import { pageBackground } from "@/styles/guess-country.styled";
 import type { Deck } from "@/LendasBrasileiras/Types/deck";
@@ -19,18 +18,15 @@ const LendasBrasileiras = () => {
 		setSession({ kind: "playing", deckA: deck, deckB: opponent });
 	};
 
-	const topActions =
-		session.kind === "lobby" ? null : (
-			<BackButton onClick={() => setSession({ kind: "lobby" })}>
-				Menu
-			</BackButton>
-		);
-
 	return (
-		<GameLayout background={pageBackground} topActions={topActions}>
+		<GameLayout background={pageBackground}>
 			{session.kind === "lobby" && <Lobby onPlay={play} />}
 			{session.kind === "playing" && (
-				<Table deckA={session.deckA} deckB={session.deckB} />
+				<Table
+					deckA={session.deckA}
+					deckB={session.deckB}
+					onExit={() => setSession({ kind: "lobby" })}
+				/>
 			)}
 		</GameLayout>
 	);
