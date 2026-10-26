@@ -22,6 +22,7 @@ type PlayerDockProps = {
 
 const FAN_STEP_DEGREES = 3;
 const FAN_DROP_PX = 2;
+const FAN_MAX_SPREAD_DEGREES = 30;
 
 const getInitials = (name: string): string =>
 	name
@@ -97,10 +98,9 @@ export const PlayerDock = ({
 						const offset = index - (total - 1) / 2;
 						return (
 							<SC.FanItem
-								style={{
-									["--angle" as string]: `${offset * FAN_STEP_DEGREES}deg`,
-									["--drop" as string]: `${Math.abs(offset) * FAN_DROP_PX}px`
-								}}
+								$angle={`${offset * Math.min(FAN_STEP_DEGREES, FAN_MAX_SPREAD_DEGREES / total)}deg`}
+								$drop={`${Math.abs(offset) * FAN_DROP_PX}px`}
+								$count={total}
 							>
 								{card}
 							</SC.FanItem>

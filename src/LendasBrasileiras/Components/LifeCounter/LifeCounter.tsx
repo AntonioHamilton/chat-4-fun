@@ -17,6 +17,7 @@ export const LifeCounter = ({
 		<SC.Container role="group" aria-label="Vida" $variant={variant}>
 			<SC.Button
 				type="button"
+				$variant={variant}
 				aria-label="Diminuir vida"
 				disabled={disabled}
 				onClick={() => onChange(-1)}
@@ -28,6 +29,7 @@ export const LifeCounter = ({
 			</SC.Value>
 			<SC.Button
 				type="button"
+				$variant={variant}
 				aria-label="Aumentar vida"
 				disabled={disabled}
 				onClick={() => onChange(1)}

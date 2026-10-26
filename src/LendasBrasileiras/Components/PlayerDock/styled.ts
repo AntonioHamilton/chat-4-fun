@@ -17,6 +17,7 @@ export const Dock = styled.section`
 `;
 
 export const Hero = styled.div`
+	padding: 0 48px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -56,6 +57,9 @@ export const Piles = styled.div`
 `;
 
 export const Hand = styled.div`
+	position: relative;
+	z-index: 9;
+	container-type: inline-size;
 	min-width: 0;
 	align-self: stretch;
 	display: flex;
@@ -68,12 +72,25 @@ export const Hand = styled.div`
 	}
 `;
 
-export const FanItem = styled.span`
+type FanItemProps = {
+	$angle: string;
+	$drop: string;
+	$count: number;
+};
+
+export const FanItem = styled.span<FanItemProps>`
 	position: relative;
 	display: block;
 	flex: 0 0 auto;
-	margin-left: calc(var(--card-w) * -0.42);
-	transform: translateY(var(--drop)) rotate(var(--angle));
+	margin-left: min(
+		calc(var(--card-w) * -0.42),
+		calc(
+			(100cqw - var(--card-w) * 2) /
+				${({ $count }) => Math.max($count - 1, 1)} - var(--card-w)
+		)
+	);
+	transform: translateY(${({ $drop }) => $drop})
+		rotate(${({ $angle }) => $angle});
 	transform-origin: 50% 130%;
 	transition: transform 0.15s ease-out;
 

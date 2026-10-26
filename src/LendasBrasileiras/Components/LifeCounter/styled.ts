@@ -13,13 +13,10 @@ export const Container = styled.div<{ $variant: Variant }>`
 		css`
 			position: absolute;
 			inset: 0;
-			display: grid;
-			grid-template-columns: auto 1fr auto;
-			grid-template-rows: 1fr auto;
-			grid-template-areas: "value value value" "minus . plus";
-			align-items: end;
-			--life-btn: 24px;
-			padding: 2px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			--life-btn: 44px;
 			gap: 0;
 		`}
 `;
@@ -34,8 +31,6 @@ export const Value = styled.span<{ $variant: Variant }>`
 	${({ $variant }) =>
 		$variant === "portrait" &&
 		css`
-			grid-area: value;
-			align-self: center;
 			margin-top: 20%;
 			font-size: clamp(1.6rem, 6vh, 2.6rem);
 			line-height: 1;
@@ -46,7 +41,7 @@ export const Value = styled.span<{ $variant: Variant }>`
 		`}
 `;
 
-export const Button = styled.button`
+export const Button = styled.button<{ $variant: Variant }>`
 	width: var(--life-btn, 32px);
 	height: var(--life-btn, 32px);
 	border-radius: 50%;
@@ -69,11 +64,18 @@ export const Button = styled.button`
 		cursor: not-allowed;
 	}
 
-	[aria-label="Vida"] > &:first-child {
-		grid-area: minus;
-	}
+	${({ $variant }) =>
+		$variant === "portrait" &&
+		css`
+			position: absolute;
+			bottom: 0;
 
-	[aria-label="Vida"] > &:last-child {
-		grid-area: plus;
-	}
+			&:first-child {
+				right: calc(100% + 4px);
+			}
+
+			&:last-child {
+				left: calc(100% + 4px);
+			}
+		`}
 `;

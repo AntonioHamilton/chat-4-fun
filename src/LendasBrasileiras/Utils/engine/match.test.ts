@@ -5,6 +5,8 @@ import type { Deck } from "@/LendasBrasileiras/Types/deck";
 import type { Match, MoveResult } from "@/LendasBrasileiras/Types/match";
 import {
 	advancePhase,
+	canCast,
+	canPlayLand,
 	castCard,
 	createMatch,
 	drawCard,
@@ -231,5 +233,51 @@ describe("engine", () => {
 		const next: Match = unwrap(passTurn(match));
 		assert.equal(next.players[1].zones.hand.length, 8);
 		assert.equal(next.players[0].zones.hand.length, 7);
+	});
+});
+
+describe("playability checks", () => {
+	it("canCast is false without enough mana and true with it", () => {
+		const poor: Match = matchWithMana(1);
+		assert.equal(canCast(poor, 0, handIdOf(poor, "creature")), false);
+		const rich: Match = matchWithMana(2);
+		assert.equal(canCast(rich, 0, handIdOf(rich, "creature")), true);
+	});
+
+	it("canCast is false outside the main phase for non-instants", () => {
+		let match: Match = matchWithMana(2);
+		match = { ...match, phase: "end" };
+		assert.equal(canCast(match, 0, handIdOf(match, "creature")), false);
+		assert.equal(canCast(match, 0, handIdOf(match, "instant")), true);
+	});
+
+	it("canCast is false for non-active player's sorcery-speed cards and after the match ends", () => {
+		const match: Match = matchWithMana(2);
+		const id: string = handIdOf(match, "creature");
+		assert.equal(canCast({ ...match, activePlayer: 1 }, 0, id), false);
+		assert.equal(canCast({ ...match, winner: 1 }, 0, id), false);
+	});
+
+	it("canPlayLand is false after a land was already played this turn", () => {
+		const match: Match = createMatch(fullDeck(), fullDeck(), noShuffle);
+		const lands = match.players[0].zones.hand.filter(
+			(item) => item.card.type === "land"
+		);
+		assert.equal(canPlayLand(match, 0, lands[0].instanceId), true);
+		const after: Match = unwrap(playLand(match, 0, lands[0].instanceId));
+		assert.equal(canPlayLand(after, 0, lands[1].instanceId), false);
+	});
+
+	it("canPlayLand is false outside the main phase and for non-lands", () => {
+		const match: Match = matchWithMana(0);
+		const land = match.players[0].zones.hand.find(
+			(item) => item.card.type === "land"
+		);
+		if (!land) throw new Error("no land in hand");
+		assert.equal(
+			canPlayLand({ ...match, phase: "end" }, 0, land.instanceId),
+			false
+		);
+		assert.equal(canPlayLand(match, 0, handIdOf(match, "creature")), false);
 	});
 });

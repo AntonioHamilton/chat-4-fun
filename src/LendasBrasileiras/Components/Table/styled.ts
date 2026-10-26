@@ -19,9 +19,24 @@ export const Wrapper = styled.div`
 	background: ${pageBackground};
 	color: ${theme.textPrimary};
 
+	&:focus {
+		outline: none;
+	}
+
 	@media (orientation: portrait) and (max-width: ${breakpoints.sm}) {
 		display: none;
 	}
+`;
+
+export const SpellFlash = styled.div`
+	position: absolute;
+	top: 22%;
+	left: 50%;
+	z-index: 15;
+	--card-w: var(--hand-w);
+	transform: translateX(-50%);
+	pointer-events: none;
+	filter: drop-shadow(0 8px 12px ${theme.shadowColor});
 `;
 
 export const TopArea = styled.div`
@@ -139,6 +154,24 @@ export const RotateNotice = styled.div`
 export const RotateTitle = styled.strong`
 	font-size: 1.5rem;
 	color: ${theme.gold400};
+`;
+
+export const RotateExit = styled.button`
+	min-height: 44px;
+	margin-top: 12px;
+	padding: 8px 14px;
+	border-radius: 8px;
+	border: 1px solid ${theme.gold500};
+	background: transparent;
+	color: ${theme.gold400};
+	font-size: 0.85rem;
+	font-weight: 700;
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: 2px solid ${theme.gold400};
+		outline-offset: 2px;
+	}
 `;
 
 export const Ghost = styled.div`

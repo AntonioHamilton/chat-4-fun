@@ -320,3 +320,15 @@ export const passTurn = (match: Match): MoveResult => {
 		return advancePhase(current);
 	return { ok: true, match: current };
 };
+
+export const canPlayLand = (
+	match: Match,
+	index: PlayerIndex,
+	instanceId: string
+): boolean => playLand(match, index, instanceId).ok;
+
+export const canCast = (
+	match: Match,
+	index: PlayerIndex,
+	instanceId: string
+): boolean => castCard(match, index, instanceId).ok;

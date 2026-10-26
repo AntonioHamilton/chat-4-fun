@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import type { Card as CardData } from "@/LendasBrasileiras/Types/card";
 import type { MenuOption } from "@/LendasBrasileiras/Types/ui";
 import { Card } from "@/LendasBrasileiras/Components/Card/Card";
@@ -9,10 +10,17 @@ type CardZoomProps = {
 	actions: MenuOption[];
 	error: string | null;
 	onClose: () => void;
+	fallbackFocusRef?: RefObject<HTMLElement>;
 };
 
-export const CardZoom = ({ card, actions, error, onClose }: CardZoomProps) => {
-	const { dialogRef, handleKeyDown } = useModal(onClose);
+export const CardZoom = ({
+	card,
+	actions,
+	error,
+	onClose,
+	fallbackFocusRef
+}: CardZoomProps) => {
+	const { dialogRef, handleKeyDown } = useModal(onClose, fallbackFocusRef);
 
 	return (
 		<SC.Overlay onClick={onClose}>

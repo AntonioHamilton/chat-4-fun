@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { History } from "@/LendasBrasileiras/Components/History/History";
 import * as SC from "./styled";
 
@@ -8,6 +8,7 @@ type HistoryPanelProps = {
 
 export const HistoryPanel = ({ lines }: HistoryPanelProps) => {
 	const [open, setOpen] = useState(false);
+	const chronological = useMemo(() => [...lines].reverse(), [lines]);
 
 	useEffect(() => {
 		if (!open) return undefined;
@@ -43,7 +44,7 @@ export const HistoryPanel = ({ lines }: HistoryPanelProps) => {
 			</SC.Toggle>
 			{open && (
 				<SC.Panel id="history-panel">
-					<History lines={[...lines].reverse()} />
+					<History lines={chronological} />
 				</SC.Panel>
 			)}
 		</>

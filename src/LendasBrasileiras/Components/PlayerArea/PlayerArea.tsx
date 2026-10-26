@@ -48,6 +48,7 @@ export const PlayerArea = ({
 			/>
 			<PlayerZone
 				zone="lands"
+				animateEntry={position === "top"}
 				player={player}
 				playerIndex={playerIndex}
 				handlers={handlers}

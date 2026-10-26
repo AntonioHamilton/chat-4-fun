@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
+import type { RefObject } from "react";
 import type { KeyboardEvent } from "react";
 
-export const useModal = (onClose: () => void) => {
+export const useModal = (
+	onClose: () => void,
+	fallbackFocusRef?: RefObject<HTMLElement>
+) => {
 	const dialogRef = useRef<HTMLDivElement>(null);
 	const closeRef = useRef(onClose);
 
@@ -11,6 +15,7 @@ export const useModal = (onClose: () => void) => {
 
 	useEffect(() => {
 		const opener = document.activeElement;
+		const fallback = fallbackFocusRef?.current;
 		dialogRef.current?.querySelector("button")?.focus();
 		const handleEscape = (event: globalThis.KeyboardEvent) => {
 			if (event.key === "Escape") closeRef.current();
@@ -18,9 +23,15 @@ export const useModal = (onClose: () => void) => {
 		document.addEventListener("keydown", handleEscape);
 		return () => {
 			document.removeEventListener("keydown", handleEscape);
-			if (opener instanceof HTMLElement) opener.focus();
+			const target =
+				opener instanceof HTMLElement &&
+				opener !== document.body &&
+				opener.isConnected
+					? opener
+					: fallback;
+			target?.focus();
 		};
-	}, []);
+	}, [fallbackFocusRef]);
 
 	const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
 		if (event.key !== "Tab") return;

@@ -29,8 +29,6 @@ import {
 	tapLand
 } from "@/LendasBrasileiras/Utils/engine/match";
 
-const MAX_LOG_LINES = 20;
-
 type MatchState = {
 	match: Match;
 	log: string[];
@@ -86,10 +84,7 @@ export const useMatch = (
 				if (!result.ok) return { ...prev, error: result.error.message };
 				return {
 					match: result.match,
-					log: [`T${prev.match.turn}: ${entry}`, ...prev.log].slice(
-						0,
-						MAX_LOG_LINES
-					),
+					log: [`T${prev.match.turn}: ${entry}`, ...prev.log],
 					error: null
 				};
 			});
@@ -133,10 +128,7 @@ export const useMatch = (
 				}
 				return {
 					match: nextMatch,
-					log: [`T${prev.match.turn}: ${entry}`, ...prev.log].slice(
-						0,
-						MAX_LOG_LINES
-					),
+					log: [`T${prev.match.turn}: ${entry}`, ...prev.log],
 					error: null
 				};
 			});

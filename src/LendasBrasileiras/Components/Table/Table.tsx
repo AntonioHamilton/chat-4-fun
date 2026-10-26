@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Card as CardData } from "@/LendasBrasileiras/Types/card";
 import type { Deck } from "@/LendasBrasileiras/Types/deck";
 import type { PlayerIndex } from "@/LendasBrasileiras/Types/match";
@@ -7,9 +7,11 @@ import type {
 	CardSource,
 	MenuOption
 } from "@/LendasBrasileiras/Types/ui";
+import type { CardInstance } from "@/LendasBrasileiras/Types/player";
 import type { ListZone } from "@/LendasBrasileiras/Types/zone";
 import { phaseLabels, zoneLabels } from "@/LendasBrasileiras/Constants/labels";
 import { Card } from "@/LendasBrasileiras/Components/Card/Card";
+import { ConfirmExit } from "@/LendasBrasileiras/Components/ConfirmExit/ConfirmExit";
 import { CardZoom } from "@/LendasBrasileiras/Components/CardZoom/CardZoom";
 import { CardPreview } from "@/LendasBrasileiras/Components/CardPreview/CardPreview";
 import { HistoryPanel } from "@/LendasBrasileiras/Components/HistoryPanel/HistoryPanel";
@@ -23,8 +25,11 @@ import {
 	getPlayLabel,
 	getPlayZone
 } from "@/LendasBrasileiras/Utils/destinations";
+import { canCast, canPlayLand } from "@/LendasBrasileiras/Utils/engine/match";
 import { COMPUTER_PLAYER_INDEX } from "@/LendasBrasileiras/Constants/computer";
 import * as SC from "./styled";
+
+const SPELL_FLASH_MS = 1500;
 
 type TableProps = {
 	deckA: Deck;
@@ -53,6 +58,24 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 		zone: ListZone;
 	} | null>(null);
 	const [preview, setPreview] = useState<CardData | null>(null);
+	const [confirmExit, setConfirmExit] = useState(false);
+	const [spellFlash, setSpellFlash] = useState<CardInstance | null>(null);
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	const opponentGraveyard =
+		match.players[COMPUTER_PLAYER_INDEX].zones.graveyard;
+	const graveyardSize = useRef(opponentGraveyard.length);
+
+	useEffect(() => {
+		const top = opponentGraveyard[opponentGraveyard.length - 1];
+		const grew = opponentGraveyard.length > graveyardSize.current;
+		graveyardSize.current = opponentGraveyard.length;
+		if (!grew || !top) return undefined;
+		if (top.card.type !== "instant" && top.card.type !== "sorcery")
+			return undefined;
+		setSpellFlash(top);
+		const timer = window.setTimeout(() => setSpellFlash(null), SPELL_FLASH_MS);
+		return () => window.clearTimeout(timer);
+	}, [opponentGraveyard]);
 
 	useEffect(() => {
 		const previous = document.body.style.overflow;
@@ -84,6 +107,16 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 
 	const zoomCard = zoom ? findCard(zoom) : null;
 
+	const closeZoom = useCallback(() => {
+		dismissError();
+		setZoom(null);
+	}, [dismissError]);
+
+	const handleMenu = () => {
+		if (match.winner !== null) onExit();
+		else setConfirmExit(true);
+	};
+
 	useEffect(() => {
 		if (zoom && !zoomCard) setZoom(null);
 	}, [zoom, zoomCard]);
@@ -99,7 +132,11 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 			match.winner === null;
 		if (!canAct) return actions;
 		const player = match.players[source.playerIndex];
-		if (source.zone === "hand" || source.zone === "command")
+		const playable =
+			card.type === "land"
+				? canPlayLand(match, source.playerIndex, source.instanceId)
+				: canCast(match, source.playerIndex, source.instanceId);
+		if ((source.zone === "hand" || source.zone === "command") && playable)
 			actions.push({
 				label: getPlayLabel(card),
 				onSelect: () =>
@@ -127,7 +164,10 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 	const getHandlers = (index: PlayerIndex): CardHandlers => ({
 		dragTarget: drag?.target ?? null,
 		draggingId: drag?.source.instanceId ?? null,
-		locked: isComputerTurn || index === COMPUTER_PLAYER_INDEX,
+		locked:
+			isComputerTurn ||
+			index === COMPUTER_PLAYER_INDEX ||
+			match.winner !== null,
 		onCardPointerDown: startDrag,
 		onCardClick: handleCardClick,
 		onCardFocus: setPreview,
@@ -142,16 +182,19 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 			<SC.RotateNotice role="alert">
 				<SC.RotateTitle>Gire o celular</SC.RotateTitle>
 				<span>O jogo funciona na horizontal.</span>
+				<SC.RotateExit type="button" onClick={onExit}>
+					Sair da partida (a partida atual será perdida)
+				</SC.RotateExit>
 			</SC.RotateNotice>
 
-			<SC.Wrapper>
+			<SC.Wrapper ref={wrapperRef} tabIndex={-1}>
 				<SC.TopArea>
 					<OpponentBar
 						name={names[opponentIndex]}
 						player={match.players[opponentIndex]}
 						isActive={match.activePlayer === opponentIndex}
 						start={
-							<SC.MenuButton type="button" onClick={onExit}>
+							<SC.MenuButton type="button" onClick={handleMenu}>
 								Menu
 							</SC.MenuButton>
 						}
@@ -211,6 +254,20 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 					</PlayerDock>
 				</SC.Bottom>
 
+				{spellFlash && (
+					<SC.SpellFlash aria-hidden="true">
+						<Card card={spellFlash.card} interactive={false} entering />
+					</SC.SpellFlash>
+				)}
+
+				{confirmExit && (
+					<ConfirmExit
+						onConfirm={onExit}
+						onCancel={() => setConfirmExit(false)}
+						fallbackFocusRef={wrapperRef}
+					/>
+				)}
+
 				{(match.winner !== null || (error && !zoom)) && (
 					<SC.Messages>
 						{match.winner !== null && (
@@ -232,7 +289,8 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 					card={zoomCard}
 					actions={buildZoomActions(zoom, zoomCard)}
 					error={error}
-					onClose={() => setZoom(null)}
+					onClose={closeZoom}
+					fallbackFocusRef={wrapperRef}
 				/>
 			)}
 
