@@ -22,9 +22,12 @@ type DragOptions = {
 	onLongPress: (card: Card) => void;
 };
 
+const undroppableZones: Zone[] = ["graveyard", "exile"];
+
 const findTarget = (x: number, y: number): DropTarget | null => {
 	const nodes = document.querySelectorAll<HTMLElement>("[data-zone]");
 	for (const node of Array.from(nodes)) {
+		if (undroppableZones.includes(node.dataset.zone as Zone)) continue;
 		const rect = node.getBoundingClientRect();
 		if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom)
 			return {

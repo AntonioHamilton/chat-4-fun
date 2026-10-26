@@ -1,20 +1,25 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { theme } from "@/styles/theme";
 
+type Touch = "none" | "pan-x" | "auto";
+
 type ContainerProps = {
-	$area: string;
+	$area?: string;
 	$highlighted: boolean;
-	$touch: "none" | "pan-x" | "auto";
+	$touch: Touch;
+	$fan: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
-	grid-area: ${({ $area }) => $area};
+	position: relative;
+	grid-area: ${({ $area }) => $area ?? "auto"};
 	min-width: 0;
+	min-height: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 2px;
 	box-sizing: border-box;
-	padding: 6px;
+	padding: 4px;
 	border-radius: 8px;
 	background: ${theme.cardBg};
 	border: 1px dashed
@@ -22,6 +27,14 @@ export const Container = styled.div<ContainerProps>`
 	box-shadow: ${({ $highlighted }) =>
 		$highlighted ? `0 0 0 2px ${theme.gold400}` : "none"};
 	touch-action: ${({ $touch }) => $touch};
+
+	${({ $fan, $highlighted }) =>
+		$fan &&
+		css`
+			padding: 0;
+			background: none;
+			border-color: ${$highlighted ? theme.gold400 : "transparent"};
+		`}
 `;
 
 export const Header = styled.div`
@@ -29,32 +42,77 @@ export const Header = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	gap: 6px;
-	font-size: 0.65rem;
+	font-size: 0.55rem;
 	font-weight: 700;
 	letter-spacing: 0.5px;
 	text-transform: uppercase;
 	color: ${theme.textTertiary};
+
+	@media (max-height: 599px) {
+		justify-content: center;
+	}
+`;
+
+export const Label = styled.span<{ $always: boolean }>`
+	@media (max-height: 599px) {
+		display: ${({ $always }) => ($always ? "inline" : "none")};
+	}
 `;
 
 export const Count = styled.span`
+	position: absolute;
+	top: -7px;
+	right: -4px;
+	z-index: 8;
 	padding: 0 6px;
 	border-radius: 8px;
 	background: ${theme.backgroundSecondary};
+	border: 1px solid ${theme.borderSubtle};
 	color: ${theme.gold400};
+	font-size: 0.65rem;
+	font-weight: 700;
 `;
 
 export const Cards = styled.div<{
 	$scroll: boolean;
-	$touch: "none" | "pan-x" | "auto";
+	$touch: Touch;
+	$pile: boolean;
+	$fan: boolean;
 }>`
 	touch-action: ${({ $touch }) => $touch};
 	display: flex;
-	flex-wrap: ${({ $scroll }) => ($scroll ? "nowrap" : "wrap")};
-	align-items: flex-start;
+	flex: 1;
+	flex-wrap: ${({ $scroll, $fan }) => ($scroll || $fan ? "nowrap" : "wrap")};
+	align-items: ${({ $fan }) => ($fan ? "flex-end" : "flex-start")};
 	align-content: flex-start;
-	gap: 6px;
-	min-height: calc(var(--card-w, 64px) * 1.4 + 4px);
-	padding: 2px 0;
-	overflow-x: ${({ $scroll }) => ($scroll ? "auto" : "visible")};
-	overscroll-behavior-x: contain;
+	justify-content: ${({ $pile, $fan }) =>
+		$pile || $fan ? "center" : "flex-start"};
+	gap: ${({ $fan }) => ($fan ? "0" : "4px")};
+	min-height: ${({ $pile }) =>
+		$pile ? "calc(var(--card-w, 64px) * 1.4)" : "0"};
+	overflow-x: ${({ $scroll, $fan }) =>
+		$fan ? "visible" : $scroll ? "auto" : "hidden"};
+	overflow-y: ${({ $scroll, $fan }) =>
+		$fan ? "visible" : $scroll ? "hidden" : "auto"};
+	overscroll-behavior: contain;
+`;
+
+export const OpenButton = styled.button`
+	position: absolute;
+	inset: 0;
+	z-index: 7;
+	padding: 0;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	cursor: pointer;
+
+	&:hover {
+		background: ${theme.cardBgHover};
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${theme.gold400};
+		outline-offset: 2px;
+	}
 `;

@@ -1,20 +1,14 @@
 import styled from "styled-components";
-import { breakpoints } from "@/styles/breakpoints";
 import { theme } from "@/styles/theme";
 
 export const Container = styled.aside`
-	display: none;
-
-	@media (min-width: ${breakpoints.lg}) {
-		display: block;
-		align-self: start;
-		position: sticky;
-		top: 12px;
-		padding: 12px;
-		border-radius: 12px;
-		border: 1px solid ${theme.borderSubtle};
-		background: ${theme.panelBg};
-	}
+	box-sizing: border-box;
+	height: 100%;
+	overflow-y: auto;
+	padding: 12px;
+	border-radius: 12px;
+	border: 1px solid ${theme.borderSubtle};
+	background: ${theme.panelBgSoft};
 `;
 
 export const Title = styled.h2`

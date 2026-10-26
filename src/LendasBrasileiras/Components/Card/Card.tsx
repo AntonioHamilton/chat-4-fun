@@ -3,8 +3,9 @@ import type {
 	Card as CardData,
 	ManaColor
 } from "@/LendasBrasileiras/Types/card";
-import { manaColors, manaSymbols } from "@/LendasBrasileiras/Constants/colors";
+import { manaColors } from "@/LendasBrasileiras/Constants/colors";
 import { typeLabels } from "@/LendasBrasileiras/Constants/labels";
+import { formatCost } from "@/LendasBrasileiras/Utils/formatCost";
 import * as SC from "./styled";
 
 type CardProps = {
@@ -13,6 +14,7 @@ type CardProps = {
 	tapped?: boolean;
 	dragging?: boolean;
 	large?: boolean;
+	entering?: boolean;
 	interactive?: boolean;
 	onPointerDown?: (event: PointerEvent<HTMLElement>) => void;
 	onClick?: () => void;
@@ -28,18 +30,13 @@ const getCardColor = (card: CardData): ManaColor => {
 	return paid ?? "colorless";
 };
 
-const formatCost = (card: CardData): string =>
-	(Object.keys(card.cost) as ManaColor[])
-		.filter((color) => (card.cost[color] ?? 0) > 0)
-		.map((color) => `${card.cost[color]}${manaSymbols[color]}`)
-		.join(" ");
-
 export const Card = ({
 	card,
 	zoneLabel,
 	tapped = false,
 	dragging = false,
 	large = false,
+	entering = false,
 	interactive = true,
 	onPointerDown,
 	onClick,
@@ -68,6 +65,7 @@ export const Card = ({
 			$tapped={tapped}
 			$dragging={dragging}
 			$large={large}
+			$entering={entering}
 			onPointerDown={onPointerDown}
 			onClick={onClick}
 			onFocus={(event: FocusEvent<HTMLElement>) => {

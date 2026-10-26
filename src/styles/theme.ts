@@ -2,6 +2,7 @@ export const theme = {
 	backgroundPrimary: "#060e26",
 	backgroundSecondary: "#151740",
 	panelBg: "rgba(21, 23, 64, 0.92)",
+	panelBgSoft: "rgba(21, 23, 64, 0.9)",
 	cardBg: "rgba(255, 255, 255, 0.04)",
 	cardBgHover: "rgba(255, 255, 255, 0.08)",
 	borderSubtle: "rgba(255, 255, 255, 0.1)",

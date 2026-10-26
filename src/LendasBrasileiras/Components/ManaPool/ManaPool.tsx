@@ -7,20 +7,15 @@ import * as SC from "./styled";
 
 type ManaPoolProps = {
 	pool: ManaPoolData;
-	landsCount: number;
-	tappedCount: number;
 };
 
-export const ManaPool = ({ pool, landsCount, tappedCount }: ManaPoolProps) => {
+export const ManaPool = ({ pool }: ManaPoolProps) => {
 	const filled: ManaColor[] = MANA_COLORS.filter((color) => pool[color] > 0);
 
 	return (
 		<SC.Container aria-label="Mana">
-			<span>
-				Terrenos {landsCount - tappedCount}/{landsCount}
-			</span>
-			<span>Pool:</span>
-			{filled.length === 0 && <span>vazio</span>}
+			<span>Mana:</span>
+			{filled.length === 0 && <span>vazia</span>}
 			{filled.map((color) => (
 				<SC.Chip
 					key={color}
