@@ -25,6 +25,7 @@ Trocar a mesa atual (duas áreas empilhadas, sem ponto de vista) por uma mesa vi
 | 11 | Carta ampliada ao clicar | Clique em carta da mão, campo ou pilha amplia a carta no centro | Clique abre carta grande; fecha com clique fora ou Esc | Clicar em carta da mão |
 | 12 | Carta ampliada com "Jogar em campo" embaixo | Botão "Colocar em campo" na parte inferior da carta ampliada (quando for jogável) | Botão aparece só em carta jogável e chama a ação do motor | Ampliar carta da mão e jogar |
 | 13 | Mover para cemitério e exílio só como efeito de outras cartas; efeitos devem dar ênfase ao que fazer | **A confirmar (ver D2).** Proposta: remover "Mover para cemitério/exílio" do menu do jogador. Essas ações ficam só para efeitos (pós-MVP) | Menu da carta não lista cemitério nem exílio | Abrir o menu de uma carta |
+| 14 | Ícone de histórico fixo na esquerda; ao clicar, abre o histórico dos movimentos num painel com fundo meio transparente | Ícone fixo na borda esquerda da mesa. Clique abre um painel sobreposto (não empurra a mesa), com a lista de jogadas em ordem cronológica (mais recente embaixo). Fundo semitransparente. Fecha com o ícone, clique fora ou Esc | Ícone visível em todos os tamanhos; painel abre e fecha; lista mostra as jogadas da partida | Clicar no ícone e conferir a lista durante uma partida |
 
 ## 3. Ideias para depois do MVP (só anotadas)
 
