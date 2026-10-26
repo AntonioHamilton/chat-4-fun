@@ -4,8 +4,8 @@ import { pageBackground } from "@/styles/guess-country.styled";
 import { theme } from "@/styles/theme";
 
 export const Wrapper = styled.div`
-	--card-w: clamp(32px, 9vh, 88px);
-	--hand-w: clamp(33px, 9vh, 79px);
+	--card-w: clamp(38px, 10.6vh, 104px);
+	--hand-w: clamp(39px, 10.6vh, 93px);
 	position: fixed;
 	inset: 0;
 	z-index: 30;
