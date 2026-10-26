@@ -22,10 +22,10 @@ export const Hero = styled.div`
 	flex-direction: column;
 	align-items: stretch;
 	gap: 14px;
+	box-sizing: border-box;
+	width: calc(var(--hand-w) * 1.3 + 8px);
 
 	@media (max-height: 599px) {
-		box-sizing: border-box;
-		width: calc(var(--hand-w) * 1.3 + 8px);
 		gap: 6px;
 	}
 `;
@@ -35,7 +35,6 @@ export const Portrait = styled.div`
 	box-sizing: border-box;
 	flex: 1;
 	min-height: 40px;
-	width: calc(var(--hand-w) * 1.3);
 	border-radius: 10px;
 	border: 3px solid ${theme.gold500};
 	background: radial-gradient(
@@ -139,16 +138,7 @@ export const FanItem = styled.span<FanItemProps>`
 
 export const CommandSlot = styled.div`
 	flex: 0 0 auto;
-	padding: 18px 0 calc(var(--hand-w) * 0.15);
-
-	[data-zone="command"] > span {
-		top: -16px;
-	}
-
-	button {
-		border: 3px solid ${theme.gold400};
-		box-shadow: 0 0 8px ${theme.gold500};
-	}
+	padding: 0 0 calc(var(--hand-w) * 0.15);
 `;
 
 export const End = styled.div`

@@ -3,18 +3,15 @@ import { theme } from "@/styles/theme";
 
 export const Container = styled.div`
 	display: flex;
+	flex-direction: column;
 	flex-wrap: wrap;
-	justify-content: flex-end;
-	align-items: center;
+	justify-content: flex-start;
+	align-content: flex-end;
+	max-height: 100%;
 	gap: 4px;
 	min-height: 26px;
 
 	@media (max-height: 599px) {
-		flex-direction: column;
-		flex-wrap: wrap;
-		justify-content: flex-start;
-		align-content: flex-end;
-		max-height: 100%;
 		gap: 2px;
 	}
 `;

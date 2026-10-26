@@ -124,7 +124,6 @@ export const PlayerDock = ({
 							handlers={handlers}
 							touch="none"
 							fan
-							countLabel="Comandante"
 						/>
 					</SC.CommandSlot>
 				)}

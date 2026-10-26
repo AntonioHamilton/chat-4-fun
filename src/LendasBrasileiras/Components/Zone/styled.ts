@@ -8,6 +8,7 @@ type ContainerProps = {
 	$highlighted: boolean;
 	$touch: Touch;
 	$fan: boolean;
+	$bare: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`
@@ -27,6 +28,14 @@ export const Container = styled.div<ContainerProps>`
 	box-shadow: ${({ $highlighted }) =>
 		$highlighted ? `0 0 0 2px ${theme.gold400}` : "none"};
 	touch-action: ${({ $touch }) => $touch};
+
+	${({ $bare, $highlighted }) =>
+		$bare &&
+		css`
+			padding: 0;
+			background: ${$highlighted ? theme.cardBgHover : "none"};
+			border-color: ${$highlighted ? theme.gold400 : "transparent"};
+		`}
 
 	${({ $fan, $highlighted }) =>
 		$fan &&
@@ -78,15 +87,17 @@ export const Cards = styled.div<{
 	$touch: Touch;
 	$pile: boolean;
 	$fan: boolean;
+	$bare: boolean;
 }>`
 	touch-action: ${({ $touch }) => $touch};
 	display: flex;
 	flex: 1;
 	flex-wrap: ${({ $scroll, $fan }) => ($scroll || $fan ? "nowrap" : "wrap")};
-	align-items: ${({ $fan }) => ($fan ? "flex-end" : "flex-start")};
-	align-content: flex-start;
-	justify-content: ${({ $pile, $fan }) =>
-		$pile || $fan ? "center" : "flex-start"};
+	align-items: ${({ $fan, $bare }) =>
+		$bare ? "safe center" : $fan ? "flex-end" : "flex-start"};
+	align-content: ${({ $bare }) => ($bare ? "safe center" : "flex-start")};
+	justify-content: ${({ $pile, $fan, $bare }) =>
+		$bare ? "safe center" : $pile || $fan ? "center" : "flex-start"};
 	gap: ${({ $fan }) => ($fan ? "0" : "4px")};
 	min-height: ${({ $pile }) =>
 		$pile ? "calc(var(--card-w, 64px) * 1.4)" : "0"};

@@ -18,6 +18,7 @@ type PlayerZoneProps = {
 	scroll?: boolean;
 	pile?: boolean;
 	fan?: boolean;
+	bare?: boolean;
 	animateEntry?: boolean;
 	countLabel?: string;
 	pickVisible?: (cards: CardInstance[]) => CardInstance[];
@@ -36,6 +37,7 @@ export const PlayerZone = ({
 	scroll,
 	pile = false,
 	fan,
+	bare,
 	animateEntry = false,
 	countLabel,
 	pickVisible,
@@ -95,6 +97,7 @@ export const PlayerZone = ({
 			scroll={scroll}
 			pile={pile}
 			fan={fan}
+			bare={bare}
 			onOpen={onOpenList}
 		>
 			{visible.map((instance, index) => {

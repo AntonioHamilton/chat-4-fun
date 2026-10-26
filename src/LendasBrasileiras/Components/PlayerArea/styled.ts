@@ -37,18 +37,3 @@ export const Root = styled.section<{ $position: Position; $active: boolean }>`
 		--card-w: var(--row-w);
 	}
 `;
-
-export const TappedMarker = styled.span`
-	position: absolute;
-	bottom: -7px;
-	left: 50%;
-	z-index: 2;
-	transform: translateX(-50%);
-	padding: 0 6px;
-	border-radius: 8px;
-	background: ${theme.gold500};
-	color: ${theme.backgroundPrimary};
-	font-size: 0.6rem;
-	font-weight: 700;
-	white-space: nowrap;
-`;
