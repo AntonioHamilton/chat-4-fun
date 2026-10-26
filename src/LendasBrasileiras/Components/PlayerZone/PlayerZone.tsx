@@ -18,6 +18,7 @@ type PlayerZoneProps = {
 	scroll?: boolean;
 	pile?: boolean;
 	fan?: boolean;
+	animateEntry?: boolean;
 	countLabel?: string;
 	action?: ReactNode;
 	pickVisible?: (cards: CardInstance[]) => CardInstance[];
@@ -36,6 +37,7 @@ export const PlayerZone = ({
 	scroll,
 	pile = false,
 	fan,
+	animateEntry = false,
 	countLabel,
 	action,
 	pickVisible,
@@ -67,6 +69,7 @@ export const PlayerZone = ({
 					!pile &&
 					player.tappedLands.includes(instance.instanceId)
 				}
+				entering={animateEntry}
 				dragging={handlers.draggingId === instance.instanceId}
 				onPointerDown={(event) => {
 					if (!handlers.locked)

@@ -14,6 +14,7 @@ type CardProps = {
 	tapped?: boolean;
 	dragging?: boolean;
 	large?: boolean;
+	entering?: boolean;
 	interactive?: boolean;
 	onPointerDown?: (event: PointerEvent<HTMLElement>) => void;
 	onClick?: () => void;
@@ -35,6 +36,7 @@ export const Card = ({
 	tapped = false,
 	dragging = false,
 	large = false,
+	entering = false,
 	interactive = true,
 	onPointerDown,
 	onClick,
@@ -63,6 +65,7 @@ export const Card = ({
 			$tapped={tapped}
 			$dragging={dragging}
 			$large={large}
+			$entering={entering}
 			onPointerDown={onPointerDown}
 			onClick={onClick}
 			onFocus={(event: FocusEvent<HTMLElement>) => {

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { theme } from "@/styles/theme";
 
 type RootProps = {
@@ -6,7 +6,19 @@ type RootProps = {
 	$tapped: boolean;
 	$dragging: boolean;
 	$large: boolean;
+	$entering: boolean;
 };
+
+const enter = keyframes`
+	from {
+		opacity: 0;
+		scale: 0.9;
+	}
+	to {
+		opacity: 1;
+		scale: 1;
+	}
+`;
 
 export const Root = styled.button<RootProps>`
 	position: relative;
@@ -34,6 +46,14 @@ export const Root = styled.button<RootProps>`
 	margin: ${({ $tapped }) =>
 		$tapped ? "0 calc(var(--card-w, 64px) * 0.2)" : "0"};
 	transition: transform 0.15s ease-out;
+
+	${({ $entering }) =>
+		$entering &&
+		css`
+			@media (prefers-reduced-motion: no-preference) {
+				animation: ${enter} 0.4s ease-out;
+			}
+		`}
 
 	&:focus-visible {
 		outline: 2px solid ${theme.gold400};

@@ -39,6 +39,7 @@ export const PlayerArea = ({
 		<SC.Root $position={position} $active={isActive} aria-label={name}>
 			<PlayerZone
 				zone="battlefield"
+				animateEntry={position === "top"}
 				player={player}
 				playerIndex={playerIndex}
 				handlers={handlers}
@@ -65,6 +66,7 @@ export const PlayerArea = ({
 			/>
 			<PlayerZone
 				zone="support"
+				animateEntry={position === "top"}
 				player={player}
 				playerIndex={playerIndex}
 				handlers={handlers}
@@ -73,6 +75,7 @@ export const PlayerArea = ({
 			/>
 			<PlayerZone
 				zone="command"
+				animateEntry={position === "top"}
 				player={player}
 				playerIndex={playerIndex}
 				handlers={handlers}
