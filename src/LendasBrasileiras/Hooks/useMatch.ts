@@ -49,16 +49,17 @@ const describeStep = (step: AiStep, name: string): string => {
 export const useMatch = (
 	deckA: Deck,
 	deckB: Deck,
-	computerIndex: PlayerIndex | null = null
+	computerIndex: PlayerIndex | null,
+	playerName: string
 ) => {
 	const names = useMemo<[string, string]>(
 		() => [
-			`Jogador 1 (${deckA.name})`,
+			`${playerName} (${deckA.name})`,
 			computerIndex === 1
 				? `Computador (${deckB.name})`
 				: `Jogador 2 (${deckB.name})`
 		],
-		[deckA.name, deckB.name, computerIndex]
+		[deckA.name, deckB.name, computerIndex, playerName]
 	);
 
 	const [state, setState] = useState<MatchState>(() => ({

@@ -34,10 +34,11 @@ const SPELL_FLASH_MS = 1500;
 type TableProps = {
 	deckA: Deck;
 	deckB: Deck;
+	playerName: string;
 	onExit: () => void;
 };
 
-export const Table = ({ deckA, deckB, onExit }: TableProps) => {
+export const Table = ({ deckA, deckB, playerName, onExit }: TableProps) => {
 	const {
 		match,
 		log,
@@ -47,7 +48,7 @@ export const Table = ({ deckA, deckB, onExit }: TableProps) => {
 		dismissError,
 		moveTo,
 		isComputerTurn
-	} = useMatch(deckA, deckB, COMPUTER_PLAYER_INDEX);
+	} = useMatch(deckA, deckB, COMPUTER_PLAYER_INDEX, playerName);
 	const [zoom, setZoom] = useState<CardSource | null>(null);
 	const [list, setList] = useState<{
 		playerIndex: PlayerIndex;

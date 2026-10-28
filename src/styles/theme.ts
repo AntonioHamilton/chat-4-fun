@@ -13,6 +13,8 @@ export const theme = {
 	purple500: "#432d73",
 	gold400: "#f2c94c",
 	gold500: "#e6a209",
+	red500: "#b8402b",
+	cream: "#f3e6c3",
 	overlayBg: "rgba(6, 14, 38, 0.72)",
 	shadowColor: "rgba(0, 0, 0, 0.35)"
 };
