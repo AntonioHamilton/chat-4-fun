@@ -21,19 +21,27 @@ const grow = keyframes`
 	}
 
 	to {
-		transform: scale(1.1);
+		transform: scale(1.16);
 	}
 `;
 
-const vanish = keyframes`
+const zoomOut = keyframes`
+	from {
+		transform: scale(1.16);
+	}
+
+	to {
+		transform: scale(1.22);
+	}
+`;
+
+const fadeOut = keyframes`
 	from {
 		opacity: 1;
-		transform: scale(1.1);
 	}
 
 	to {
 		opacity: 0;
-		transform: scale(1.16);
 	}
 `;
 
@@ -55,10 +63,11 @@ export const Slide = styled.div<{ $image: string; $leaving?: boolean }>`
 	animation: ${({ $leaving }) =>
 		$leaving
 			? css`
-					${vanish} ${LOBBY_FADE_MS}ms ease-in forwards
+					${zoomOut} ${LOBBY_FADE_MS}ms linear forwards,
+						${fadeOut} ${LOBBY_FADE_MS}ms ease-in-out forwards
 				`
 			: css`
-					${appear} ${LOBBY_FADE_MS}ms ease-out both,
+					${appear} ${LOBBY_FADE_MS}ms ease-in-out both,
 					${grow} ${LOBBY_SLIDE_MS}ms linear both
 				`};
 

@@ -49,6 +49,36 @@ Para cartas, use o bloco de estilo mais o personagem ou cenário:
 
 Para terrenos, troque o personagem por um cenário (ex: "a sunny riverbank with tall grass", "a dark forest clearing under moonlight"), em formato horizontal 16:9 para fundos.
 
+## 5. Fundos do lobby (passam em loop, 16:9)
+
+Use o bloco de estilo do item 3, mais o cenário. A área central deve ficar com pouco detalhe, porque o nome, os botões e o emblema ficam por cima.
+
+Base:
+
+```
+[bloco de estilo], wide 16:9 cinematic landscape, empty central area with less detail so UI text stays readable, soft vignette on the edges
+```
+
+Cena 1 (Boitatá):
+
+```
+[base], a night forest in Brazil, a giant fiery serpent Boitatá gliding between ancient trees, glowing embers and fireflies, a full moon behind distant mountains, mist on the ground, deep blue and violet tones with orange firelight
+```
+
+Cena 2 (castelo do rio):
+
+```
+[base], a ruined medieval stone castle on a cliff above a wide tropical river at dusk, red banners torn by the wind, floating arcane runes and magic light over the water, a distant silhouette of Iara on a rock, purple sky with golden sunset light
+```
+
+Cena 3 (mesa dos estrategistas):
+
+```
+[base], a stone war room in a forest clearing at night, a large round table with a glowing map and floating magic cards, a campfire, torches, a small red cap left on a stone, golden light, deep green and gold tones
+```
+
+Os três fundos entram no loop em `src/LendasBrasileiras/Constants/lobby.ts`, na ordem em que estão aqui.
+
 ## Observações
 
 - Os prompts são um ponto de partida. Não gerei as imagens, então ajuste conforme o resultado.
